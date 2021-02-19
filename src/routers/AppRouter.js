@@ -16,10 +16,7 @@ import reducer from '../auth/authReducer';
 import theme from '../theme';
 
 import { ClientRoutes } from './ClientRoutes';
-import { PrivateRoute } from './PrivateRoute';
 import { PrivateRouteAdmin } from './PrivateRouteAdmin';
-
-import HomePage from '../pages/HomePage';
 
 dotenv.config();
 
@@ -61,18 +58,20 @@ export const AppRouter = () => {
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={{ state, dispatch }}>
           <Switch>
-            <Route exact path="/" component={HomePage} />
-            <PrivateRoute
-              path="/client/"
-              component={ClientRoutes}
-              isUserLoggedIn={isUserLoggedIn}
-              userType={userData && userData.tipoUsuario}
-            />
             <PrivateRouteAdmin
               path="/admin/"
               component={AdminRoutes}
               isUserLoggedIn={isUserLoggedIn}
               userType={userData && userData.tipoUsuario}
+            />
+            <Route
+              path="/"
+              component={() => (
+                <ClientRoutes
+                  isUserLoggedIn={isUserLoggedIn}
+                  userType={userData && userData.tipoUsuario}
+                />
+              )}
             />
           </Switch>
         </AppContext.Provider>

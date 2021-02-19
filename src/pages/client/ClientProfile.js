@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const ClientHome = () => {
+export const ClientProfile = () => {
      return (
           <div>
-               Cliente
+               Perfil del Cliente
           </div>
      )
 }

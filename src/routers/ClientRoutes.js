@@ -1,14 +1,25 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { ClientHome } from '../pages/ClientHome';
+import { PrivateRoute } from './PrivateRoute';
 
-export const ClientRoutes = () => {
+import { ClientProfile } from '../pages/client/ClientProfile';
+import HomePage from '../pages/HomePage';
+
+export const ClientRoutes = ({isUserLoggedIn, userType}) => {
+
   return (
     <>
       <div>
         <Switch>
-          <Route exact path="/client/home" component={ClientHome} />
+        <PrivateRoute
+              path="/profile"
+              component={ClientProfile}
+              isUserLoggedIn={isUserLoggedIn}
+              userType={userType}
+            />
+          <Route exact path="/home" component={HomePage} />
+          <Redirect to="/home" />
         </Switch>
       </div>
     </>

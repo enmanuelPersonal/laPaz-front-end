@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { AdminHome } from '../pages/AdminHome';
+import { AdminHome } from '../pages/admin/AdminHome';
 
 export const AdminRoutes = () => {
   return (
