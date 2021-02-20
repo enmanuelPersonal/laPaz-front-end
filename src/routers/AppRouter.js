@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider, CircularProgress } from '@material-ui/core';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,6 +18,9 @@ import theme from '../theme';
 import { ClientRoutes } from './ClientRoutes';
 import { PrivateRouteAdmin } from './PrivateRouteAdmin';
 
+import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/RegisterPage';
+
 dotenv.config();
 
 const initialState = {
@@ -26,6 +29,7 @@ const initialState = {
 };
 
 export const AppRouter = () => {
+  const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { isUserLoggedIn, userData } = state;
@@ -35,12 +39,13 @@ export const AppRouter = () => {
       const getUser = await post('auth')
         .then((res) => res.json())
         .catch(() => {
+          setLoading(false);
           setLoggedIn(false);
         });
 
       if (getUser) {
         const { data } = getUser;
-        if (data && data.personId) {
+        if (data && data.idEntidad) {
           dispatch({
             type: USER_LOGIN,
             payload: data,
@@ -48,6 +53,7 @@ export const AppRouter = () => {
           setLoggedIn(true);
         }
       }
+      setLoading(false);
     };
 
     fetchAuthData();
@@ -55,27 +61,31 @@ export const AppRouter = () => {
 
   return (
     <Router>
-      <ThemeProvider theme={theme}>
-        <AppContext.Provider value={{ state, dispatch }}>
-          <Switch>
-            <PrivateRouteAdmin
-              path="/admin/"
-              component={AdminRoutes}
-              isUserLoggedIn={isUserLoggedIn}
-              userType={userData && userData.tipoUsuario}
-            />
-            <Route
-              path="/"
-              component={() => (
-                <ClientRoutes
-                  isUserLoggedIn={isUserLoggedIn}
-                  userType={userData && userData.tipoUsuario}
-                />
-              )}
-            />
-          </Switch>
-        </AppContext.Provider>
-      </ThemeProvider>
+      {(!loading && (
+        <ThemeProvider theme={theme}>
+          <AppContext.Provider value={{ state, dispatch }}>
+            <Switch>
+              <Route exact path="/login" component={LoginPage} />
+              <Route exact path="/register" component={RegisterPage} />
+              <PrivateRouteAdmin
+                path="/admin/"
+                component={AdminRoutes}
+                isUserLoggedIn={isUserLoggedIn}
+                userType={userData && userData.tipoUsuario}
+              />
+              <Route
+                path="/"
+                component={() => (
+                  <ClientRoutes
+                    isUserLoggedIn={isUserLoggedIn}
+                    userType={userData && userData.tipoUsuario}
+                  />
+                )}
+              />
+            </Switch>
+          </AppContext.Provider>
+        </ThemeProvider>
+      )) || <CircularProgress />}
       {loggedIn && <Redirect to={window.location.pathname} />}
     </Router>
   );

@@ -2,28 +2,34 @@ import { createMuiTheme } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#227FFC' },
-    secondary: { main: '#3d6d8c' },
-    toggleButtonBackground: { main: '#194b85' },
-    toggleButtonColor: { main: '#fff' },
-  },
-  typography: { fontFamily: 'Open Sans' },
-  h1: { fontFamily: 'Open Sans Condensed' },
-  h2: { fontFamily: 'Open Sans Condensed' },
-  h3: { fontFamily: 'Open Sans Condensed' },
-  h4: { fontFamily: 'Open Sans Condensed' },
-  h5: { fontFamily: 'Open Sans Condensed' },
-  h6: { fontFamily: 'Open Sans Condensed' },
-});
-
-theme.overrides.MuiToggleButton = {
-  // Override the styling for selected toggle buttons
-  root: {
-    '&$selected': {
-      backgroundColor: theme.palette.toggleButtonBackground.main,
-      color: theme.palette.toggleButtonColor.main,
+    primary: {
+      main: '#630F5C',
+      light: '#3c44b126',
+    },
+    secondary: {
+      main: '#f83245',
+      light: '#f8324526',
+    },
+    progressBar: {
+      main: '#fff',
+      light: '#fff',
+    },
+    background: {
+      default: '#f4f5fd',
     },
   },
-};
+  overrides: {
+    MuiAppBar: {
+      root: {
+        transform: 'translateZ(0)',
+      },
+    },
+  },
+  props: {
+    MuiIconButton: {
+      disableRipple: true,
+    },
+  },
+});
 
 export default theme;
