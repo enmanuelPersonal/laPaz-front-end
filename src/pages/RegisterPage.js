@@ -1,65 +1,63 @@
-import React, { useState } from 'react';
-import 'date-fns';
+import React, { useState } from "react";
+import "date-fns";
 import {
+  Box,
   Grid,
   TextField,
   Button,
   Paper,
   CircularProgress,
-} from '@material-ui/core';
+} from "@material-ui/core";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { makeStyles } from '@material-ui/core/styles';
-import { useForm } from 'react-hook-form';
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { makeStyles } from "@material-ui/core/styles";
+import { useForm } from "react-hook-form";
 
-import { formatDate } from '../helpers/formatDate';
-import { post } from '../helpers/fetch';
-import { email, phoneNumber, username } from '../utils/regExp';
-import { isValidateForm } from '../helpers/isValidateForm';
-import { DialogSlide } from '../components/alert/DialogSlide';
-import { Redirect } from 'react-router-dom';
+import { formatDate } from "../helpers/formatDate";
+import { post } from "../helpers/fetch";
+import { email, phoneNumber, username } from "../utils/regExp";
+import { isValidateForm } from "../helpers/isValidateForm";
+import { DialogSlide } from "../components/alert/DialogSlide";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
   login: {
-    width: '100%',
-    height: '365px',
-    objectFit: 'cover',
-    margin: 70,
+    width: "90%",
+    height: "57vh",
+    objectFit: "cover",
+    margin: 100,
   },
   contenidoLogin: {
-    paddingTop: 25,
-    paddingBottom: 250,
-    justify: 'space-between',
-    alignItems: 'center',
-    direction: 'column',
-    justifyContent: 'center',
+    justify: "space-between",
+    alignItems: "center",
+    direction: "column",
+    justifyContent: "center",
   },
   logo: {
-    width: '300px',
+    width: "300px",
+    marginLeft: "100px",
   },
-  img: {
-    minHeight: '100vh',
-  },
-  containerImg: {
-    justify: 'center',
-  },
+
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3),
   },
   paperStyle: {
-    padding: 0,
-    height: '75vh',
+    height: "75vh",
     width: 1200,
-    margin: '20px auto',
+    margin: "80px auto",
   },
+
   loading: {
-    display: 'flex',
-    '& > * + *': {
+    display: "flex",
+    "& > * + *": {
       marginLeft: theme.spacing(2),
     },
   },
@@ -75,8 +73,8 @@ const RegisterPage = () => {
   const [errorServer, setErrorServer] = useState(false);
   const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
   const { register, errors, getValues } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const handleClose = () => {
@@ -107,7 +105,7 @@ const RegisterPage = () => {
           correos: [email],
         },
         {
-          telefonos: [{ telefono, tipo: 'casa' }],
+          telefonos: [{ telefono, tipo: "casa" }],
         }
       );
     }
@@ -115,7 +113,7 @@ const RegisterPage = () => {
     if (isValidateForm(userData)) {
       setShowError(false);
       setLoading(true);
-      return post('user/add', userData)
+      return post("user/add", userData)
         .then(async (response) => {
           setLoading(false);
           if (response.status === 201) {
@@ -135,7 +133,7 @@ const RegisterPage = () => {
 
   return (
     <Paper elevation={10} className={classes.paperStyle}>
-      <Grid container className={classes.img}>
+      <Grid container>
         <Grid item xs={12} sm={6}>
           <img
             src="images/imagenRegisterGrande.svg"
@@ -146,133 +144,171 @@ const RegisterPage = () => {
         <Grid container item xs={12} sm={6} className={classes.contenidoLogin}>
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              maxWidth: '400',
-              minWidth: '300',
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: "400",
+              minWidth: "300",
             }}
           >
-            <Grid container className={classes.containerImg}>
-              <img
-                src="images/logoletras.JPG"
-                alt="logo"
-                className={classes.logo}
-              />
-            </Grid>
             <form onSubmit={handleSubmit}>
-              <TextField
-                label="Nombre"
-                margin="normal"
-                type="text"
-                name="nombre"
-                error={Boolean(errors.nombre)}
-                helperText={errors.nombre ? 'El nombre es requerido' : ''}
-                inputRef={register({
-                  required: true,
-                })}
-              />
-              <TextField
-                label="Usuario"
-                margin="normal"
-                type="text"
-                name="usuario"
-                error={Boolean(errors.usuario)}
-                helperText={errors.usuario ? 'El usuario es icorrecto' : ''}
-                inputRef={register({
-                  pattern: username,
-                })}
-              />
-              <TextField
-                label="Contraseña"
-                margin="normal"
-                type="password"
-                name="password"
-                error={Boolean(errors.password)}
-                helperText={
-                  errors.password ? 'Por favor colocar 8 caracteres o más' : ''
-                }
-                inputRef={register({
-                  required: true,
-                  minLength: {
-                    value: 8,
-                    message: 'Por favor colocar 8 caracteres o más',
-                  },
-                })}
-              />
-              <TextField
-                label="Confirmar Contraseña"
-                margin="normal"
-                type="password"
-                name="confirPassword"
-                error={Boolean(errors.confirPassword)}
-                helperText={
-                  errors.confirPassword ? 'Las contraseñas deben coincidir' : ''
-                }
-                inputRef={register({
-                  required: true,
-                  validate: (value) => value === getValues().password,
-                })}
-              />
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  label="Fecha de Nacimiento"
-                  format="dd/MM/yyyy"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                  required={true}
-                />
-              </MuiPickersUtilsProvider>
-              <TextField
-                label="Teléfono"
-                margin="normal"
-                name="telefono"
-                error={Boolean(errors.telefono)}
-                helperText={
-                  errors.telefono ? 'El teléfono debe contener 10 dígitos' : ''
-                }
-                inputRef={register({
-                  pattern: phoneNumber,
-                  validate: (value) =>
-                    value.replace(/[() -.]/g, '').length === 10,
-                })}
-              />
-              <TextField
-                label="Correo"
-                margin="normal"
-                type="email"
-                name="email"
-                error={Boolean(errors.email)}
-                helperText={errors.email ? 'El correo es requerido' : ''}
-                inputRef={register({
-                  pattern: email,
-                })}
-              />
+              <Box m={10}>
+                <Grid container>
+                  <img
+                    src="images/logoletras.JPG"
+                    alt="logo"
+                    className={classes.logo}
+                  />
+                </Grid>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Nombre"
+                      margin="normal"
+                      type="text"
+                      name="nombre"
+                      error={Boolean(errors.nombre)}
+                      helperText={errors.nombre ? "El nombre es requerido" : ""}
+                      inputRef={register({
+                        required: true,
+                      })}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    {" "}
+                    <TextField
+                      fullWidth
+                      label="Usuario"
+                      margin="normal"
+                      type="text"
+                      name="usuario"
+                      error={Boolean(errors.usuario)}
+                      helperText={
+                        errors.usuario ? "El usuario es incorrecto" : ""
+                      }
+                      inputRef={register({
+                        pattern: username,
+                      })}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Contraseña"
+                      margin="normal"
+                      type="password"
+                      name="password"
+                      error={Boolean(errors.password)}
+                      helperText={
+                        errors.password
+                          ? "Por favor colocar 8 caracteres o más"
+                          : ""
+                      }
+                      inputRef={register({
+                        required: true,
+                        minLength: {
+                          value: 8,
+                          message: "Por favor colocar 8 caracteres o más",
+                        },
+                      })}
+                    />
+                  </Grid>
 
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Confirmar Contraseña"
+                      margin="normal"
+                      type="password"
+                      name="confirPassword"
+                      error={Boolean(errors.confirPassword)}
+                      helperText={
+                        errors.confirPassword
+                          ? "Las contraseñas deben coincidir"
+                          : ""
+                      }
+                      inputRef={register({
+                        required: true,
+                        validate: (value) => value === getValues().password,
+                      })}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        fullWidth
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="Fecha de Nacimiento"
+                        format="dd/MM/yyyy"
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        KeyboardButtonProps={{
+                          "aria-label": "change date",
+                        }}
+                        required={true}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Teléfono"
+                      margin="normal"
+                      name="telefono"
+                      error={Boolean(errors.telefono)}
+                      helperText={
+                        errors.telefono
+                          ? "El teléfono debe contener 10 dígitos"
+                          : ""
+                      }
+                      inputRef={register({
+                        pattern: phoneNumber,
+                        validate: (value) =>
+                          value.replace(/[() -.]/g, "").length === 10,
+                      })}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Correo"
+                      margin="normal"
+                      type="email"
+                      name="email"
+                      error={Boolean(errors.email)}
+                      helperText={errors.email ? "El correo es requerido" : ""}
+                      inputRef={register({
+                        pattern: email,
+                      })}
+                    />
+                  </Grid>
+                </Grid>
+                <Box pt={3}>
+                  <Button
+                    fullWidth
+                    color="primary"
+                    variant="contained"
+                    type="submit"
+                    disabled={Object.keys(errors).some(
+                      (key) => !!errors[key] === true
+                    )}
+                  >
+                    {loading ? (
+                      <div className={classes.loading}>
+                        <CircularProgress />
+                      </div>
+                    ) : (
+                      "Registrar"
+                    )}
+                  </Button>
+                </Box>
+              </Box>
               <div style={{ height: 20 }} />
-              <Button
-                color="primary"
-                variant="contained"
-                type="submit"
-                disabled={Object.keys(errors).some(
-                  (key) => !!errors[key] === true
-                )}
-              >
-                {loading ? (
-                  <div className={classes.loading}>
-                    <CircularProgress />
-                  </div>
-                ) : (
-                  'Registrar'
-                )}
-              </Button>
             </form>
             {showError && (
-              <h4 style={{ color: 'red' }}>
+              <h4 style={{ color: "red" }}>
                 Todos los campos son requeridos *
               </h4>
             )}
@@ -285,12 +321,12 @@ const RegisterPage = () => {
           openDialog={openDialog}
           title={
             !errorServer
-              ? 'Registro completado!'
-              : 'El registro no se pudo completar'
+              ? "Registro completado!"
+              : "El registro no se pudo completar"
           }
           body={
             !errorServer
-              ? 'Su registro se ha completado correctamente.'
+              ? "Su registro se ha completado correctamente."
               : `El registro no se pudo completar. ${errorServer} `
           }
         />

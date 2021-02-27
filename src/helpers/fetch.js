@@ -1,31 +1,31 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const { REACT_APP_API_URL } = process.env;
+console.log("variable:", process.env);
 
 export const get = (url) => {
-  const token = localStorage.getItem('LaPaz_auth_token');
+  const token = localStorage.getItem("LaPaz_auth_token");
 
   const bodyOpts = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       LaPaz_auth_token: token,
-      credentials: 'include',
+      credentials: "include",
     },
   };
   return fetch(`${REACT_APP_API_URL}${url}`, bodyOpts);
 };
 
 export const post = (url, body = {}) => {
-  const token = localStorage.getItem('LaPaz_auth_token');
-
+  const token = localStorage.getItem("LaPaz_auth_token");
   const bodyOpts = {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       LaPaz_auth_token: token,
-      credentials: 'include',
+      credentials: "include",
     },
     body: JSON.stringify(body),
   };
@@ -33,14 +33,14 @@ export const post = (url, body = {}) => {
 };
 
 export const put = (url, body = {}) => {
-  const token = localStorage.getItem('LaPaz_auth_token');
+  const token = localStorage.getItem("LaPaz_auth_token");
 
   const bodyOpts = {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       LaPaz_auth_token: token,
-      credentials: 'include',
+      credentials: "include",
     },
     body: JSON.stringify(body),
   };

@@ -7,5 +7,5 @@ export const isValidateForm = (userData) => {
       res.push(v);
     }
   });
-  return !res.includes('');
+  return !res.includes("");
 };
