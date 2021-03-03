@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "date-fns";
+import React, { useState } from 'react';
+import 'date-fns';
 import {
   Box,
   Grid,
@@ -7,41 +7,41 @@ import {
   Button,
   Paper,
   CircularProgress,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles } from "@material-ui/core/styles";
-import { useForm } from "react-hook-form";
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { makeStyles } from '@material-ui/core/styles';
+import { useForm } from 'react-hook-form';
 
-import { formatDate } from "../helpers/formatDate";
-import { post } from "../helpers/fetch";
-import { email, phoneNumber, username } from "../utils/regExp";
-import { isValidateForm } from "../helpers/isValidateForm";
-import { DialogSlide } from "../components/alert/DialogSlide";
-import { Redirect } from "react-router-dom";
+import { formatDate } from '../helpers/formatDate';
+import { post } from '../helpers/fetch';
+import { email, phoneNumber, username } from '../utils/regExp';
+import { isValidateForm } from '../helpers/isValidateForm';
+import { DialogSlide } from '../components/alert/DialogSlide';
+import { Link, Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   login: {
-    width: "90%",
-    height: "57vh",
-    objectFit: "cover",
+    width: '90%',
+    height: '57vh',
+    objectFit: 'cover',
     margin: 100,
   },
   contenidoLogin: {
-    justify: "space-between",
-    alignItems: "center",
-    direction: "column",
-    justifyContent: "center",
+    justify: 'space-between',
+    alignItems: 'center',
+    direction: 'column',
+    justifyContent: 'center',
   },
   logo: {
-    width: "300px",
-    marginLeft: "100px",
+    width: '300px',
+    marginLeft: '100px',
   },
 
   content: {
@@ -50,14 +50,20 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   paperStyle: {
-    height: "75vh",
+    height: '75vh',
     width: 1200,
-    margin: "80px auto",
+    margin: '80px auto',
   },
-
+  labelLogin: {
+    fontSize: 18,
+    margin: 'auto',
+    marginBottom: 10,
+    marginTop: 20,
+    textAlign: 'center',
+  },
   loading: {
-    display: "flex",
-    "& > * + *": {
+    display: 'flex',
+    '& > * + *': {
       marginLeft: theme.spacing(2),
     },
   },
@@ -73,8 +79,8 @@ const RegisterPage = () => {
   const [errorServer, setErrorServer] = useState(false);
   const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
   const { register, errors, getValues } = useForm({
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
 
   const handleClose = () => {
@@ -105,7 +111,7 @@ const RegisterPage = () => {
           correos: [email],
         },
         {
-          telefonos: [{ telefono, tipo: "casa" }],
+          telefonos: [{ telefono, tipo: 'casa' }],
         }
       );
     }
@@ -113,7 +119,7 @@ const RegisterPage = () => {
     if (isValidateForm(userData)) {
       setShowError(false);
       setLoading(true);
-      return post("user/add", userData)
+      return post('user/add', userData)
         .then(async (response) => {
           setLoading(false);
           if (response.status === 201) {
@@ -144,10 +150,10 @@ const RegisterPage = () => {
         <Grid container item xs={12} sm={6} className={classes.contenidoLogin}>
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              maxWidth: "400",
-              minWidth: "300",
+              display: 'flex',
+              flexDirection: 'column',
+              maxWidth: '400',
+              minWidth: '300',
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -168,14 +174,14 @@ const RegisterPage = () => {
                       type="text"
                       name="nombre"
                       error={Boolean(errors.nombre)}
-                      helperText={errors.nombre ? "El nombre es requerido" : ""}
+                      helperText={errors.nombre ? 'El nombre es requerido' : ''}
                       inputRef={register({
                         required: true,
                       })}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    {" "}
+                    {' '}
                     <TextField
                       fullWidth
                       label="Usuario"
@@ -184,7 +190,7 @@ const RegisterPage = () => {
                       name="usuario"
                       error={Boolean(errors.usuario)}
                       helperText={
-                        errors.usuario ? "El usuario es incorrecto" : ""
+                        errors.usuario ? 'El usuario es incorrecto' : ''
                       }
                       inputRef={register({
                         pattern: username,
@@ -201,14 +207,14 @@ const RegisterPage = () => {
                       error={Boolean(errors.password)}
                       helperText={
                         errors.password
-                          ? "Por favor colocar 8 caracteres o más"
-                          : ""
+                          ? 'Por favor colocar 8 caracteres o más'
+                          : ''
                       }
                       inputRef={register({
                         required: true,
                         minLength: {
                           value: 8,
-                          message: "Por favor colocar 8 caracteres o más",
+                          message: 'Por favor colocar 8 caracteres o más',
                         },
                       })}
                     />
@@ -224,8 +230,8 @@ const RegisterPage = () => {
                       error={Boolean(errors.confirPassword)}
                       helperText={
                         errors.confirPassword
-                          ? "Las contraseñas deben coincidir"
-                          : ""
+                          ? 'Las contraseñas deben coincidir'
+                          : ''
                       }
                       inputRef={register({
                         required: true,
@@ -245,7 +251,7 @@ const RegisterPage = () => {
                         value={selectedDate}
                         onChange={handleDateChange}
                         KeyboardButtonProps={{
-                          "aria-label": "change date",
+                          'aria-label': 'change date',
                         }}
                         required={true}
                       />
@@ -260,13 +266,13 @@ const RegisterPage = () => {
                       error={Boolean(errors.telefono)}
                       helperText={
                         errors.telefono
-                          ? "El teléfono debe contener 10 dígitos"
-                          : ""
+                          ? 'El teléfono debe contener 10 dígitos'
+                          : ''
                       }
                       inputRef={register({
                         pattern: phoneNumber,
                         validate: (value) =>
-                          value.replace(/[() -.]/g, "").length === 10,
+                          value.replace(/[() -.]/g, '').length === 10,
                       })}
                     />
                   </Grid>
@@ -278,7 +284,7 @@ const RegisterPage = () => {
                       type="email"
                       name="email"
                       error={Boolean(errors.email)}
-                      helperText={errors.email ? "El correo es requerido" : ""}
+                      helperText={errors.email ? 'El correo es requerido' : ''}
                       inputRef={register({
                         pattern: email,
                       })}
@@ -300,15 +306,22 @@ const RegisterPage = () => {
                         <CircularProgress />
                       </div>
                     ) : (
-                      "Registrar"
+                      'Registrar'
                     )}
                   </Button>
                 </Box>
               </Box>
               <div style={{ height: 20 }} />
+              <h1 className={classes.labelLogin}>
+                ¿Ya tienes una cuenta?
+                <Link to="/login" variant="body2">
+                  {' '}
+                  Iniciar sesión
+                </Link>
+              </h1>
             </form>
             {showError && (
-              <h4 style={{ color: "red" }}>
+              <h4 style={{ color: 'red' }}>
                 Todos los campos son requeridos *
               </h4>
             )}
@@ -321,12 +334,12 @@ const RegisterPage = () => {
           openDialog={openDialog}
           title={
             !errorServer
-              ? "Registro completado!"
-              : "El registro no se pudo completar"
+              ? 'Registro completado!'
+              : 'El registro no se pudo completar'
           }
           body={
             !errorServer
-              ? "Su registro se ha completado correctamente."
+              ? 'Su registro se ha completado correctamente.'
               : `El registro no se pudo completar. ${errorServer} `
           }
         />
