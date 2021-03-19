@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     margin: 'auto',
     marginBottom: 10,
-    marginTop: 20,
+    marginTop: -60,
     textAlign: 'center',
   },
   loading: {
@@ -311,7 +311,6 @@ const RegisterPage = () => {
                   </Button>
                 </Box>
               </Box>
-              <div style={{ height: 20 }} />
               <h1 className={classes.labelLogin}>
                 ¿Ya tienes una cuenta?
                 <Link to="/login" variant="body2">
@@ -319,6 +318,7 @@ const RegisterPage = () => {
                   Iniciar sesión
                 </Link>
               </h1>
+              <div style={{ height: 20 }} />
             </form>
             {showError && (
               <h4 style={{ color: 'red' }}>
