@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   login: {
     width: '90%',
-    height: '57vh',
+    height: '55vh',
     objectFit: 'cover',
     margin: 100,
   },
@@ -43,16 +43,15 @@ const useStyles = makeStyles((theme) => ({
     width: '300px',
     marginLeft: '100px',
   },
-
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3),
   },
   paperStyle: {
-    height: '75vh',
-    width: 1200,
-    margin: '80px auto',
+    height: '40rem',
+    width: '75rem',
+    margin: '2.5rem auto',
   },
   labelLogin: {
     fontSize: 18,
@@ -318,7 +317,6 @@ const RegisterPage = () => {
                   Iniciar sesión
                 </Link>
               </h1>
-              <div style={{ height: 20 }} />
             </form>
             {showError && (
               <h4 style={{ color: 'red' }}>
