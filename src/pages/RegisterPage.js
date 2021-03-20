@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     margin: 'auto',
     marginBottom: 10,
+    paddingBottom: 100,
     marginTop: -60,
     textAlign: 'center',
   },
