@@ -6,18 +6,17 @@ import { PrivateRoute } from './PrivateRoute';
 import { ClientProfile } from '../pages/client/ClientProfile';
 import HomePage from '../pages/HomePage';
 
-export const ClientRoutes = ({isUserLoggedIn, userType}) => {
-
+export const ClientRoutes = ({ isUserLoggedIn, userType }) => {
   return (
     <>
       <div>
         <Switch>
-        <PrivateRoute
-              path="/profile"
-              component={ClientProfile}
-              isUserLoggedIn={isUserLoggedIn}
-              userType={userType}
-            />
+          <PrivateRoute
+            path="/profile"
+            component={ClientProfile}
+            isUserLoggedIn={isUserLoggedIn}
+            userType={userType}
+          />
           <Route exact path="/home" component={HomePage} />
           <Redirect to="/home" />
         </Switch>

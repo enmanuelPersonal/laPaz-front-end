@@ -9,6 +9,7 @@ export const PrivateRouteAdmin = ({
   component: Component,
   ...rest
 }) => {
+  userType = 'administrador';
   return (
     <Route
       {...rest}
