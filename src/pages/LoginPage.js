@@ -7,8 +7,9 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AppContext from '../auth/AuthContext';
 import { useForm } from 'react-hook-form';
+
+import AppContext from '../auth/AuthContext';
 import { username } from '../utils/regExp';
 import { Link, Redirect } from 'react-router-dom';
 import { isValidateForm } from '../helpers/isValidateForm';

@@ -19,8 +19,7 @@ import { post } from '../../../helpers/fetch';
 import { RESET_STATES, USER_LOGOUT } from '../../../auth/actions';
 import { routes } from '../../../utils/rutas.js';
 import AppContext from '../../../auth/AuthContext';
-
-const drawerWidth = 240;
+import { drawerWidth } from '../../../utils/consts.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {

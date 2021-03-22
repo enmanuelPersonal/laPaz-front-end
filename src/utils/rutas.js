@@ -75,11 +75,11 @@ const routes = [
 
 const routesChilds = {
   reportes: [
-    { label: 'Clientes', Icon: ClienteIcon, path: '/reportClientes' },
+    { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
     {
       label: 'Difuntos',
       Icon: ClienteIcon,
-      path: '/reportDifunto',
+      path: '/admin/reportDifunto',
     },
   ],
 };
