@@ -8,6 +8,7 @@ import { Button } from '../../../components/controls/Controls';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
+import TableEmploye from './TableEmploye';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -25,12 +26,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Employe = () => {
   const classes = useStyles();
-  const [recordForEdit, setRecordForEdit] = useState(null);
   const [openPopup, setOpenPopup] = useState(false);
-
-  const addOrEdit = (employee, resetForm) => {
-    // insertar empleados
-  };
+  const [edit, setEdit] = useState(false);
+  const [body, setBody] = useState({});
 
   return (
     <React.Fragment>
@@ -46,17 +44,23 @@ const Employe = () => {
         className={classes.newButton}
         onClick={() => {
           setOpenPopup(true);
-          setRecordForEdit(null);
         }}
       />
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title="Formulario de Empleado"
+          title={`${edit ? 'Actualizar Empleado' : 'Registrar Empleado'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
-          <Form recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+          <Form edit={edit} body={body} />
         </Popup>
+      </Container>
+      <Container>
+        <TableEmploye
+          setEdit={setEdit}
+          setBody={setBody}
+          setOpenPopup={setOpenPopup}
+        />
       </Container>
     </React.Fragment>
   );

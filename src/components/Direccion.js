@@ -113,7 +113,6 @@ export const Direccion = ({ setOpen, open, setGetDireccion, getDireccion }) => {
         casa,
         referencia,
       } = getDireccion[0];
-
       setGetPais(pais);
       setGetRegion(region);
       setGetCiudad(ciudad);

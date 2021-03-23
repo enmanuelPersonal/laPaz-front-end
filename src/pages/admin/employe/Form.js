@@ -25,7 +25,7 @@ import { useForm } from 'react-hook-form';
 import { DialogSlide } from '../../../components/alert/DialogSlide';
 
 import Form from '../../../components/Form';
-import { get, post } from '../../../helpers/fetch';
+import { get, post, put } from '../../../helpers/fetch';
 import { Cargos } from '../../../components/Cargos';
 import { Direccion } from '../../../components/Direccion';
 import { formatDate } from '../../../helpers/formatDate';
@@ -48,7 +48,7 @@ const phoneItems = [
   { id: 'celular', tipo: 'Celular' },
 ];
 
-const FormEmploye = ({ addOrEdit }) => {
+const FormEmploye = ({ edit = false, body = {} }) => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [errorServer, setErrorServer] = useState(false);
@@ -64,7 +64,7 @@ const FormEmploye = ({ addOrEdit }) => {
   const [selectedDate, setSelectedDate] = useState(Date.now());
   const [getGenero, setGetGenero] = useState('');
   const [loadingTypeIdentity, setLoadingTypeIdentity] = useState(true);
-  const { register, errors, getValues } = useForm({
+  const { register, errors, getValues, setValue } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
@@ -80,6 +80,53 @@ const FormEmploye = ({ addOrEdit }) => {
         });
     };
     if (typeIdentity && !typeIdentity.length) fetchTypeIdentity();
+
+    if (edit) {
+      const {
+        nombre,
+        apellido,
+        calleName,
+        casa: { numero, referencia },
+        ciudadName,
+        correos,
+        identidades: { idTipoIdentidad, serie },
+        municipioName,
+        paisName,
+        regionName,
+        sectorName,
+        nacimiento,
+        sexo,
+        telefonos,
+        cargos,
+      } = body;
+      const getCargos = [];
+      cargos.forEach(({ cargo }) => getCargos.push(cargo));
+      const { telefono, tipo } = telefonos[0];
+      const { correo } = correos[0];
+
+      setGetCargo(getCargos);
+      setGetDireccion([
+        {
+          pais: paisName,
+          region: regionName,
+          ciudad: ciudadName,
+          municipio: municipioName,
+          sector: sectorName,
+          calle: calleName,
+          casa: numero,
+          referencia,
+        },
+      ]);
+      setGetTypeIdentity(idTipoIdentidad);
+      setGetTypePhone(tipo);
+      setSelectedDate(new Date(nacimiento));
+      setGetGenero(sexo);
+      setValue('nombre', nombre);
+      setValue('correos', correo);
+      setValue('identidades', serie);
+      setValue('telefonos', telefono);
+      setValue('apellido', apellido);
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -95,37 +142,87 @@ const FormEmploye = ({ addOrEdit }) => {
     e.preventDefault();
     const userData = getValues();
     const { correos, telefonos, identidades } = userData;
-    Object.assign(
-      userData,
-      { correos: [correos] },
-      { telefonos: [{ telefono: telefonos, tipo: getTypePhone }] },
-      {
-        identidades: {
-          identidad: identidades,
-          idTipoIdentidad: getTypeIdentity,
-        },
-      },
-      { cargos: getCargo },
-      { direcciones: getDireccion },
-      { nacimiento: formatDate(selectedDate) },
-      { sexo: getGenero }
-    );
-    console.log(userData);
 
-    return post('employe/add', userData)
-      .then(async (response) => {
-        setLoading(false);
-        if (response.status === 201) {
-          setErrorServer(false);
-          setIsEmployeSuccess(true);
-        } else {
-          const res = await response.json();
-          setErrorServer(res.message);
-        }
-      })
-      .catch((err) => setErrorServer(err.message))
-      .finally(() => setOpenDialog(true));
-    //     addOrEdit(values, resetForm);
+    if (!edit) {
+      Object.assign(
+        userData,
+        { correos: [correos] },
+        { telefonos: [{ telefono: telefonos, tipo: getTypePhone }] },
+        {
+          identidades: {
+            identidad: identidades,
+            idTipoIdentidad: getTypeIdentity,
+          },
+        },
+        { cargos: getCargo },
+        { direcciones: getDireccion },
+        { nacimiento: formatDate(selectedDate) },
+        { sexo: getGenero }
+      );
+
+      return post('employe/add', userData)
+        .then(async (response) => {
+          setLoading(false);
+          if (response.status === 201) {
+            setErrorServer(false);
+            setIsEmployeSuccess(true);
+          } else {
+            const res = await response.json();
+            setErrorServer(res.message);
+          }
+        })
+        .catch((err) => setErrorServer(err.message))
+        .finally(() => setOpenDialog(true));
+    } else {
+      const {
+        idEmpleado,
+        idIdentidad,
+        idEntidad,
+        idPersona,
+        telefonos: bodyTelefonos,
+        correos: bodyCorreos,
+        direcciones,
+      } = body;
+      const { idTelefono } = bodyTelefonos[0];
+      const { idCorreo } = bodyCorreos[0];
+      const { idDireccion } = direcciones[0];
+      const getDirecciones = getDireccion[0];
+
+      Object.assign(getDirecciones, { idDireccion });
+
+      Object.assign(
+        userData,
+        { idEmpleado },
+        { idIdentidad },
+        { idEntidad },
+        { idPersona },
+        { correos: [{ idCorreo, correo: correos }] },
+        {
+          telefonos: [{ idTelefono, telefono: telefonos, tipo: getTypePhone }],
+        },
+        {
+          identidades: {
+            identidad: identidades,
+            idTipoIdentidad: getTypeIdentity,
+          },
+        },
+        { cargos: getCargo },
+        { direcciones: [getDirecciones] },
+        { nacimiento: formatDate(selectedDate) },
+        { sexo: getGenero }
+      );
+
+      return put('employe', userData)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          if (data[0] === 1) {
+            setErrorServer(false);
+            setIsEmployeSuccess(true);
+          }
+        })
+        .catch((err) => setErrorServer(err.message))
+        .finally(() => setOpenDialog(true));
+    }
   };
 
   return (
@@ -311,7 +408,7 @@ const FormEmploye = ({ addOrEdit }) => {
                   <CircularProgress />
                 </div>
               ) : (
-                'Guardar'
+                `${edit ? 'Actualizar' : 'Guardar'}`
               )}
             </Button>
             <Button
@@ -347,13 +444,21 @@ const FormEmploye = ({ addOrEdit }) => {
             openDialog={openDialog}
             title={
               !errorServer
-                ? 'Registro completado!'
+                ? edit
+                  ? 'Datos Actualizados!'
+                  : 'Registro completado!'
+                : edit
+                ? 'La Actualizacion no se pudo completar'
                 : 'El registro no se pudo completar'
             }
             body={
               !errorServer
-                ? 'Su registro se ha completado correctamente.'
-                : `El registro no se pudo completar. ${errorServer} `
+                ? edit
+                  ? 'Su Actualizacion se ha completado correctamente.'
+                  : 'Su registro se ha completado correctamente.'
+                : `${
+                    edit ? 'La  actualizacion' : 'El registro'
+                  } no se pudo completar. ${errorServer} `
             }
           />
         )}

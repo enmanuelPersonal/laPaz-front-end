@@ -141,7 +141,6 @@ export const Cargos = ({ setOpen, open, setGetCargos, getCargo }) => {
           <div className={classes.root}>
             <FormControl component="fieldset" className={classes.formControl}>
               <FormGroup>
-                {console.log('object==== ', dataCargo)}
                 {dataCargo.map(({ cargo }, i) => (
                   <FormControlLabel
                     key={`${cargo}/${i}`}
