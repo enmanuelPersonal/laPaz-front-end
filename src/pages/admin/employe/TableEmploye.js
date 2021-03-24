@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -8,9 +8,16 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
 } from '@material-ui/core';
 import { DeleteForever, Edit } from '@material-ui/icons';
-import { get } from '../../../helpers/fetch';
+import { get, remove } from '../../../helpers/fetch';
 import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
@@ -77,19 +84,15 @@ const useStyles = makeStyles((theme) => ({
   button: {},
 }));
 
-const TableEmploye = ({ setEdit, setBody, setOpenPopup }) => {
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const TableEmploye = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
   const [employes, setEmployes] = useState([]);
-
-  const handleUpdate = (employe) => {
-    setEdit(true);
-    setBody(employe);
-    setOpenPopup(true);
-  };
-
-  const handleDelete = (employe) => {
-    console.log(employe);
-  };
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
 
   useEffect(() => {
     get('employe')
@@ -97,7 +100,27 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup }) => {
       .then(({ data }) => {
         setEmployes(data || []);
       });
-  }, []);
+  }, [openPopup, openDialog]);
+
+  const handleUpdate = (employe) => {
+    setEdit(true);
+    setBody(employe);
+    setOpenPopup(true);
+  };
+
+  const handleDelete = () => {
+    const { idEntidad } = idDeleteEmploye;
+
+    return remove('employe', { idEntidad })
+      .then((res) => res.json())
+      .then(({ data }) => {
+        if (data[0] === 1) {
+        }
+      })
+      .catch((err) => alert(err.message))
+      .finally(() => setOpenDialog(false));
+  };
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -153,7 +176,12 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup }) => {
                       </TableCell>
                       <TableCell align="center">
                         <Edit onClick={() => handleUpdate(employe)} />{' '}
-                        <DeleteForever onClick={() => handleDelete(employe)} />{' '}
+                        <DeleteForever
+                          onClick={() => {
+                            setIdDeleteEmploye(employe);
+                            setOpenDialog(true);
+                          }}
+                        />{' '}
                       </TableCell>
                     </TableRow>
                   );
@@ -171,6 +199,31 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup }) => {
           </Table>
         </TableContainer>
       </Paper>
+      <Dialog
+        open={openDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Eliminar Registro
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Esta seguro que desea eliminar este registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDelete()} color="primary">
+            Aceptar
+          </Button>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

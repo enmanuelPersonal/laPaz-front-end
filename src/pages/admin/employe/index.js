@@ -52,7 +52,7 @@ const Employe = () => {
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
-          <Form edit={edit} body={body} />
+          <Form edit={edit} body={body} setOpenPopup={setOpenPopup} />
         </Popup>
       </Container>
       <Container>
@@ -60,6 +60,7 @@ const Employe = () => {
           setEdit={setEdit}
           setBody={setBody}
           setOpenPopup={setOpenPopup}
+          openPopup={openPopup}
         />
       </Container>
     </React.Fragment>

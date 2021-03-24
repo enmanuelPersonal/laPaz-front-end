@@ -48,23 +48,24 @@ const phoneItems = [
   { id: 'celular', tipo: 'Celular' },
 ];
 
-const FormEmploye = ({ edit = false, body = {} }) => {
+const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [errorServer, setErrorServer] = useState(false);
   const [isEmployeSuccess, setIsEmployeSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingTypeIdentity, setLoadingTypeIdentity] = useState(true);
   const [openCargo, setOpenCargo] = useState(false);
-  const [getCargo, setGetCargo] = useState([]);
   const [openDireccion, setOpenDireccion] = useState(false);
-  const [getDireccion, setGetDireccion] = useState([]);
   const [typeIdentity, setTypeIdentity] = useState([]);
+
+  const [getCargo, setGetCargo] = useState([]);
+  const [getDireccion, setGetDireccion] = useState([]);
   const [getTypeIdentity, setGetTypeIdentity] = useState('');
   const [getTypePhone, setGetTypePhone] = useState('');
   const [selectedDate, setSelectedDate] = useState(Date.now());
   const [getGenero, setGetGenero] = useState('');
-  const [loadingTypeIdentity, setLoadingTypeIdentity] = useState(true);
-  const { register, errors, getValues, setValue } = useForm({
+  const { register, errors, getValues, setValue, reset } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
@@ -130,12 +131,23 @@ const FormEmploye = ({ edit = false, body = {} }) => {
     // eslint-disable-next-line
   }, []);
 
+  const cleanForm = () => {
+    reset();
+    setGetCargo([]);
+    setGetDireccion([]);
+    setGetTypeIdentity('');
+    setGetTypePhone('');
+    setSelectedDate(Date.now());
+    setGetGenero('');
+  };
+
   const handleClose = () => {
     setOpenDialog(false);
     setErrorServer(false);
     if (isEmployeSuccess) {
       setIsEmployeSuccess(false);
     }
+    setOpenPopup(false);
   };
 
   const handleSubmit = (e) => {
@@ -166,6 +178,7 @@ const FormEmploye = ({ edit = false, body = {} }) => {
           if (response.status === 201) {
             setErrorServer(false);
             setIsEmployeSuccess(true);
+            cleanForm();
           } else {
             const res = await response.json();
             setErrorServer(res.message);
@@ -218,6 +231,7 @@ const FormEmploye = ({ edit = false, body = {} }) => {
           if (data[0] === 1) {
             setErrorServer(false);
             setIsEmployeSuccess(true);
+            cleanForm();
           }
         })
         .catch((err) => setErrorServer(err.message))
@@ -416,6 +430,7 @@ const FormEmploye = ({ edit = false, body = {} }) => {
               size="large"
               color="inherit"
               className={classes.button}
+              onClick={cleanForm}
             >
               {' '}
               Limpiar
