@@ -43,6 +43,7 @@ const Employe = () => {
         startIcon={<Add />}
         className={classes.newButton}
         onClick={() => {
+          setEdit(false);
           setOpenPopup(true);
         }}
       />
@@ -52,7 +53,11 @@ const Employe = () => {
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
-          <Form edit={edit} body={body} setOpenPopup={setOpenPopup} />
+          <Form
+            edit={edit}
+            body={body}
+            setOpenPopup={setOpenPopup}
+          />
         </Popup>
       </Container>
       <Container>

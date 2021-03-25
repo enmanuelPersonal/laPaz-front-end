@@ -127,6 +127,8 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
       setValue('identidades', serie);
       setValue('telefonos', telefono);
       setValue('apellido', apellido);
+    } else {
+      cleanForm();
     }
     // eslint-disable-next-line
   }, []);
