@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   // necessary for content to be below app bar
   toolbar: {
-    height: '135px',
+    height: '50px',
 
     padding: theme.spacing(4),
   },
@@ -90,7 +90,7 @@ const Sidebar = () => {
       >
         <div className={classes.toolbar}>
           {' '}
-          <img src="images/logoletras.jpg" height="52px" alt="logo_empresa" />
+          <img src="/images/logoletras.jpg" height="52px" alt="logo_empresa" />
         </div>
 
         <Divider />

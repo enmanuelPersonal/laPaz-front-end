@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { get } from '../helpers/fetch';
+import ActionButton from './controls/ActionButton';
 
 const styles = (theme) => ({
   root: {
@@ -26,7 +27,14 @@ const styles = (theme) => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    minWidth: 0,
+    margin: theme.spacing(0.5),
+    backgroundColor: theme.palette.secondary.light,
+  },
+  secondary: {
+    '& .MuiButton-label': {
+      color: theme.palette.secondary.main,
+    },
   },
 });
 
@@ -35,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   formControl: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(7),
   },
 }));
 
@@ -45,13 +53,14 @@ const DialogTitle = withStyles(styles)(
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
         <Typography variant="h6">{children}</Typography>
         {onClose ? (
-          <IconButton
+          <Button
             aria-label="close"
-            className={classes.closeButton}
             onClick={onClose}
+            color="secondary"
+            className={classes.closeButton}
           >
             <CloseIcon />
-          </IconButton>
+          </Button>
         ) : null}
       </MuiDialogTitle>
     );
@@ -66,7 +75,7 @@ const DialogContent = withStyles((theme) => ({
 
 const DialogActions = withStyles((theme) => ({
   root: {
-    margin: 0,
+    margin: 10,
     padding: theme.spacing(1),
   },
 }))(MuiDialogActions);
@@ -161,8 +170,13 @@ export const Cargos = ({ setOpen, open, setGetCargos, getCargo }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleSave} color="primary">
-            Guardar Cargos
+          <Button
+            variant="contained"
+            autoFocus
+            onClick={handleSave}
+            color="primary"
+          >
+            GUARDAR
           </Button>
         </DialogActions>
       </Dialog>

@@ -64,22 +64,19 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 250,
     },
   },
-  paper: {
-    maxWidth: '730px',
-    width: '100%',
-    margin: 'auto',
-  },
   emptyRow: {
     height: '200px',
   },
   tableLabel: {
-    color: '#00205C',
+    color: '#630F5C',
     fontSize: '16px',
     fontFamily: 'Montserrat',
     fontWeight: 'bold',
   },
   head: {
     fontWeight: 'bold',
+    color: '#630F5C',
+    backgroundColor: '#E6C3E2',
   },
   button: {},
 }));
@@ -122,8 +119,8 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   };
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
             {employes.length > 0 ? (
@@ -143,6 +140,9 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Nacimiento
+                  </TableCell>
+                  <TableCell className={classes.head} align="center">
+                    Acciones
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -216,12 +216,14 @@ const TableEmploye = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDelete()} color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDelete()}
+          >
             Aceptar
           </Button>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
-            Cancelar
-          </Button>
+          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0.5),
     textTransform: 'none',
   },
+  textField: {
+    width: '20ch',
+  },
 }));
 
 const genderItems = [
@@ -160,7 +163,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
     if (!edit) {
       Object.assign(
         userData,
-        { correos: [correos] },
+        { correos: correos ? [correos] : [] },
         { telefonos: [{ telefono: telefonos, tipo: getTypePhone }] },
         {
           identidades: {
@@ -243,7 +246,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Grid container>
+      <Grid container spacing={3}>
         <Grid item xs={6}>
           <TextField
             variant="outlined"
@@ -258,6 +261,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
           />
 
           <TextField
+            className={classes.textField}
             variant="outlined"
             label="Email"
             name="correos"
@@ -406,7 +410,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
             className={classes.button}
           >
             {' '}
-            Registrar Direccion
+            Registrar Dirección
           </Button>
           <div style={{ marginTop: 50 }}>
             <Button
@@ -424,7 +428,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
                   <CircularProgress />
                 </div>
               ) : (
-                `${edit ? 'Actualizar' : 'Guardar'}`
+                `${edit ? 'ACTUALIZAR' : 'GUARDAR'}`
               )}
             </Button>
             <Button
@@ -435,7 +439,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
               onClick={cleanForm}
             >
               {' '}
-              Limpiar
+              LIMPIAR
             </Button>
           </div>
         </Grid>

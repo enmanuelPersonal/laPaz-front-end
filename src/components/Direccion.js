@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -9,6 +10,8 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  Grid,
+  Box,
   // makeStyles,
   TextField,
   DialogActions as MuiDialogActions,
@@ -16,6 +19,7 @@ import {
   DialogContent as MuiDialogContent,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import ActionButton from './controls/ActionButton';
 
 const styles = (theme) => ({
   root: {
@@ -26,18 +30,29 @@ const styles = (theme) => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    minWidth: 0,
+    margin: theme.spacing(0.5),
+    backgroundColor: theme.palette.secondary.light,
+  },
+  secondary: {
+    '& .MuiButton-label': {
+      color: theme.palette.secondary.main,
+    },
+  },
+  select: {
+    marginLeft: theme.spacing(1),
   },
 });
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     display: 'flex',
-//   },
-//   formControl: {
-//     margin: theme.spacing(3),
-//   },
-// }));
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    minWidth: 226,
+  },
+  btnClose: {
+    minWidth: 0,
+    margin: theme.spacing(0.5),
+  },
+}));
 
 const DialogTitle = withStyles(styles)(
   ({ children, classes, onClose, ...other }) => {
@@ -45,13 +60,14 @@ const DialogTitle = withStyles(styles)(
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
         <Typography variant="h6">{children}</Typography>
         {onClose ? (
-          <IconButton
+          <Button
+            color="secondary"
             aria-label="close"
             className={classes.closeButton}
             onClick={onClose}
           >
             <CloseIcon />
-          </IconButton>
+          </Button>
         ) : null}
       </MuiDialogTitle>
     );
@@ -66,7 +82,7 @@ const DialogContent = withStyles((theme) => ({
 
 const DialogActions = withStyles((theme) => ({
   root: {
-    margin: 0,
+    margin: 10,
     padding: theme.spacing(1),
   },
 }))(MuiDialogActions);
@@ -91,7 +107,7 @@ const calleItems = [
 ];
 
 export const Direccion = ({ setOpen, open, setGetDireccion, getDireccion }) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const [getPais, setGetPais] = useState('');
   const [getRegion, setGetRegion] = useState('');
   const [getCiudad, setGetCiudad] = useState('');
@@ -143,8 +159,9 @@ export const Direccion = ({ setOpen, open, setGetDireccion, getDireccion }) => {
     setOpen(false);
   };
   return (
-    <div>
+    <React.Fragment>
       <Dialog
+        className={classes.dialogContent}
         onClose={() => setOpen(false)}
         aria-labelledby="customized-dialog-title"
         open={open}
@@ -153,143 +170,163 @@ export const Direccion = ({ setOpen, open, setGetDireccion, getDireccion }) => {
           id="customized-dialog-title"
           onClose={() => setOpen(false)}
         >
-          Registro de Direccion
+          Registro de Dirección
         </DialogTitle>
-        <DialogContent dividers>
-          <FormControl variant="outlined">
-            <InputLabel>Pais</InputLabel>
-            <Select
-              label="Pais"
-              name="pais"
-              value={getPais}
-              onChange={({ target: { value } }) => setGetPais(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Pais
-              </MenuItem>
-              {paisItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <DialogContent dividers style={{ overflow: 'hidden' }}>
+          <Grid container spacing={2} style={{ marginLeft: 16 }}>
+            <Grid item xs={6}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Pais</InputLabel>
+                <Select
+                  label="Pais"
+                  name="pais"
+                  value={getPais}
+                  onChange={({ target: { value } }) => setGetPais(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Pais
+                  </MenuItem>
+                  {paisItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Region</InputLabel>
+                <Select
+                  label="Region"
+                  name="region"
+                  value={getRegion}
+                  onChange={({ target: { value } }) => setGetRegion(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Region
+                  </MenuItem>
+                  {regionItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Ciudad</InputLabel>
+                <Select
+                  label="Ciudad"
+                  name="ciudad"
+                  value={getCiudad}
+                  onChange={({ target: { value } }) => setGetCiudad(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Ciudad
+                  </MenuItem>
+                  {ciudadItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
 
-          <FormControl variant="outlined">
-            <InputLabel>Region</InputLabel>
-            <Select
-              label="Region"
-              name="region"
-              value={getRegion}
-              onChange={({ target: { value } }) => setGetRegion(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Region
-              </MenuItem>
-              {regionItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <Grid item sm={6} className={classes.formControl}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Municipio</InputLabel>
+                <Select
+                  label="Municipio"
+                  name="municipio"
+                  value={getMunicipio}
+                  onChange={({ target: { value } }) => setGetMunicipio(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Municipio
+                  </MenuItem>
+                  {municipioItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item sm={6}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Sector</InputLabel>
+                <Select
+                  label="Sector"
+                  name="sector"
+                  value={getSector}
+                  onChange={({ target: { value } }) => setGetSector(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Sector
+                  </MenuItem>
+                  {sectorItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item sm={6}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Calle</InputLabel>
+                <Select
+                  label="Calle"
+                  name="calle"
+                  value={getCalle}
+                  onChange={({ target: { value } }) => setGetCalle(value)}
+                >
+                  <MenuItem disabled value="">
+                    Seleccione su Calle
+                  </MenuItem>
+                  {calleItems.map(({ id, tipo }) => (
+                    <MenuItem key={id} value={id}>
+                      {tipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
 
-          <FormControl variant="outlined">
-            <InputLabel>Ciudad</InputLabel>
-            <Select
-              label="Ciudad"
-              name="ciudad"
-              value={getCiudad}
-              onChange={({ target: { value } }) => setGetCiudad(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Ciudad
-              </MenuItem>
-              {ciudadItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl variant="outlined">
-            <InputLabel>Municipio</InputLabel>
-            <Select
-              label="Municipio"
-              name="municipio"
-              value={getMunicipio}
-              onChange={({ target: { value } }) => setGetMunicipio(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Municipio
-              </MenuItem>
-              {municipioItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl variant="outlined">
-            <InputLabel>Sector</InputLabel>
-            <Select
-              label="Sector"
-              name="sector"
-              value={getSector}
-              onChange={({ target: { value } }) => setGetSector(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Sector
-              </MenuItem>
-              {sectorItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl variant="outlined">
-            <InputLabel>Calle</InputLabel>
-            <Select
-              label="Calle"
-              name="calle"
-              value={getCalle}
-              onChange={({ target: { value } }) => setGetCalle(value)}
-            >
-              <MenuItem disabled value="">
-                Seleccione su Calle
-              </MenuItem>
-              {calleItems.map(({ id, tipo }) => (
-                <MenuItem key={id} value={id}>
-                  {tipo}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            variant="outlined"
-            name="casa"
-            label="Num. casa"
-            value={getCasa}
-            onChange={({ target: { value } }) => setGetCasa(value)}
-          />
-          <TextField
-            variant="outlined"
-            name="referencia"
-            label="Referencia"
-            value={getReferencia}
-            onChange={({ target: { value } }) => setGetReferencia(value)}
-          />
+            <Grid item sm={6}>
+              <TextField
+                variant="outlined"
+                name="casa"
+                label="Num. casa"
+                value={getCasa}
+                onChange={({ target: { value } }) => setGetCasa(value)}
+              />
+            </Grid>
+            <Grid item sm={6}>
+              <TextField
+                variant="outlined"
+                name="referencia"
+                label="Referencia"
+                value={getReferencia}
+                onChange={({ target: { value } }) => setGetReferencia(value)}
+              />
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleSave} color="primary">
-            Guardar Direccion
+          <Button
+            variant="contained"
+            autoFocus
+            onClick={handleSave}
+            color="primary"
+          >
+            GUARDAR
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </React.Fragment>
   );
 };

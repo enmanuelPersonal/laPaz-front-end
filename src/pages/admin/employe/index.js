@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
-import { Container, makeStyles } from '@material-ui/core';
+import { Search as SearchIcon } from '@material-ui/icons';
+import {
+  Container,
+  makeStyles,
+  Box,
+  Paper,
+  Grid,
+  Button,
+  InputBase,
+  IconButton,
+} from '@material-ui/core';
 
 import Form from './Form';
 import PageHeader from '../../../components/PageHeader';
-import { Button } from '../../../components/controls/Controls';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
@@ -19,8 +28,21 @@ const useStyles = makeStyles((theme) => ({
     width: '75%',
   },
   newButton: {
-    position: 'absolute',
-    right: '10px',
+    textTransform: 'none',
+  },
+  input: {
+    flex: 1,
+  },
+  rootSearch: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  paper: {
+    marginLeft: drawerWidth,
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -31,44 +53,82 @@ const Employe = () => {
   const [body, setBody] = useState({});
 
   return (
-    <React.Fragment>
+    <div style={{ backgroundColor: 'black', height: '100%' }}>
       <PageHeader
+        className={classes.root}
         title="Nuevo Empleado"
         subTitle="Registrar y consultar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
-      <Button
-        text="Agregar nuevo empleado"
-        variant="outlined"
-        startIcon={<Add />}
-        className={classes.newButton}
-        onClick={() => {
-          setEdit(false);
-          setOpenPopup(true);
-        }}
-      />
+      <Box
+        justifyContent="center"
+        display="flex"
+        style={{ marginLeft: drawerWidth, backgroundColor: 'red' }}
+      >
+        <Grid
+          container
+          spacing={3}
+          style={{ padding: '5% 10%' }}
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item xs={8}>
+            <Paper
+              component="form"
+              elevation={1}
+              className={classes.rootSearch}
+            >
+              <InputBase
+                className={classes.input}
+                placeholder="Buscar empleado por cédula"
+                inputProps={{ 'aria-label': 'Buscar empleado por cedula' }}
+              />
+              <IconButton
+                // onClick={}
+                className={classes.iconButton}
+                aria-label="search"
+              >
+                <SearchIcon />
+              </IconButton>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<Add />}
+                className={classes.newButton}
+                onClick={() => {
+                  setEdit(false);
+                  setOpenPopup(true);
+                }}
+              >
+                Agregar Empleado
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <TableEmploye
+              setEdit={setEdit}
+              setBody={setBody}
+              setOpenPopup={setOpenPopup}
+              openPopup={openPopup}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
           title={`${edit ? 'Actualizar Empleado' : 'Registrar Empleado'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
-          <Form
-            edit={edit}
-            body={body}
-            setOpenPopup={setOpenPopup}
-          />
+          <Form edit={edit} body={body} setOpenPopup={setOpenPopup} />
         </Popup>
       </Container>
-      <Container>
-        <TableEmploye
-          setEdit={setEdit}
-          setBody={setBody}
-          setOpenPopup={setOpenPopup}
-          openPopup={openPopup}
-        />
-      </Container>
-    </React.Fragment>
+    </div>
   );
 };
 

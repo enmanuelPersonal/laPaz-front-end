@@ -14,7 +14,7 @@ export const AdminRoutes = () => {
         <Switch>
           <Route exact path="/admin/dashboar" component={Dashboard} />
           <Route exact path="/admin/empleado" component={Employe} />
-          <Redirect to="/admin/dashboar"/>
+          <Redirect to="/admin/dashboar" />
         </Switch>
       </div>
     </>
