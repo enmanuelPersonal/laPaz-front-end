@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: drawerWidth,
     padding: theme.spacing(2),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: '#ffff',
   },
 }));
 
@@ -63,7 +63,7 @@ const Employe = () => {
       <Box
         justifyContent="center"
         display="flex"
-        style={{ marginLeft: drawerWidth, backgroundColor: 'red' }}
+        style={{ marginLeft: drawerWidth, backgroundColor: 'white' }}
       >
         <Grid
           container
@@ -75,7 +75,7 @@ const Employe = () => {
           <Grid item xs={8}>
             <Paper
               component="form"
-              elevation={1}
+              elevation={2}
               className={classes.rootSearch}
             >
               <InputBase

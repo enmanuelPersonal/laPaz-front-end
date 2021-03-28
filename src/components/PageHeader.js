@@ -1,21 +1,16 @@
 import React from 'react';
-import {
-  Card,
-  Typography,
-  makeStyles,
-  Container,
-} from '@material-ui/core';
+import { Card, Typography, makeStyles, Container } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    // backgroundColor: '#F6F7F6',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     [theme.breakpoints.down(1766)]: {
-      marginLeft: 250,
+      marginLeft: 230,
     },
   },
   pageHeader: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(3),
     display: 'flex',
     marginBottom: theme.spacing(2),
   },
@@ -36,7 +31,7 @@ const PageHeader = ({ title, subTitle, icon }) => {
   const classes = useStyles();
 
   return (
-    <Container className={classes.container}>
+    <div className={classes.container}>
       <div className={classes.pageHeader}>
         <Card className={classes.pageIcon}>{icon}</Card>
         <div className={classes.pageTitle}>
@@ -48,7 +43,7 @@ const PageHeader = ({ title, subTitle, icon }) => {
           </Typography>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
