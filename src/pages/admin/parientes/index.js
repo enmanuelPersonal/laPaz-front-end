@@ -17,7 +17,7 @@ import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
-import TableEmploye from './TableEmploye';
+import TablePariente from './TablePariente';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Employe = () => {
+const Pariente = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -56,7 +56,7 @@ const Employe = () => {
     <div style={{ backgroundColor: 'black', height: '100%' }}>
       <PageHeader
         className={classes.root}
-        title="Nuevo Empleado"
+        title="Nuevo Pariente"
         subTitle="Registrar, consultar y actualizar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
@@ -80,8 +80,8 @@ const Employe = () => {
             >
               <InputBase
                 className={classes.input}
-                placeholder="Buscar empleado por cédula"
-                inputProps={{ 'aria-label': 'Buscar empleado por cedula' }}
+                placeholder="Buscar Pariente por cédula"
+                inputProps={{ 'aria-label': 'Buscar Pariente por cedula' }}
               />
               <IconButton
                 // onClick={}
@@ -104,12 +104,12 @@ const Employe = () => {
                   setOpenPopup(true);
                 }}
               >
-                Agregar Empleado
+                Agregar Pariente
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <TableEmploye
+            <TablePariente
               setEdit={setEdit}
               setBody={setBody}
               setOpenPopup={setOpenPopup}
@@ -121,7 +121,7 @@ const Employe = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Empleado' : 'Registrar Empleado'}`}
+          title={`${edit ? 'Actualizar Pariente' : 'Registrar Pariente'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
@@ -132,4 +132,4 @@ const Employe = () => {
   );
 };
 
-export default Employe;
+export default Pariente;

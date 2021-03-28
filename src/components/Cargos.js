@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
   Dialog,
-  IconButton,
   Typography,
   FormControl,
   FormGroup,
@@ -16,7 +15,6 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { get } from '../helpers/fetch';
-import ActionButton from './controls/ActionButton';
 
 const styles = (theme) => ({
   root: {
