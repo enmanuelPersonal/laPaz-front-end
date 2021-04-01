@@ -50,7 +50,13 @@ const phoneItems = [
   { id: 'celular', tipo: 'Celular' },
 ];
 
-const FormCliente = ({ edit = false, body = {}, setOpenPopup }) => {
+const FormCliente = ({
+  edit = false,
+  body = {},
+  setOpenPopup,
+  setCliente,
+  isSuscripcion = false,
+}) => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [errorServer, setErrorServer] = useState(false);
@@ -100,7 +106,12 @@ const FormCliente = ({ edit = false, body = {}, setOpenPopup }) => {
         telefonos,
       } = body;
       const { telefono, tipo } = telefonos[0];
-      const { correo } = correos[0];
+      let getCorreo = [];
+
+      if (correos.length) {
+        const { correo } = correos[0];
+        getCorreo = correo;
+      }
 
       setGetDireccion([
         {
@@ -119,7 +130,7 @@ const FormCliente = ({ edit = false, body = {}, setOpenPopup }) => {
       setSelectedDate(new Date(nacimiento));
       setGetGenero(sexo);
       setValue('nombre', nombre);
-      setValue('correos', correo);
+      setValue('correos', getCorreo);
       setValue('identidades', serie);
       setValue('telefonos', telefono);
       setValue('apellido', apellido);
@@ -152,6 +163,30 @@ const FormCliente = ({ edit = false, body = {}, setOpenPopup }) => {
     const userData = getValues();
     const { correos, telefonos, identidades } = userData;
 
+    if (isSuscripcion) {
+      Object.assign(
+        userData,
+        { correos: correos ? [correos] : [] },
+        {
+          identidades: {
+            identidad: identidades,
+            idTipoIdentidad: getTypeIdentity,
+          },
+        },
+        { nacimiento: formatDate(selectedDate) },
+        { sexo: getGenero }
+      );
+
+      setCliente({
+        client: userData,
+        telefonos: [{ telefono: telefonos, tipo: getTypePhone }],
+        direcciones: getDireccion,
+      });
+
+      setOpenPopup(false);
+      return;
+    }
+
     if (!edit) {
       Object.assign(
         userData,
@@ -179,11 +214,7 @@ const FormCliente = ({ edit = false, body = {}, setOpenPopup }) => {
 
           return response.json();
         })
-        .then((res) => {
-          // const {
-          //   data: { idCliente },
-          // } = res;
-        })
+        .then((res) => {})
         .catch((err) => setErrorServer(err.message))
         .finally(() => setOpenDialog(true));
     } else {

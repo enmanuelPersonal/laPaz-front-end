@@ -54,7 +54,14 @@ const phoneItems = [
   { id: 'celular', tipo: 'Celular' },
 ];
 
-const FormPariente = ({ edit = false, body = {}, setOpenPopup }) => {
+const FormPariente = ({
+  edit = false,
+  body = {},
+  setOpenPopup,
+  setParientes,
+  getParientes,
+  isSuscripcion = false,
+}) => {
   const classes = useStyles();
   const [openPopupClient, setOpenPopupClient] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -182,6 +189,32 @@ const FormPariente = ({ edit = false, body = {}, setOpenPopup }) => {
     const userData = getValues();
     const { correos, telefonos, identidades } = userData;
 
+    if (isSuscripcion) {
+      Object.assign(
+        userData,
+        { correos: correos ? [correos] : [] },
+        {
+          telefonos: telefonos
+            ? [{ telefono: telefonos, tipo: getTypePhone }]
+            : [],
+        },
+        {
+          identidades: identidades
+            ? {
+                identidad: identidades,
+                idTipoIdentidad: getTypeIdentity,
+              }
+            : '',
+        },
+        { nacimiento: formatDate(selectedDate) },
+        { sexo: getGenero }
+      );
+
+      setParientes([...getParientes, { ...userData }]);
+      setOpenPopup(false);
+      return;
+    }
+
     if (!edit) {
       Object.assign(
         userData,
@@ -258,7 +291,7 @@ const FormPariente = ({ edit = false, body = {}, setOpenPopup }) => {
         { nacimiento: formatDate(selectedDate) },
         { sexo: getGenero }
       );
-      console.log(userData);
+
       return put('pariente', userData)
         .then((res) => res.json())
         .then(({ data }) => {
@@ -413,20 +446,25 @@ const FormPariente = ({ edit = false, body = {}, setOpenPopup }) => {
               required={true}
             />
           </MuiPickersUtilsProvider>
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => setOpenPopupClient(true)}
-            style={
-              clientId
-                ? { backgroundColor: '#18AF18', color: '#fff' }
-                : { backgroundColor: '#BCBFBC' }
-            }
-            className={classes.button}
-          >
-            {' '}
-            Seleccionar Cliente
-          </Button>
+          {!isSuscripcion ? (
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => setOpenPopupClient(true)}
+              style={
+                clientId
+                  ? { backgroundColor: '#18AF18', color: '#fff' }
+                  : { backgroundColor: '#BCBFBC' }
+              }
+              className={classes.button}
+            >
+              {' '}
+              Seleccionar Cliente
+            </Button>
+          ) : (
+            <div style={{ marginBottom: 90 }}></div>
+          )}
+
           <div style={{ marginTop: 50 }}>
             <Button
               type="submit"

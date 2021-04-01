@@ -77,68 +77,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableSelectCliente = ({
-  setClientId,
-  clientId,
+const TableSelectParientes = ({
+  setParientesIds,
+  idCliente,
+  parientesIds,
   setOpen,
-  getClienteSelect,
-  setClientEntidadId,
-  isSuscripcion = false,
 }) => {
   const classes = useStyles();
-  const [cliente, setCliente] = useState([]);
-  const [clienteSelect, setClienteSelect] = useState('');
-  const [getDataclienteSelect, setGetDataClienteSelect] = useState({});
+  const [parientes, setParientes] = useState([]);
 
   useEffect(() => {
-    get('client')
+    get(`pariente/client/${idCliente}`)
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
           let checked = false;
-          const { idCliente } = data;
-          if (idCliente === clientId) {
-            checked = true;
-          }
-
+          const { idEntidad } = data;
+          parientesIds.forEach((data) => {
+            const { idEntidad: getParienteId } = data;
+            if (idEntidad === getParienteId) {
+              checked = true;
+              return;
+            }
+          });
           return {
             ...data,
             checked,
           };
         });
-        setCliente(parseData || []);
+        setParientes(parseData || []);
       });
 
     // eslint-disable-next-line
   }, []);
 
-  const handleSelect = (idClient) => {
-    const parseData = cliente.map((data) => {
-      const {
-        idEntidad,
-        idCliente,
-        checked,
-        identidades: { serie },
-        nombre,
-        apellido,
-      } = data;
+  const handleSelect = (getIdPariente) => {
+    const parseData = parientes.map((data) => {
+      const { idPariente, checked } = data;
 
-      if (idCliente === idClient) {
-        if (isSuscripcion) {
-          setClientEntidadId(!checked ? idEntidad : '');
-          setGetDataClienteSelect(
-            !checked
-              ? {
-                  client: {
-                    nombre,
-                    apellido,
-                    identidades: { identidad: serie },
-                  },
-                }
-              : {}
-          );
-        }
-        setClienteSelect(!checked ? idClient : '');
+      if (idPariente === getIdPariente) {
         return {
           ...data,
           checked: !checked,
@@ -146,18 +123,15 @@ const TableSelectCliente = ({
       } else {
         return {
           ...data,
-          checked: false,
         };
       }
     });
-    setCliente(parseData || []);
+    setParientes(parseData || []);
   };
 
   const handleSave = () => {
-    setClientId(clienteSelect);
-    if (isSuscripcion) {
-      getClienteSelect(getDataclienteSelect);
-    }
+    const getPariente = parientes.filter(({ checked }) => checked === true);
+    setParientesIds(getPariente);
     setOpen(false);
   };
 
@@ -166,7 +140,7 @@ const TableSelectCliente = ({
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {cliente.length > 0 ? (
+            {parientes.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
@@ -191,21 +165,21 @@ const TableSelectCliente = ({
               </TableHead>
             ) : null}
             <TableBody>
-              {cliente.length ? (
-                cliente.map((client, index) => {
+              {parientes.length ? (
+                parientes.map((pariente, index) => {
                   const {
-                    idCliente,
+                    idPariente,
                     nombre,
                     apellido,
                     nacimiento,
                     sexo,
-                    identidades: { serie },
+                    identidades,
                     checked,
-                  } = client;
+                  } = pariente;
                   return (
                     <TableRow
                       hover
-                      key={serie + index}
+                      key={nombre + index}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -215,15 +189,17 @@ const TableSelectCliente = ({
                       <TableCell align="center">{nombre}</TableCell>
                       <TableCell align="center">{apellido}</TableCell>
                       <TableCell align="center">{sexo}</TableCell>
-                      <TableCell align="center">{serie}</TableCell>
+                      <TableCell align="center">
+                        {identidades.length ? identidades[0].serie : ''}
+                      </TableCell>
                       <TableCell align="center">
                         {formatDate(nacimiento)}
                       </TableCell>
                       <TableCell align="center">
                         <Checkbox
-                          name={idCliente}
+                          name={idPariente}
                           checked={checked}
-                          onChange={() => handleSelect(idCliente)}
+                          onChange={() => handleSelect(idPariente)}
                           inputProps={{ 'aria-label': 'primary checkbox' }}
                         />
                       </TableCell>
@@ -234,7 +210,7 @@ const TableSelectCliente = ({
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Clientes registrados
+                      Este cliente no tiene parientes registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -257,4 +233,4 @@ const TableSelectCliente = ({
   );
 };
 
-export default TableSelectCliente;
+export default TableSelectParientes;

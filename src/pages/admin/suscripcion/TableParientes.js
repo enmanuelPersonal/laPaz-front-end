@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -8,10 +8,15 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Checkbox,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
 } from '@material-ui/core';
-import { get } from '../../../helpers/fetch';
+import { DeleteForever } from '@material-ui/icons';
 import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
@@ -72,93 +77,22 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {
-    marginTop: 20,
-  },
+  button: {},
 }));
 
-const TableSelectCliente = ({
-  setClientId,
-  clientId,
-  setOpen,
-  getClienteSelect,
-  setClientEntidadId,
-  isSuscripcion = false,
-}) => {
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const TablePariente = ({ parientes, setParientes, edit }) => {
   const classes = useStyles();
-  const [cliente, setCliente] = useState([]);
-  const [clienteSelect, setClienteSelect] = useState('');
-  const [getDataclienteSelect, setGetDataClienteSelect] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idDeletePariente, setIdDeletePariente] = useState('');
 
-  useEffect(() => {
-    get('client')
-      .then((res) => res.json())
-      .then(({ data }) => {
-        const parseData = data.map((data) => {
-          let checked = false;
-          const { idCliente } = data;
-          if (idCliente === clientId) {
-            checked = true;
-          }
-
-          return {
-            ...data,
-            checked,
-          };
-        });
-        setCliente(parseData || []);
-      });
-
-    // eslint-disable-next-line
-  }, []);
-
-  const handleSelect = (idClient) => {
-    const parseData = cliente.map((data) => {
-      const {
-        idEntidad,
-        idCliente,
-        checked,
-        identidades: { serie },
-        nombre,
-        apellido,
-      } = data;
-
-      if (idCliente === idClient) {
-        if (isSuscripcion) {
-          setClientEntidadId(!checked ? idEntidad : '');
-          setGetDataClienteSelect(
-            !checked
-              ? {
-                  client: {
-                    nombre,
-                    apellido,
-                    identidades: { identidad: serie },
-                  },
-                }
-              : {}
-          );
-        }
-        setClienteSelect(!checked ? idClient : '');
-        return {
-          ...data,
-          checked: !checked,
-        };
-      } else {
-        return {
-          ...data,
-          checked: false,
-        };
-      }
-    });
-    setCliente(parseData || []);
-  };
-
-  const handleSave = () => {
-    setClientId(clienteSelect);
-    if (isSuscripcion) {
-      getClienteSelect(getDataclienteSelect);
-    }
-    setOpen(false);
+  const handleDelete = () => {
+    const getParientes = parientes.filter((v, i) => i !== idDeletePariente);
+    setParientes(getParientes);
+    setOpenDialog(false);
   };
 
   return (
@@ -166,7 +100,7 @@ const TableSelectCliente = ({
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {cliente.length > 0 ? (
+            {parientes.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
@@ -184,28 +118,28 @@ const TableSelectCliente = ({
                   <TableCell className={classes.head} align="center">
                     Nacimiento
                   </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Acciones
-                  </TableCell>
+                  {!edit && (
+                    <TableCell className={classes.head} align="center">
+                      Acciones
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableHead>
             ) : null}
             <TableBody>
-              {cliente.length ? (
-                cliente.map((client, index) => {
+              {parientes.length ? (
+                parientes.map((pariente, index) => {
                   const {
-                    idCliente,
                     nombre,
                     apellido,
                     nacimiento,
                     sexo,
-                    identidades: { serie },
-                    checked,
-                  } = client;
+                    identidades,
+                  } = pariente;
                   return (
                     <TableRow
                       hover
-                      key={serie + index}
+                      key={`${nacimiento} - ${index}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -215,18 +149,22 @@ const TableSelectCliente = ({
                       <TableCell align="center">{nombre}</TableCell>
                       <TableCell align="center">{apellido}</TableCell>
                       <TableCell align="center">{sexo}</TableCell>
-                      <TableCell align="center">{serie}</TableCell>
+                      <TableCell align="center">
+                        {identidades.length ? identidades[0].serie : ''}
+                      </TableCell>
                       <TableCell align="center">
                         {formatDate(nacimiento)}
                       </TableCell>
-                      <TableCell align="center">
-                        <Checkbox
-                          name={idCliente}
-                          checked={checked}
-                          onChange={() => handleSelect(idCliente)}
-                          inputProps={{ 'aria-label': 'primary checkbox' }}
-                        />
-                      </TableCell>
+                      {!edit && (
+                        <TableCell align="center">
+                          <DeleteForever
+                            onClick={() => {
+                              setIdDeletePariente(index);
+                              setOpenDialog(true);
+                            }}
+                          />{' '}
+                        </TableCell>
+                      )}
                     </TableRow>
                   );
                 })
@@ -234,7 +172,7 @@ const TableSelectCliente = ({
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Clientes registrados
+                      No hay Parientes registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -243,18 +181,35 @@ const TableSelectCliente = ({
           </Table>
         </TableContainer>
       </Paper>
-
-      <Button
-        className={classes.button}
-        variant="contained"
-        autoFocus
-        onClick={handleSave}
-        color="primary"
+      <Dialog
+        open={openDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
       >
-        GUARDAR
-      </Button>
+        <DialogTitle id="alert-dialog-slide-title">
+          Eliminar Registro
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Esta seguro que desea eliminar este registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDelete()}
+          >
+            Aceptar
+          </Button>
+          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
-export default TableSelectCliente;
+export default TablePariente;
