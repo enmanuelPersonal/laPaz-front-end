@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef, useContext } from 'react';
 import {
   Paper,
   Table,
@@ -19,6 +19,7 @@ import {
 import { DeleteForever, Edit } from '@material-ui/icons';
 import { get, remove } from '../../../helpers/fetch';
 import { formatDate } from '../../../helpers/formatDate';
+import AppContext from '../../../auth/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,6 +87,11 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+  const {
+    state: {
+      userData: { idUsuario },
+    },
+  } = useContext(AppContext);
   const classes = useStyles();
   const [suscripcion, setSuscripcion] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -106,9 +112,23 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   };
 
   const handleDelete = () => {
-    const { idSuscripcion } = idDeleteSuscripcion;
+    const { idSuscripcion, parientes, idEntidad } = idDeleteSuscripcion;
 
-    return remove('suscripcion', { idSuscripcion })
+    const userData = {};
+
+    const getParientes = parientes.map(({ idEntidad }) => {
+      return idEntidad;
+    });
+
+    Object.assign(
+      userData,
+      { idUsuario },
+      { idSuscripcion },
+      { idParientes: getParientes },
+      { idClienteEntidad: idEntidad }
+    );
+
+    return remove('suscripcion', userData)
       .then((res) => res.json())
       .then(({ data }) => {
         if (data[0] === 1) {

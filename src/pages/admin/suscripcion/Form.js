@@ -175,7 +175,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
         { idUsuario },
         { idCliente: clientId },
         { idSuscripcion },
-        { parientes: getParientes },
+        { idParientes: getParientes },
         { idTipoPlan: getTypePlan },
         { monto: getMonto },
         { idClienteEntidad: clientEntidadId },
