@@ -45,3 +45,18 @@ export const put = (url, body = {}) => {
   };
   return fetch(`${REACT_APP_API_URL}${url}`, bodyOpts);
 };
+
+export const remove = (url, body = {}) => {
+  const token = localStorage.getItem('LaPaz_auth_token');
+
+  const bodyOpts = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      LaPaz_auth_token: token,
+      credentials: 'include',
+    },
+    body: JSON.stringify(body),
+  };
+  return fetch(`${REACT_APP_API_URL}${url}`, bodyOpts);
+};

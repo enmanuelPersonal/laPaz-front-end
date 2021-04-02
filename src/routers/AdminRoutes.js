@@ -3,8 +3,12 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 
 import Sidebar from '../pages/admin/sidebar/Sidebar';
 
-import { AdminHome } from '../pages/admin/AdminHome';
 import Dashboard from '../pages/admin/Dashboard';
+import Employe from '../pages/admin/employe';
+import Suscripcion from '../pages/admin/suscripcion';
+import Cliente from '../pages/admin/clientes';
+import Mensualidad from '../pages/admin/mensualidad';
+import Pariente from '../pages/admin/parientes';
 
 export const AdminRoutes = () => {
   return (
@@ -12,9 +16,13 @@ export const AdminRoutes = () => {
       <Sidebar />
       <div>
         <Switch>
-          <Route exact path="/admin/home" component={AdminHome} />
           <Route exact path="/admin/dashboar" component={Dashboard} />
-          <Redirect to="/admin/dashboar"/>
+          <Route exact path="/admin/empleado" component={Employe} />
+          <Route exact path="/admin/suscripciones" component={Suscripcion} />
+          <Route exact path="/admin/clientes" component={Cliente} />
+          <Route exact path="/admin/parientes" component={Pariente} />
+          <Route exact path="/admin/mensualidad" component={Mensualidad} />
+          <Redirect to="/admin/dashboar" />
         </Switch>
       </div>
     </>

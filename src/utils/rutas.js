@@ -36,6 +36,12 @@ const routes = [
     path: '/admin/ventas',
   },
   {
+    children: true,
+    Component: ClienteIcon,
+    label: 'Suscripciones',
+    path: '',
+  },
+  {
     children: false,
     Component: AssessmentIcon,
     label: 'Planes fúnebres',
@@ -46,12 +52,6 @@ const routes = [
     Component: ClienteIcon,
     label: 'Empleados',
     path: '/admin/empleado',
-  },
-  {
-    children: false,
-    Component: ClienteIcon,
-    label: 'Clientes',
-    path: '/admin/clientes',
   },
   {
     children: false,
@@ -75,11 +75,33 @@ const routes = [
 
 const routesChilds = {
   reportes: [
-    { label: 'Clientes', Icon: ClienteIcon, path: '/reportClientes' },
+    { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
     {
       label: 'Difuntos',
       Icon: ClienteIcon,
-      path: '/reportDifunto',
+      path: '/admin/reportDifunto',
+    },
+  ],
+  suscripciones: [
+    {
+      Icon: ClienteIcon,
+      label: 'Suscripciones',
+      path: '/admin/suscripciones',
+    },
+    {
+      Icon: ClienteIcon,
+      label: 'Clientes',
+      path: '/admin/clientes',
+    },
+    {
+      Icon: ClienteIcon,
+      label: 'Parientes',
+      path: '/admin/parientes',
+    },
+    {
+      Icon: ClienteIcon,
+      label: 'Mensualidad',
+      path: '/admin/mensualidad',
     },
   ],
 };
