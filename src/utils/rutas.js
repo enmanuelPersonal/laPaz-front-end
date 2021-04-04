@@ -24,10 +24,10 @@ const routes = [
     path: '',
   },
   {
-    children: false,
+    children: true,
     Component: InventarioIcon,
     label: 'Inventario',
-    path: '/admin/inventario',
+    path: '',
   },
   {
     children: false,
@@ -80,6 +80,19 @@ const routesChilds = {
       label: 'Difuntos',
       Icon: ClienteIcon,
       path: '/admin/reportDifunto',
+    },
+  ],
+  inventario: [
+    { label: 'Inventario', Icon: ClienteIcon, path: '/admin/inventario' },
+    {
+      label: 'Productos',
+      Icon: ClienteIcon,
+      path: '/admin/productos',
+    },
+    {
+      label: 'Compras',
+      Icon: ClienteIcon,
+      path: '/admin/compras',
     },
   ],
   suscripciones: [
