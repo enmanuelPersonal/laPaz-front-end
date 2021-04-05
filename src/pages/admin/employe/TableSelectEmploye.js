@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -9,15 +9,9 @@ import {
   TableRow,
   makeStyles,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
+  Checkbox,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
+import { get } from '../../../helpers/fetch';
 import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
@@ -78,44 +72,60 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {},
+  button: {
+    marginTop: 20,
+  },
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableSelectEmploye = ({ setEmployeId, employeId, setOpen }) => {
   const classes = useStyles();
-  const [usuarios, setUsuarios] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [idDeleteUsuario, setIdDeleteUsuario] = useState('');
+  const [employes, setEmployes] = useState([]);
+  const [employeSelect, setEmployeSelect] = useState('');
 
   useEffect(() => {
-    get('user')
+    get('employe')
       .then((res) => res.json())
       .then(({ data }) => {
-        setUsuarios(data || []);
-      });
-  }, [openPopup, openDialog]);
+        const parseData = data.map((data) => {
+          let checked = false;
+          const { idEntidad } = data;
+          if (idEntidad === employeId) {
+            checked = true;
+          }
 
-  const handleUpdate = (usuario) => {
-    setEdit(true);
-    setBody(usuario);
-    setOpenPopup(true);
+          return {
+            ...data,
+            checked,
+          };
+        });
+        setEmployes(parseData || []);
+      });
+    // eslint-disable-next-line
+  }, []);
+
+  const handleSelect = (employeId) => {
+    const parseData = employes.map((data) => {
+      const { idEntidad, checked } = data;
+
+      if (idEntidad === employeId) {
+        setEmployeSelect(!checked ? employeId : '');
+        return {
+          ...data,
+          checked: !checked,
+        };
+      } else {
+        return {
+          ...data,
+          checked: false,
+        };
+      }
+    });
+    setEmployes(parseData || []);
   };
 
-  const handleDelete = () => {
-    const { idUsuario } = idDeleteUsuario;
-
-    return remove('user', { idUsuario })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data[0] === 1) {
-        }
-      })
-      .catch((err) => alert(err.message))
-      .finally(() => setOpenDialog(false));
+  const handleSave = () => {
+    setEmployeId(employeSelect);
+    setOpen(false);
   };
 
   return (
@@ -123,23 +133,23 @@ const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {usuarios.length > 0 ? (
+            {employes.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombre
+                    Nombres
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Nombre Usuario
+                    Apellidos
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Teléfono
+                    Sexo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Tipo
+                    Identidad
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Fecha de nacimiento
+                    Nacimiento
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -148,13 +158,21 @@ const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {usuarios.length ? (
-                usuarios.map((user, index) => {
-                  const { nombre, usuario, tipo, nacimiento, telefonos } = user;
+              {employes.length ? (
+                employes.map((employe, index) => {
+                  const {
+                    idEntidad,
+                    nombre,
+                    apellido,
+                    nacimiento,
+                    sexo,
+                    identidades: { serie },
+                    checked,
+                  } = employe;
                   return (
                     <TableRow
                       hover
-                      key={index + `${usuario}`}
+                      key={serie + index}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -162,22 +180,19 @@ const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{usuario}</TableCell>
-                      <TableCell align="center">
-                        {telefonos.length ? telefonos[0].telefono : ''}
-                      </TableCell>
-                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">{apellido}</TableCell>
+                      <TableCell align="center">{sexo}</TableCell>
+                      <TableCell align="center">{serie}</TableCell>
                       <TableCell align="center">
                         {formatDate(nacimiento)}
                       </TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(user)} />{' '}
-                        <DeleteForever
-                          onClick={() => {
-                            setIdDeleteUsuario(user);
-                            setOpenDialog(true);
-                          }}
-                        />{' '}
+                        <Checkbox
+                          name={idEntidad}
+                          checked={checked}
+                          onChange={() => handleSelect(idEntidad)}
+                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
                       </TableCell>
                     </TableRow>
                   );
@@ -186,7 +201,7 @@ const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Usuarios registrados
+                      No hay Empleados registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -195,35 +210,17 @@ const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
           </Table>
         </TableContainer>
       </Paper>
-      <Dialog
-        open={openDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
+      <Button
+        className={classes.button}
+        variant="contained"
+        autoFocus
+        onClick={handleSave}
+        color="primary"
       >
-        <DialogTitle id="alert-dialog-slide-title">
-          Eliminar Registro
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Está seguro que desea eliminar este registro?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDelete()}
-          >
-            Aceptar
-          </Button>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-        </DialogActions>
-      </Dialog>
+        GUARDAR
+      </Button>
     </div>
   );
 };
 
-export default TableUsuario;
+export default TableSelectEmploye;

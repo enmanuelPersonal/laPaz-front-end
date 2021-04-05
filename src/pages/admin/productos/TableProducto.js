@@ -105,9 +105,26 @@ const TableProducto = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   };
 
   const handleDelete = () => {
-    const { idEntidad } = idDeleteProducto;
+    const productoData = {};
+    const {
+      idProducto,
+      imagenes,
+      log: { idProductoLog },
+    } = idDeleteProducto;
+    let idImagenProducto = '';
 
-    return remove('producto', { idEntidad })
+    if (imagenes.length) {
+      idImagenProducto = imagenes[0].idImagenProducto;
+    }
+
+    Object.assign(
+      productoData,
+      { idImagenProducto },
+      { idProductoLog },
+      { idProducto }
+    );
+
+    return remove('producto', productoData)
       .then((res) => res.json())
       .then(({ data }) => {
         if (data[0] === 1) {
@@ -126,16 +143,19 @@ const TableProducto = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombre Completo
+                    Nombre
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Nombre Usuario
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Teléfono
+                    Descripcion
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Tipo
+                  </TableCell>
+                  <TableCell className={classes.head} align="center">
+                    categoria
+                  </TableCell>
+                  <TableCell className={classes.head} align="center">
+                    Precio
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -145,14 +165,14 @@ const TableProducto = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
             ) : null}
             <TableBody>
               {productos.length ? (
-                productos.map((usuario, index) => {
+                productos.map((producto, index) => {
                   const {
                     nombre,
-                    telefono,
-                    username,
-                    password,
-                    tipoUsuario: { tipo },
-                  } = usuario;
+                    descripcion,
+                    tipo,
+                    categoria,
+                    log: { precio },
+                  } = producto;
                   return (
                     <TableRow
                       hover
@@ -164,15 +184,15 @@ const TableProducto = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{telefono}</TableCell>
-                      <TableCell align="center">{password}</TableCell>
+                      <TableCell align="center">{descripcion}</TableCell>
                       <TableCell align="center">{tipo}</TableCell>
-                      <TableCell align="center">{username}</TableCell>
+                      <TableCell align="center">{categoria}</TableCell>
+                      <TableCell align="center">{precio}</TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(usuario)} />{' '}
+                        <Edit onClick={() => handleUpdate(producto)} />{' '}
                         <DeleteForever
                           onClick={() => {
-                            setIdDeleteProducto(usuario);
+                            setIdDeleteProducto(producto);
                             setOpenDialog(true);
                           }}
                         />{' '}

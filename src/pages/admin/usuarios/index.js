@@ -123,7 +123,7 @@ const Usuario = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Empleado' : 'Registrar Empleado'}`}
+          title={`${edit ? 'Actualizar Usuario' : 'Registrar Usuario'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
