@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import {
@@ -17,6 +18,10 @@ import Form from '../../../components/Form';
 import { get, post, put } from '../../../helpers/fetch';
 import { uploadImagen } from '../../../helpers/uploadImagen';
 import { DialogSlide } from '../../../components/alert/DialogSlide';
+
+dotenv.config();
+
+const { REACT_APP_API_URL } = process.env;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -59,6 +64,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     idTipoProducto,
     idCategoria,
     reorden,
+    url,
   } = productoData;
 
   useEffect(() => {
@@ -105,7 +111,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
       if (imagenes.length) {
         url = imagenes[0].url;
       }
-
+      console.log(url);
       setProductoData({
         ...productoData,
         nombre,
@@ -144,11 +150,12 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(uploadImg);
-    // await uploadImagen(uploadImg);
 
-    // Falta enviarle la url de la imagen
     if (!edit) {
+      const url = await uploadImagen(uploadImg);
+
+      Object.assign(productoData, { url });
+
       return post('producto/add', productoData)
         .then(async (response) => {
           setLoading(false);
@@ -280,12 +287,20 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
           </FormControl>
         </Grid>
         <Grid item xs={3} lg={4}>
-          <Box border={1} p={8} mb={2}></Box>
+          <Box border={1} p={8} mb={2}>
+            {edit ? (
+              <img
+                style={{ height: 100, width: 100 }}
+                src={`${REACT_APP_API_URL}/uploads/${url}`}
+                alt="Imagen del producto"
+              />
+            ) : (
+              <div></div>
+            )}
+          </Box>
           <input
-            // accept="image/*"
             className={classes.input}
             id="contained-button-file"
-            // multiple
             type="file"
             onChange={onChangeImagen}
           />
@@ -296,7 +311,6 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
           </label>
         </Grid>
         <Grid item xs={3} lg={4}>
-          {/* <div style={{ marginTop: 50 }}> */}
           <Button
             type="submit"
             variant="contained"
@@ -322,7 +336,6 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
             {' '}
             LIMPIAR
           </Button>
-          {/* </div> */}
         </Grid>
         {openDialog && (
           <DialogSlide

@@ -16,9 +16,9 @@ import {
   DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
+import { Edit } from '@material-ui/icons';
 import { get, remove } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
+// import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,7 +89,7 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
   const [employes, setEmployes] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
+  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
 
   useEffect(() => {
     get('employe')
@@ -106,16 +106,16 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   };
 
   const handleDelete = () => {
-    const { idEntidad } = idDeleteEmploye;
+    // const { idEntidad } = idDeleteEmploye;
 
-    return remove('employe', { idEntidad })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data[0] === 1) {
-        }
-      })
-      .catch((err) => alert(err.message))
-      .finally(() => setOpenDialog(false));
+    // return remove('employe', { idEntidad })
+    //   .then((res) => res.json())
+    //   .then(({ data }) => {
+    //     if (data[0] === 1) {
+    //     }
+    //   })
+    //   .catch((err) => alert(err.message))
+    //   .finally(() => setOpenDialog(false));
   };
 
   return (
@@ -151,10 +151,6 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               {employes.length ? (
                 employes.map((employe, index) => {
                   const {
-                    nombre,
-                    apellido,
-                    nacimiento,
-                    sexo,
                     identidades: { serie },
                   } = employe;
                   return (
