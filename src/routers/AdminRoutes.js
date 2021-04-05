@@ -11,6 +11,7 @@ import Mensualidad from '../pages/admin/mensualidad';
 import Pariente from '../pages/admin/parientes';
 import Usuario from '../pages/admin/usuarios';
 import Producto from '../pages/admin/productos';
+import Inventario from '../pages/admin/inventario';
 
 export const AdminRoutes = () => {
   return (
@@ -26,6 +27,7 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/parientes" component={Pariente} />
           <Route exact path="/admin/mensualidad" component={Mensualidad} />
           <Route exact path="/admin/productos" component={Producto} />
+          <Route exact path="/admin/inventario" component={Inventario} />
           <Redirect to="/admin/dashboar" />
         </Switch>
       </div>
