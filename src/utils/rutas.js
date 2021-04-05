@@ -8,6 +8,13 @@ import {
   TimelineIcon,
   UserIcon,
   LogOutIcon,
+  EmpleadoIcon,
+  ProductoIcon,
+  ComprasIcon,
+  DifuntoIcon,
+  SuscripcionIcon,
+  MensualidadIcon,
+  ParienteIcon,
 } from '../components/Icons.js';
 
 const routes = [
@@ -37,7 +44,7 @@ const routes = [
   },
   {
     children: true,
-    Component: ClienteIcon,
+    Component: SuscripcionIcon,
     label: 'Suscripciones',
     path: '',
   },
@@ -49,7 +56,7 @@ const routes = [
   },
   {
     children: false,
-    Component: ClienteIcon,
+    Component: EmpleadoIcon,
     label: 'Empleados',
     path: '/admin/empleado',
   },
@@ -78,26 +85,26 @@ const routesChilds = {
     { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
     {
       label: 'Difuntos',
-      Icon: ClienteIcon,
+      Icon: DifuntoIcon,
       path: '/admin/reportDifunto',
     },
   ],
   inventario: [
-    { label: 'Inventario', Icon: ClienteIcon, path: '/admin/inventario' },
+    { label: 'Inventario', Icon: InventarioIcon, path: '/admin/inventario' },
     {
       label: 'Productos',
-      Icon: ClienteIcon,
+      Icon: ProductoIcon,
       path: '/admin/productos',
     },
     {
       label: 'Compras',
-      Icon: ClienteIcon,
+      Icon: ComprasIcon,
       path: '/admin/compras',
     },
   ],
   suscripciones: [
     {
-      Icon: ClienteIcon,
+      Icon: SuscripcionIcon,
       label: 'Suscripciones',
       path: '/admin/suscripciones',
     },
@@ -107,12 +114,12 @@ const routesChilds = {
       path: '/admin/clientes',
     },
     {
-      Icon: ClienteIcon,
+      Icon: ParienteIcon,
       label: 'Parientes',
       path: '/admin/parientes',
     },
     {
-      Icon: ClienteIcon,
+      Icon: MensualidadIcon,
       label: 'Mensualidad',
       path: '/admin/mensualidad',
     },

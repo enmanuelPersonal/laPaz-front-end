@@ -11,11 +11,16 @@ import {
   MonetizationOn as VentasIcon,
   ContactMail as PlanesIcon,
   ViewQuilt as DasboardIcon,
-  SupervisedUserCircle as ClienteIcon,
+  FolderShared as ClienteIcon,
   Description as ReporteIcon,
   Work as EmpleadoIcon,
-  ShoppingBasket as ProductoIcon,
   ViewList as InventarioIcon,
+  Archive as ProductoIcon,
+  ShoppingBasket as ComprasIcon,
+  AirlineSeatFlat as DifuntoIcon,
+  HowToReg as SuscripcionIcon,
+  WatchLater as MensualidadIcon,
+  PeopleAlt as ParienteIcon,
 } from '@material-ui/icons';
 
 export {
@@ -36,4 +41,9 @@ export {
   EmpleadoIcon,
   ProductoIcon,
   InventarioIcon,
+  ComprasIcon,
+  DifuntoIcon,
+  SuscripcionIcon,
+  MensualidadIcon,
+  ParienteIcon,
 };
