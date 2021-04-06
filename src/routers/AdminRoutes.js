@@ -12,6 +12,7 @@ import Pariente from '../pages/admin/parientes';
 import Usuario from '../pages/admin/usuarios';
 import Producto from '../pages/admin/productos';
 import Inventario from '../pages/admin/inventario';
+import Suplidor from '../pages/admin/suplidor';
 
 export const AdminRoutes = () => {
   return (
@@ -24,6 +25,7 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/empleado" component={Employe} />
           <Route exact path="/admin/suscripciones" component={Suscripcion} />
           <Route exact path="/admin/clientes" component={Cliente} />
+          <Route exact path="/admin/suplidores" component={Suplidor} />
           <Route exact path="/admin/parientes" component={Pariente} />
           <Route exact path="/admin/mensualidad" component={Mensualidad} />
           <Route exact path="/admin/productos" component={Producto} />

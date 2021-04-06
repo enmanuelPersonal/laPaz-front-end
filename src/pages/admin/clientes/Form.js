@@ -76,6 +76,11 @@ const FormCliente = ({
     reValidateMode: 'onChange',
   });
 
+  const setAttributes = ({ openDialog = true, error = false }) => {
+    setErrorServer(error);
+    setOpenDialog(openDialog);
+  };
+
   useEffect(() => {
     const fetchTypeIdentity = async () => {
       await get('typeIdentity')
@@ -163,6 +168,69 @@ const FormCliente = ({
     const userData = getValues();
     const { correos, telefonos, identidades } = userData;
 
+    if (!userData.nombre) {
+      return setAttributes({
+        openDialog: true,
+        error: 'Por favor verifique que el nombre este correctamente digitado',
+      });
+    }
+
+    if (!userData.apellido) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el apellido este correctamente digitado',
+      });
+    }
+
+    if (!userData.identidades) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el Num. de Documento este correctamente digitado',
+      });
+    }
+
+    if (!getTypeIdentity) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el tipo de Documento este correctamente seleccionado',
+      });
+    }
+
+    if (!telefonos) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el telefonos este correctamente digitado',
+      });
+    }
+
+    if (!getTypePhone) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el tipo de telefono este correctamente seleccionado',
+      });
+    }
+
+    if (!getGenero) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el genero este correctamente seleccionado',
+      });
+    }
+
+    if (!getDireccion.length) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que la direccion este correctamente digitada',
+      });
+    }
+
     if (isSuscripcion) {
       Object.assign(
         userData,
@@ -215,7 +283,9 @@ const FormCliente = ({
           return response.json();
         })
         .then((res) => {})
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     } else {
       const {
@@ -264,7 +334,9 @@ const FormCliente = ({
             cleanForm();
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     }
   };

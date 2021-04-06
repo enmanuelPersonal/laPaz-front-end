@@ -67,6 +67,11 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     url,
   } = productoData;
 
+  const setAttributes = ({ openDialog = true, error = false }) => {
+    setErrorServer(error);
+    setOpenDialog(openDialog);
+  };
+
   useEffect(() => {
     const fetchGetTipoProducto = async () => {
       await get('producto/type')
@@ -111,7 +116,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
       if (imagenes.length) {
         url = imagenes[0].url;
       }
-      console.log(url);
+
       setProductoData({
         ...productoData,
         nombre,
@@ -143,13 +148,36 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     setOpenDialog(false);
     setErrorServer(false);
     if (isProductSuccess) {
+      setOpenPopup(false);
       setIsProductSuccess(false);
     }
-    setOpenPopup(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!nombre) {
+      return setAttributes({
+        openDialog: true,
+        error: 'Por favor verifique que el nombre este correctamente digitado',
+      });
+    }
+
+    if (!descripcion) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que la descripcion este correctamente digitado',
+      });
+    }
+
+    if (!idCategoria) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que la categoria este correctamente seleccionada',
+      });
+    }
 
     if (!edit) {
       const url = await uploadImagen(uploadImg);
@@ -168,7 +196,9 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
             setErrorServer(res.message);
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     } else {
       const {
@@ -198,7 +228,9 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
             cleanForm();
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     }
   };

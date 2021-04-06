@@ -5,9 +5,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: '#FFFFFF',
     width: '100%',
-    [theme.breakpoints.down(1766)]: {
-      marginLeft: 230,
-    },
+    marginLeft: 230,
   },
   pageHeader: {
     padding: theme.spacing(3),

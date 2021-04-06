@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import { PeopleOutlineTwoTone } from '@material-ui/icons';
-import {
-  Search as SearchIcon,
-  FindInPage,
-  Archive,
-  ViewList,
-} from '@material-ui/icons';
+import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
+import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
   makeStyles,
@@ -17,26 +12,28 @@ import {
   IconButton,
 } from '@material-ui/core';
 
+import Form from './Form';
 import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
-import TableInventario from './TableInventario';
+import TableSuplidor from './TableSuplidor';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
     padding: theme.spacing(3),
   },
+  searchInput: {
+    width: '75%',
+  },
   newButton: {
     textTransform: 'none',
-    marginLeft: '15px',
   },
   input: {
     flex: 1,
   },
   rootSearch: {
-    width: '60%',
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
@@ -47,9 +44,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: '#ffff',
   },
-  registerBtn: {
-    marginLeft: '5px',
-  },
   containerTable: {
     marginLeft: drawerWidth + 15,
     backgroundColor: '#fff',
@@ -58,20 +52,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Inventario = () => {
+const Suplidor = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
-        className={classes.root}
-        title="Inventario"
+        title="Nuevo Suplidor"
         subTitle="Registrar, consultar y actualizar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
+
       <Box
         justifyContent="center"
         display="flex"
@@ -84,12 +78,16 @@ const Inventario = () => {
           justify="center"
           alignItems="center"
         >
-          <Grid item xs={6}>
-            <Paper elevation={2} className={classes.rootSearch}>
+          <Grid item xs={8}>
+            <Paper
+              component="form"
+              elevation={2}
+              className={classes.rootSearch}
+            >
               <InputBase
                 className={classes.input}
-                placeholder="Buscar por nombre o descripción"
-                inputProps={{ 'aria-label': 'Buscar por nombre o descripción' }}
+                placeholder="Buscar Suplidor por cédula"
+                inputProps={{ 'aria-label': 'Buscar Suplidor por cedula' }}
               />
               <IconButton
                 // onClick={}
@@ -100,41 +98,24 @@ const Inventario = () => {
               </IconButton>
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Box display="flex" justifyContent="flex-end">
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
-                startIcon={<FindInPage />}
+                startIcon={<Add />}
                 className={classes.newButton}
-                onClick={() => {}}
+                onClick={() => {
+                  setEdit(false);
+                  setOpenPopup(true);
+                }}
               >
-                Ver inventario
-              </Button>
-
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<Archive />}
-                className={classes.newButton}
-                onClick={() => {}}
-              >
-                Productos
-              </Button>
-
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<ViewList />}
-                className={classes.newButton}
-                onClick={() => {}}
-              >
-                Registrar compras
+                Agregar Suplidor
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <TableInventario
+            <TableSuplidor
               setEdit={setEdit}
               setBody={setBody}
               setOpenPopup={setOpenPopup}
@@ -146,13 +127,15 @@ const Inventario = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Inventario' : 'Registrar Inventario'}`}
+          title={`${edit ? 'Actualizar Suplidor' : 'Registrar Suplidor'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
-        ></Popup>
+        >
+          <Form edit={edit} body={body} setOpenPopup={setOpenPopup} />
+        </Popup>
       </Container>
     </div>
   );
 };
 
-export default Inventario;
+export default Suplidor;

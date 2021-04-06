@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -8,17 +8,11 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  Checkbox,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
 import { get } from '../../../helpers/fetch';
-// import { formatDate } from '../../../helpers/formatDate';
+import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,44 +72,71 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {},
+  button: {
+    marginTop: 20,
+  },
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableSelectSuplidor = ({
+  setSuplidorId,
+  suplidorId,
+  setOpen,
+  getSuplidorSelect,
+  setSuplidorEntidadId,
+}) => {
   const classes = useStyles();
-  const [employes, setEmployes] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
+  const [suplidor, setSuplidor] = useState([]);
+  const [SuplidorSelect, setSuplidorSelect] = useState('');
+  const [getDataSuplidorSelect, setGetDataSuplidorSelect] = useState({});
 
   useEffect(() => {
-    get('employe')
+    get('client')
       .then((res) => res.json())
       .then(({ data }) => {
-        setEmployes(data || []);
-      });
-  }, [openPopup, openDialog]);
+        const parseData = data.map((data) => {
+          let checked = false;
+          const { idSuplidor } = data;
+          if (idSuplidor === suplidorId) {
+            checked = true;
+          }
 
-  const handleUpdate = (employe) => {
-    setEdit(true);
-    setBody(employe);
-    setOpenPopup(true);
+          return {
+            ...data,
+            checked,
+          };
+        });
+        setSuplidor(parseData || []);
+      });
+
+    // eslint-disable-next-line
+  }, []);
+
+  const handleSelect = (idSuplido) => {
+    const parseData = suplidor.map((data) => {
+      const {
+        idSuplidor,
+        checked,
+      } = data;
+
+      if (idSuplidor === idSuplido) {
+        setSuplidorSelect(!checked ? idSuplido : '');
+        return {
+          ...data,
+          checked: !checked,
+        };
+      } else {
+        return {
+          ...data,
+          checked: false,
+        };
+      }
+    });
+    setSuplidor(parseData || []);
   };
 
-  const handleDelete = () => {
-    // const { idEntidad } = idDeleteEmploye;
-
-    // return remove('employe', { idEntidad })
-    //   .then((res) => res.json())
-    //   .then(({ data }) => {
-    //     if (data[0] === 1) {
-    //     }
-    //   })
-    //   .catch((err) => alert(err.message))
-    //   .finally(() => setOpenDialog(false));
+  const handleSave = () => {
+    setSuplidorId(SuplidorSelect);
+    setOpen(false);
   };
 
   return (
@@ -123,23 +144,23 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {employes.length > 0 ? (
+            {suplidor.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Producto
+                    Nombres
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Almacén
+                    Apellidos
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Descripción
+                    Sexo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Unidades
+                    Identidad
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Precio
+                    Nacimiento
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -148,11 +169,17 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {employes.length ? (
-                employes.map((employe, index) => {
+              {suplidor.length ? (
+                suplidor.map((client, index) => {
                   const {
+                    idSuplidor,
+                    nombre,
+                    apellido,
+                    nacimiento,
+                    sexo,
                     identidades: { serie },
-                  } = employe;
+                    checked,
+                  } = client;
                   return (
                     <TableRow
                       hover
@@ -163,13 +190,20 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                           : { backgroundColor: '#BCBFBC' }
                       }
                     >
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
+                      <TableCell align="center">{nombre}</TableCell>
+                      <TableCell align="center">{apellido}</TableCell>
+                      <TableCell align="center">{sexo}</TableCell>
+                      <TableCell align="center">{serie}</TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(employe)} />
+                        {formatDate(nacimiento)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Checkbox
+                          name={idSuplidor}
+                          checked={checked}
+                          onChange={() => handleSelect(idSuplidor)}
+                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
                       </TableCell>
                     </TableRow>
                   );
@@ -178,7 +212,7 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No existe algún item en inventario
+                      No hay Suplidores registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -187,35 +221,18 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
           </Table>
         </TableContainer>
       </Paper>
-      <Dialog
-        open={openDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
+
+      <Button
+        className={classes.button}
+        variant="contained"
+        autoFocus
+        onClick={handleSave}
+        color="primary"
       >
-        <DialogTitle id="alert-dialog-slide-title">
-          Eliminar Registro
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Esta seguro que desea eliminar este registro?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDelete()}
-          >
-            Aceptar
-          </Button>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-        </DialogActions>
-      </Dialog>
+        GUARDAR
+      </Button>
     </div>
   );
 };
 
-export default TableInventario;
+export default TableSelectSuplidor;

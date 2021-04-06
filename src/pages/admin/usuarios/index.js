@@ -44,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: '#ffff',
   },
+  containerTable: {
+    marginLeft: drawerWidth + 15,
+    backgroundColor: '#fff',
+    marginRight: 15,
+    borderRadius: 10,
+  },
 }));
 
 const Usuario = () => {
@@ -53,7 +59,7 @@ const Usuario = () => {
   const [body, setBody] = useState({});
 
   return (
-    <div style={{ backgroundColor: 'black', height: '100%' }}>
+    <div>
       <PageHeader
         className={classes.root}
         title="Nuevo Usuario"
@@ -63,7 +69,7 @@ const Usuario = () => {
       <Box
         justifyContent="center"
         display="flex"
-        style={{ marginLeft: drawerWidth, backgroundColor: 'white' }}
+        className={classes.containerTable}
       >
         <Grid
           container

@@ -5,7 +5,6 @@ import {
   VentasIcon,
   AssessmentIcon,
   ClienteIcon,
-  TimelineIcon,
   UserIcon,
   LogOutIcon,
   EmpleadoIcon,
@@ -44,6 +43,12 @@ const routes = [
   },
   {
     children: true,
+    Component: ComprasIcon,
+    label: 'Compras',
+    path: '',
+  },
+  {
+    children: true,
     Component: SuscripcionIcon,
     label: 'Suscripciones',
     path: '',
@@ -59,12 +64,6 @@ const routes = [
     Component: EmpleadoIcon,
     label: 'Empleados',
     path: '/admin/empleado',
-  },
-  {
-    children: false,
-    Component: TimelineIcon,
-    label: 'Suplidores',
-    path: '/admin/suplidores',
   },
   {
     children: false,
@@ -96,11 +95,6 @@ const routesChilds = {
       Icon: ProductoIcon,
       path: '/admin/productos',
     },
-    {
-      label: 'Compras',
-      Icon: ComprasIcon,
-      path: '/admin/compras',
-    },
   ],
   suscripciones: [
     {
@@ -122,6 +116,14 @@ const routesChilds = {
       Icon: MensualidadIcon,
       label: 'Mensualidad',
       path: '/admin/mensualidad',
+    },
+  ],
+  compras: [
+    { label: 'Compras', Icon: VentasIcon, path: '/admin/compras' },
+    {
+      label: 'Suplidores',
+      Icon: ParienteIcon,
+      path: '/admin/suplidores',
     },
   ],
 };

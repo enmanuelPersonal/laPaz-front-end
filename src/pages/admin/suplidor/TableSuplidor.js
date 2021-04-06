@@ -16,9 +16,9 @@ import {
   DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
-import { get } from '../../../helpers/fetch';
-// import { formatDate } from '../../../helpers/formatDate';
+import { DeleteForever, Edit } from '@material-ui/icons';
+import { get, remove } from '../../../helpers/fetch';
+import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,37 +85,37 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableSuplidor = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
-  const [employes, setEmployes] = useState([]);
+  const [suplidor, setSuplidor] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
+  const [idDeletesuplidor, setIdDeletesuplidor] = useState('');
 
   useEffect(() => {
-    get('employe')
+    get('suplidor')
       .then((res) => res.json())
       .then(({ data }) => {
-        setEmployes(data || []);
+        setSuplidor(data || []);
       });
   }, [openPopup, openDialog]);
 
-  const handleUpdate = (employe) => {
+  const handleUpdate = (suplidor) => {
     setEdit(true);
-    setBody(employe);
+    setBody(suplidor);
     setOpenPopup(true);
   };
 
   const handleDelete = () => {
-    // const { idEntidad } = idDeleteEmploye;
+    const { idEntidad } = idDeletesuplidor;
 
-    // return remove('employe', { idEntidad })
-    //   .then((res) => res.json())
-    //   .then(({ data }) => {
-    //     if (data[0] === 1) {
-    //     }
-    //   })
-    //   .catch((err) => alert(err.message))
-    //   .finally(() => setOpenDialog(false));
+    return remove('suplidor', { idEntidad })
+      .then((res) => res.json())
+      .then(({ data }) => {
+        if (data[0] === 1) {
+        }
+      })
+      .catch((err) => alert(err.message))
+      .finally(() => setOpenDialog(false));
   };
 
   return (
@@ -123,23 +123,23 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {employes.length > 0 ? (
+            {suplidor.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Producto
+                    Nombres
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Almacén
+                    Apellidos
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Descripción
+                    Sexo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Unidades
+                    Identidad
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Precio
+                    Nacimiento
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -148,11 +148,15 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {employes.length ? (
-                employes.map((employe, index) => {
+              {suplidor.length ? (
+                suplidor.map((suplidor, index) => {
                   const {
+                    nombre,
+                    apellido,
+                    nacimiento,
+                    sexo,
                     identidades: { serie },
-                  } = employe;
+                  } = suplidor;
                   return (
                     <TableRow
                       hover
@@ -163,13 +167,21 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                           : { backgroundColor: '#BCBFBC' }
                       }
                     >
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
-                      <TableCell align="center"></TableCell>
+                      <TableCell align="center">{nombre}</TableCell>
+                      <TableCell align="center">{apellido}</TableCell>
+                      <TableCell align="center">{sexo}</TableCell>
+                      <TableCell align="center">{serie}</TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(employe)} />
+                        {formatDate(nacimiento)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Edit onClick={() => handleUpdate(suplidor)} />{' '}
+                        <DeleteForever
+                          onClick={() => {
+                            setIdDeletesuplidor(suplidor);
+                            setOpenDialog(true);
+                          }}
+                        />{' '}
                       </TableCell>
                     </TableRow>
                   );
@@ -178,7 +190,7 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No existe algún item en inventario
+                      No hay Suplidores registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -218,4 +230,4 @@ const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   );
 };
 
-export default TableInventario;
+export default TableSuplidor;
