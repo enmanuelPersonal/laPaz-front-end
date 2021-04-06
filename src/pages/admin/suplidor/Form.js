@@ -14,7 +14,6 @@ import {
   Button,
   makeStyles,
   CircularProgress,
-  Container,
 } from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
@@ -27,11 +26,8 @@ import { DialogSlide } from '../../../components/alert/DialogSlide';
 
 import Form from '../../../components/Form';
 import { get, post, put } from '../../../helpers/fetch';
-// import { Direccion } from '../../../components/Direccion';
+import { Direccion } from '../../../components/Direccion';
 import { formatDate } from '../../../helpers/formatDate';
-import TableSelectClient from '../clientes/TableSelectClient';
-import Popup from '../../../components/Popup';
-import { drawerWidth } from '../../../utils/consts';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -54,25 +50,18 @@ const phoneItems = [
   { id: 'celular', tipo: 'Celular' },
 ];
 
-const FormPariente = ({
-  edit = false,
-  body = {},
-  setOpenPopup,
-  setParientes,
-  getParientes,
-  isSuscripcion = false,
-}) => {
+const FormSuplidor = ({ edit = false, body = {}, setOpenPopup }) => {
   const classes = useStyles();
-  const [openPopupClient, setOpenPopupClient] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [errorServer, setErrorServer] = useState(false);
-  const [isParienteSuccess, setIsParienteSuccess] = useState(false);
+  const [isSuplidorSuccess, setIsSuplidorSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingTypeIdentity, setLoadingTypeIdentity] = useState(true);
+  const [openDireccion, setOpenDireccion] = useState(false);
   const [typeIdentity, setTypeIdentity] = useState([]);
 
+  const [getDireccion, setGetDireccion] = useState([]);
   const [getTypeIdentity, setGetTypeIdentity] = useState('');
-  const [clientId, setClientId] = useState('');
   const [getTypePhone, setGetTypePhone] = useState('');
   const [selectedDate, setSelectedDate] = useState(Date.now());
   const [getGenero, setGetGenero] = useState('');
@@ -102,46 +91,54 @@ const FormPariente = ({
       const {
         nombre,
         apellido,
+        calleName,
+        casa: { numero, referencia },
+        ciudadName,
         correos,
-        identidades,
+        identidades: { idTipoIdentidad, serie },
+        municipioName,
+        paisName,
+        regionName,
+        sectorName,
         nacimiento,
         sexo,
-        telefonos = [],
-        idCliente,
+        telefonos,
       } = body;
-
-      let getResPhone = '';
-      let getResTypePhone = '';
-      let getResCorreo = '';
-      let getResIdTipoIdentidad = '';
-      let getResSerie = '';
+      let getCorreo = [];
+      let getTelefono = '';
+      let getTelefonoTipo = '';
 
       if (telefonos.length) {
         const { telefono, tipo } = telefonos[0];
-        getResPhone = telefono;
-        getResTypePhone = tipo;
+        getTelefono = telefono;
+        getTelefonoTipo = tipo;
       }
 
       if (correos.length) {
         const { correo } = correos[0];
-        getResCorreo = correo;
+        getCorreo = correo;
       }
 
-      if (identidades.length) {
-        const { idTipoIdentidad, serie } = identidades[0];
-        getResIdTipoIdentidad = idTipoIdentidad;
-        getResSerie = serie;
-      }
-
-      setClientId(idCliente);
-      setGetTypeIdentity(getResIdTipoIdentidad);
-      setGetTypePhone(getResTypePhone);
+      setGetDireccion([
+        {
+          pais: paisName,
+          region: regionName,
+          ciudad: ciudadName,
+          municipio: municipioName,
+          sector: sectorName,
+          calle: calleName,
+          casa: numero,
+          referencia,
+        },
+      ]);
+      setGetTypeIdentity(idTipoIdentidad);
+      setGetTypePhone(getTelefonoTipo);
       setSelectedDate(new Date(nacimiento));
       setGetGenero(sexo);
       setValue('nombre', nombre);
-      setValue('correos', getResCorreo);
-      setValue('identidades', getResSerie);
-      setValue('telefonos', getResPhone);
+      setValue('correos', getCorreo);
+      setValue('identidades', serie);
+      setValue('telefonos', getTelefono);
       setValue('apellido', apellido);
     } else {
       cleanForm();
@@ -151,19 +148,19 @@ const FormPariente = ({
 
   const cleanForm = () => {
     reset();
+    setGetDireccion([]);
     setGetTypeIdentity('');
     setGetTypePhone('');
     setSelectedDate(Date.now());
     setGetGenero('');
-    setClientId('');
   };
 
   const handleClose = () => {
     setOpenDialog(false);
     setErrorServer(false);
-    if (isParienteSuccess) {
+    if (isSuplidorSuccess) {
       setOpenPopup(false);
-      setIsParienteSuccess(false);
+      setIsSuplidorSuccess(false);
     }
   };
 
@@ -187,6 +184,38 @@ const FormPariente = ({
       });
     }
 
+    if (!userData.identidades) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el Num. de Documento este correctamente digitado',
+      });
+    }
+
+    if (!getTypeIdentity) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el tipo de Documento este correctamente seleccionado',
+      });
+    }
+
+    if (!telefonos) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el telefonos este correctamente digitado',
+      });
+    }
+
+    if (!getTypePhone) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el tipo de telefono este correctamente seleccionado',
+      });
+    }
+
     if (!getGenero) {
       return setAttributes({
         openDialog: true,
@@ -195,95 +224,66 @@ const FormPariente = ({
       });
     }
 
-    if (!clientId) {
+    if (!getDireccion.length) {
       return setAttributes({
         openDialog: true,
         error:
-          'Por favor verifique que el cliente este correctamente seleccionado',
+          'Por favor verifique que la direccion este correctamente digitada',
       });
-    }
-
-    if (isSuscripcion) {
-      Object.assign(
-        userData,
-        { correos: correos ? [correos] : [] },
-        {
-          telefonos: telefonos
-            ? [{ telefono: telefonos, tipo: getTypePhone }]
-            : [],
-        },
-        {
-          identidades: identidades
-            ? {
-                identidad: identidades,
-                idTipoIdentidad: getTypeIdentity,
-              }
-            : '',
-        },
-        { nacimiento: formatDate(selectedDate) },
-        { sexo: getGenero }
-      );
-
-      setParientes([...getParientes, { ...userData }]);
-      setOpenPopup(false);
-      return;
     }
 
     if (!edit) {
       Object.assign(
         userData,
         { correos: correos ? [correos] : [] },
+        { telefonos: [{ telefono: telefonos, tipo: getTypePhone }] },
         {
-          telefonos: telefonos
-            ? [{ telefono: telefonos, tipo: getTypePhone }]
-            : [],
+          identidades: {
+            identidad: identidades,
+            idTipoIdentidad: getTypeIdentity,
+          },
         },
-        {
-          identidades: identidades
-            ? {
-                identidad: identidades,
-                idTipoIdentidad: getTypeIdentity,
-              }
-            : '',
-        },
+        { direcciones: getDireccion },
         { nacimiento: formatDate(selectedDate) },
-        { sexo: getGenero },
-        { idCliente: clientId }
+        { sexo: getGenero }
       );
 
-      return post('pariente/add', userData)
+      return post('suplidor/add', userData)
         .then(async (response) => {
           setLoading(false);
           if (response.status === 201) {
             setErrorServer(false);
-            setIsParienteSuccess(true);
+            setIsSuplidorSuccess(true);
             cleanForm();
-          } else {
-            const res = await response.json();
-            setErrorServer(res.message);
           }
+
+          return response.json();
         })
-        .catch((err) =>
+        .then((res) => {})
+        .catch(() =>
           setErrorServer('Verifique que todos los campos esten correctos')
         )
         .finally(() => setOpenDialog(true));
     } else {
       const {
-        idPariente,
-        idCliente,
+        idSuplidor,
         idIdentidad,
         idEntidad,
         idPersona,
         telefonos: bodyTelefonos,
         correos: bodyCorreos,
+        direcciones,
       } = body;
       const { idTelefono } = bodyTelefonos[0];
       const { idCorreo } = bodyCorreos[0];
+      const { idDireccion } = direcciones[0];
+      const getDirecciones = getDireccion[0];
+
+      Object.assign(getDirecciones, { idDireccion });
 
       Object.assign(
         userData,
-        { idPariente },
-        { idCliente },
+        { idSuplidor },
         { idIdentidad },
         { idEntidad },
         { idPersona },
@@ -297,20 +297,21 @@ const FormPariente = ({
             idTipoIdentidad: getTypeIdentity,
           },
         },
+        { direcciones: [getDirecciones] },
         { nacimiento: formatDate(selectedDate) },
         { sexo: getGenero }
       );
 
-      return put('pariente', userData)
+      return put('suplidor', userData)
         .then((res) => res.json())
         .then(({ data }) => {
           if (data[0] === 1) {
             setErrorServer(false);
-            setIsParienteSuccess(true);
+            setIsSuplidorSuccess(true);
             cleanForm();
           }
         })
-        .catch((err) =>
+        .catch(() =>
           setErrorServer('Verifique que todos los campos esten correctos')
         )
         .finally(() => setOpenDialog(true));
@@ -457,25 +458,20 @@ const FormPariente = ({
               required={true}
             />
           </MuiPickersUtilsProvider>
-          {!isSuscripcion ? (
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setOpenPopupClient(true)}
-              style={
-                clientId
-                  ? { backgroundColor: '#18AF18', color: '#fff' }
-                  : { backgroundColor: '#BCBFBC' }
-              }
-              className={classes.button}
-            >
-              {' '}
-              Seleccionar Cliente
-            </Button>
-          ) : (
-            <div style={{ marginBottom: 90 }}></div>
-          )}
-
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => setOpenDireccion(true)}
+            style={
+              getDireccion.length
+                ? { backgroundColor: '#18AF18', color: '#fff' }
+                : { backgroundColor: '#BCBFBC' }
+            }
+            className={classes.button}
+          >
+            {' '}
+            Registrar Dirección
+          </Button>
           <div style={{ marginTop: 50 }}>
             <Button
               type="submit"
@@ -507,28 +503,14 @@ const FormPariente = ({
             </Button>
           </div>
         </Grid>
-        <Container style={{ marginLeft: drawerWidth }}>
-          <Popup
-            title={'Seleccionar Cliente'}
-            openPopup={openPopupClient}
-            setOpenPopup={setOpenPopupClient}
-          >
-            <TableSelectClient
-              setClientId={setClientId}
-              clientId={clientId}
-              setOpen={setOpenPopupClient}
-            />
-          </Popup>
-        </Container>
-        {/* {openPopupClient && (
-          <TableSelectClient />
-          // <Direccion
-          //   setOpen={setOpenDireccion}
-          //   open={openDireccion}
-          //   setGetDireccion={setGetDireccion}
-          //   getDireccion={getDireccion}
-          // />
-        )} */}
+        {openDireccion && (
+          <Direccion
+            setOpen={setOpenDireccion}
+            open={openDireccion}
+            setGetDireccion={setGetDireccion}
+            getDireccion={getDireccion}
+          />
+        )}
         {openDialog && (
           <DialogSlide
             handleClose={handleClose}
@@ -558,4 +540,4 @@ const FormPariente = ({
   );
 };
 
-export default FormPariente;
+export default FormSuplidor;

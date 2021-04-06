@@ -9,6 +9,10 @@ import Suscripcion from '../pages/admin/suscripcion';
 import Cliente from '../pages/admin/clientes';
 import Mensualidad from '../pages/admin/mensualidad';
 import Pariente from '../pages/admin/parientes';
+import Usuario from '../pages/admin/usuarios';
+import Producto from '../pages/admin/productos';
+import Inventario from '../pages/admin/inventario';
+import Suplidor from '../pages/admin/suplidor';
 
 export const AdminRoutes = () => {
   return (
@@ -17,11 +21,15 @@ export const AdminRoutes = () => {
       <div>
         <Switch>
           <Route exact path="/admin/dashboar" component={Dashboard} />
+          <Route exact path="/admin/usuarios" component={Usuario} />
           <Route exact path="/admin/empleado" component={Employe} />
           <Route exact path="/admin/suscripciones" component={Suscripcion} />
           <Route exact path="/admin/clientes" component={Cliente} />
+          <Route exact path="/admin/suplidores" component={Suplidor} />
           <Route exact path="/admin/parientes" component={Pariente} />
           <Route exact path="/admin/mensualidad" component={Mensualidad} />
+          <Route exact path="/admin/productos" component={Producto} />
+          <Route exact path="/admin/inventario" component={Inventario} />
           <Redirect to="/admin/dashboar" />
         </Switch>
       </div>

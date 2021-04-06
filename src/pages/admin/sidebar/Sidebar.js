@@ -20,6 +20,7 @@ import { RESET_STATES, USER_LOGOUT } from '../../../auth/actions';
 import { routes } from '../../../utils/rutas.js';
 import AppContext from '../../../auth/AuthContext';
 import { drawerWidth } from '../../../utils/consts.js';
+import logo from '../../../img/logoletras.JPG';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,10 +91,11 @@ const Sidebar = () => {
       >
         <div className={classes.toolbar}>
           {' '}
-          <img src="/images/logoletras.jpg" height="52px" alt="logo_empresa" />
+          <img src={logo} height="52px" alt="logo_empresa" />
         </div>
 
         <Divider />
+
         <List>
           {routes.map(({ Component, label, path, children }, i) => {
             const getValueChild = child[label.toLocaleLowerCase()];

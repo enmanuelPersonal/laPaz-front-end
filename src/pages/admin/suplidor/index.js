@@ -17,7 +17,7 @@ import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
-import TableSuscripcion from './TableSuscripcion';
+import TableSuplidor from './TableSuplidor';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -52,20 +52,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Suscripcion = () => {
+const Suplidor = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
-        className={classes.root}
-        title="Nueva Suscripción"
+        title="Nuevo Suplidor"
         subTitle="Registrar, consultar y actualizar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
+
       <Box
         justifyContent="center"
         display="flex"
@@ -86,8 +86,8 @@ const Suscripcion = () => {
             >
               <InputBase
                 className={classes.input}
-                placeholder="Buscar Suscripcion por cédula"
-                inputProps={{ 'aria-label': 'Buscar Suscripcion por cedula' }}
+                placeholder="Buscar Suplidor por cédula"
+                inputProps={{ 'aria-label': 'Buscar Suplidor por cedula' }}
               />
               <IconButton
                 // onClick={}
@@ -110,12 +110,12 @@ const Suscripcion = () => {
                   setOpenPopup(true);
                 }}
               >
-                Agregar Suscripción
+                Agregar Suplidor
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <TableSuscripcion
+            <TableSuplidor
               setEdit={setEdit}
               setBody={setBody}
               setOpenPopup={setOpenPopup}
@@ -127,7 +127,7 @@ const Suscripcion = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Suscripcion' : 'Registrar Suscripcion'}`}
+          title={`${edit ? 'Actualizar Suplidor' : 'Registrar Suplidor'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
@@ -138,4 +138,4 @@ const Suscripcion = () => {
   );
 };
 
-export default Suscripcion;
+export default Suplidor;

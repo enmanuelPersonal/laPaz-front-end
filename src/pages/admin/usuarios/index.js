@@ -17,7 +17,7 @@ import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
-import TableSuscripcion from './TableSuscripcion';
+import TableUsuario from './TableUsuario';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -52,17 +52,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Suscripcion = () => {
+const Usuario = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
-        title="Nueva Suscripción"
+        title="Nuevo Usuario"
         subTitle="Registrar, consultar y actualizar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
@@ -86,8 +86,10 @@ const Suscripcion = () => {
             >
               <InputBase
                 className={classes.input}
-                placeholder="Buscar Suscripcion por cédula"
-                inputProps={{ 'aria-label': 'Buscar Suscripcion por cedula' }}
+                placeholder="Buscar usuario por Nombre de Usuario"
+                inputProps={{
+                  'aria-label': 'Buscar usuario por Nombre de Usuario',
+                }}
               />
               <IconButton
                 // onClick={}
@@ -110,12 +112,12 @@ const Suscripcion = () => {
                   setOpenPopup(true);
                 }}
               >
-                Agregar Suscripción
+                Agregar Usuario
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <TableSuscripcion
+            <TableUsuario
               setEdit={setEdit}
               setBody={setBody}
               setOpenPopup={setOpenPopup}
@@ -127,7 +129,7 @@ const Suscripcion = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Suscripcion' : 'Registrar Suscripcion'}`}
+          title={`${edit ? 'Actualizar Usuario' : 'Registrar Usuario'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
@@ -138,4 +140,4 @@ const Suscripcion = () => {
   );
 };
 
-export default Suscripcion;
+export default Usuario;

@@ -130,7 +130,7 @@ const RegisterPage = () => {
             setErrorServer(res.message);
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) => setErrorServer('Verifique que todos los campos esten correctos'))
         .finally(() => setOpenDialog(true));
     } else {
       setShowError(true);

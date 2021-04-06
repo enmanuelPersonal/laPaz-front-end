@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useContext } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -19,7 +19,6 @@ import {
 import { DeleteForever, Edit } from '@material-ui/icons';
 import { get, remove } from '../../../helpers/fetch';
 import { formatDate } from '../../../helpers/formatDate';
-import AppContext from '../../../auth/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,49 +85,30 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
-  const {
-    state: {
-      userData: { idUsuario },
-    },
-  } = useContext(AppContext);
+const TableUsuario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
-  const [suscripcion, setSuscripcion] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [idDeleteSuscripcion, setIdDeleteSuscripcion] = useState('');
+  const [idDeleteUsuario, setIdDeleteUsuario] = useState('');
 
   useEffect(() => {
-    get('suscripcion')
+    get('user')
       .then((res) => res.json())
       .then(({ data }) => {
-        setSuscripcion(data || []);
+        setUsuarios(data || []);
       });
   }, [openPopup, openDialog]);
 
-  const handleUpdate = (suscripcion) => {
+  const handleUpdate = (usuario) => {
     setEdit(true);
-    setBody(suscripcion);
+    setBody(usuario);
     setOpenPopup(true);
   };
 
   const handleDelete = () => {
-    const { idSuscripcion, parientes, idEntidad } = idDeleteSuscripcion;
+    const { idUsuario } = idDeleteUsuario;
 
-    const userData = {};
-
-    const getParientes = parientes.map(({ idEntidad }) => {
-      return idEntidad;
-    });
-
-    Object.assign(
-      userData,
-      { idUsuario },
-      { idSuscripcion },
-      { idParientes: getParientes },
-      { idClienteEntidad: idEntidad }
-    );
-
-    return remove('suscripcion', userData)
+    return remove('user', { idUsuario })
       .then((res) => res.json())
       .then(({ data }) => {
         if (data[0] === 1) {
@@ -143,29 +123,23 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {suscripcion.length > 0 ? (
+            {usuarios.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Cliente
+                    Nombre
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Identidad Cliente
+                    Nombre Usuario
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Estado Suscripcion
+                    Teléfono
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Plan
+                    Tipo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Monto
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Cuotas
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Fecha
+                    Fecha de nacimiento
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -174,40 +148,33 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {suscripcion.length ? (
-                suscripcion.map((suscripcion, index) => {
-                  const {
-                    monto,
-                    statusSuscripcion,
-                    fecha,
-                    tipoPlan,
-                    cuotas,
-                    nombre,
-                    apellido,
-                    identidades: { identidad },
-                  } = suscripcion;
+              {usuarios.length ? (
+                usuarios.map((user, index) => {
+                  const { nombre, usuario, tipo, nacimiento, telefonos } = user;
                   return (
                     <TableRow
                       hover
-                      key={`${identidad} - ${index}`}
+                      key={index + `${usuario}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#BCBFBC' }
                       }
                     >
-                      <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
-                      <TableCell align="center">{identidad}</TableCell>
-                      <TableCell align="center">{statusSuscripcion}</TableCell>
-                      <TableCell align="center">{tipoPlan}</TableCell>
-                      <TableCell align="center">{monto}</TableCell>
-                      <TableCell align="center">{cuotas}</TableCell>
-                      <TableCell align="center">{formatDate(fecha)}</TableCell>
+                      <TableCell align="center">{nombre}</TableCell>
+                      <TableCell align="center">{usuario}</TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(suscripcion)} />{' '}
+                        {telefonos.length ? telefonos[0].telefono : ''}
+                      </TableCell>
+                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">
+                        {formatDate(nacimiento)}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Edit onClick={() => handleUpdate(user)} />{' '}
                         <DeleteForever
                           onClick={() => {
-                            setIdDeleteSuscripcion(suscripcion);
+                            setIdDeleteUsuario(user);
                             setOpenDialog(true);
                           }}
                         />{' '}
@@ -219,7 +186,7 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay suscripciones registradas
+                      No hay Usuarios registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -241,7 +208,7 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Esta seguro que desea eliminar este registro?
+            Está seguro que desea eliminar este registro?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -259,4 +226,4 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   );
 };
 
-export default TableSuscripcion;
+export default TableUsuario;

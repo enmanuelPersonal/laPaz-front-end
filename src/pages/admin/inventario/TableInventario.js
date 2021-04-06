@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useContext } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -16,10 +16,9 @@ import {
   DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
-import AppContext from '../../../auth/AuthContext';
+import { Edit } from '@material-ui/icons';
+import { get } from '../../../helpers/fetch';
+// import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,56 +85,37 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
-  const {
-    state: {
-      userData: { idUsuario },
-    },
-  } = useContext(AppContext);
+const TableInventario = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
-  const [suscripcion, setSuscripcion] = useState([]);
+  const [employes, setEmployes] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [idDeleteSuscripcion, setIdDeleteSuscripcion] = useState('');
+  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
 
   useEffect(() => {
-    get('suscripcion')
+    get('employe')
       .then((res) => res.json())
       .then(({ data }) => {
-        setSuscripcion(data || []);
+        setEmployes(data || []);
       });
   }, [openPopup, openDialog]);
 
-  const handleUpdate = (suscripcion) => {
+  const handleUpdate = (employe) => {
     setEdit(true);
-    setBody(suscripcion);
+    setBody(employe);
     setOpenPopup(true);
   };
 
   const handleDelete = () => {
-    const { idSuscripcion, parientes, idEntidad } = idDeleteSuscripcion;
+    // const { idEntidad } = idDeleteEmploye;
 
-    const userData = {};
-
-    const getParientes = parientes.map(({ idEntidad }) => {
-      return idEntidad;
-    });
-
-    Object.assign(
-      userData,
-      { idUsuario },
-      { idSuscripcion },
-      { idParientes: getParientes },
-      { idClienteEntidad: idEntidad }
-    );
-
-    return remove('suscripcion', userData)
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data[0] === 1) {
-        }
-      })
-      .catch((err) => alert(err.message))
-      .finally(() => setOpenDialog(false));
+    // return remove('employe', { idEntidad })
+    //   .then((res) => res.json())
+    //   .then(({ data }) => {
+    //     if (data[0] === 1) {
+    //     }
+    //   })
+    //   .catch((err) => alert(err.message))
+    //   .finally(() => setOpenDialog(false));
   };
 
   return (
@@ -143,29 +123,23 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {suscripcion.length > 0 ? (
+            {employes.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Cliente
+                    Producto
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Identidad Cliente
+                    Almacén
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Estado Suscripcion
+                    Descripción
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Plan
+                    Unidades
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Monto
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Cuotas
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Fecha
+                    Precio
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -174,43 +148,28 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {suscripcion.length ? (
-                suscripcion.map((suscripcion, index) => {
+              {employes.length ? (
+                employes.map((employe, index) => {
                   const {
-                    monto,
-                    statusSuscripcion,
-                    fecha,
-                    tipoPlan,
-                    cuotas,
-                    nombre,
-                    apellido,
-                    identidades: { identidad },
-                  } = suscripcion;
+                    identidades: { serie },
+                  } = employe;
                   return (
                     <TableRow
                       hover
-                      key={`${identidad} - ${index}`}
+                      key={serie + index}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#BCBFBC' }
                       }
                     >
-                      <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
-                      <TableCell align="center">{identidad}</TableCell>
-                      <TableCell align="center">{statusSuscripcion}</TableCell>
-                      <TableCell align="center">{tipoPlan}</TableCell>
-                      <TableCell align="center">{monto}</TableCell>
-                      <TableCell align="center">{cuotas}</TableCell>
-                      <TableCell align="center">{formatDate(fecha)}</TableCell>
+                      <TableCell align="center"></TableCell>
+                      <TableCell align="center"></TableCell>
+                      <TableCell align="center"></TableCell>
+                      <TableCell align="center"></TableCell>
+                      <TableCell align="center"></TableCell>
                       <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(suscripcion)} />{' '}
-                        <DeleteForever
-                          onClick={() => {
-                            setIdDeleteSuscripcion(suscripcion);
-                            setOpenDialog(true);
-                          }}
-                        />{' '}
+                        <Edit onClick={() => handleUpdate(employe)} />
                       </TableCell>
                     </TableRow>
                   );
@@ -219,7 +178,7 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay suscripciones registradas
+                      No existe algún item en inventario
                     </span>
                   </TableCell>
                 </TableRow>
@@ -259,4 +218,4 @@ const TableSuscripcion = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   );
 };
 
-export default TableSuscripcion;
+export default TableInventario;

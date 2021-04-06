@@ -5,9 +5,15 @@ import {
   VentasIcon,
   AssessmentIcon,
   ClienteIcon,
-  TimelineIcon,
   UserIcon,
   LogOutIcon,
+  EmpleadoIcon,
+  ProductoIcon,
+  ComprasIcon,
+  DifuntoIcon,
+  SuscripcionIcon,
+  MensualidadIcon,
+  ParienteIcon,
 } from '../components/Icons.js';
 
 const routes = [
@@ -24,10 +30,10 @@ const routes = [
     path: '',
   },
   {
-    children: false,
+    children: true,
     Component: InventarioIcon,
     label: 'Inventario',
-    path: '/admin/inventario',
+    path: '',
   },
   {
     children: false,
@@ -37,7 +43,13 @@ const routes = [
   },
   {
     children: true,
-    Component: ClienteIcon,
+    Component: ComprasIcon,
+    label: 'Compras',
+    path: '',
+  },
+  {
+    children: true,
+    Component: SuscripcionIcon,
     label: 'Suscripciones',
     path: '',
   },
@@ -49,15 +61,9 @@ const routes = [
   },
   {
     children: false,
-    Component: ClienteIcon,
+    Component: EmpleadoIcon,
     label: 'Empleados',
     path: '/admin/empleado',
-  },
-  {
-    children: false,
-    Component: TimelineIcon,
-    label: 'Suplidores',
-    path: '/admin/suplidores',
   },
   {
     children: false,
@@ -78,13 +84,21 @@ const routesChilds = {
     { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
     {
       label: 'Difuntos',
-      Icon: ClienteIcon,
+      Icon: DifuntoIcon,
       path: '/admin/reportDifunto',
+    },
+  ],
+  inventario: [
+    { label: 'Inventario', Icon: InventarioIcon, path: '/admin/inventario' },
+    {
+      label: 'Productos',
+      Icon: ProductoIcon,
+      path: '/admin/productos',
     },
   ],
   suscripciones: [
     {
-      Icon: ClienteIcon,
+      Icon: SuscripcionIcon,
       label: 'Suscripciones',
       path: '/admin/suscripciones',
     },
@@ -94,14 +108,22 @@ const routesChilds = {
       path: '/admin/clientes',
     },
     {
-      Icon: ClienteIcon,
+      Icon: ParienteIcon,
       label: 'Parientes',
       path: '/admin/parientes',
     },
     {
-      Icon: ClienteIcon,
+      Icon: MensualidadIcon,
       label: 'Mensualidad',
       path: '/admin/mensualidad',
+    },
+  ],
+  compras: [
+    { label: 'Compras', Icon: VentasIcon, path: '/admin/compras' },
+    {
+      label: 'Suplidores',
+      Icon: ParienteIcon,
+      path: '/admin/suplidores',
     },
   ],
 };

@@ -64,6 +64,11 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
   const [clientId, setClientId] = useState('');
   const [clientEntidadId, setClientEntidadId] = useState('');
 
+  const setAttributes = ({ openDialog = true, error = false }) => {
+    setErrorServer(error);
+    setOpenDialog(openDialog);
+  };
+
   useEffect(() => {
     const fetchTypePlan = async () => {
       await get('typePlan')
@@ -138,6 +143,21 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
     e.preventDefault();
     const userData = cliente;
 
+    if (!userData.client?.nombre) {
+      return setAttributes({
+        openDialog: true,
+        error: 'Por favor verifique que el cliente este correctamente digitado',
+      });
+    }
+
+    if (!getTypePlan) {
+      return setAttributes({
+        openDialog: true,
+        error:
+          'Por favor verifique que el plan este correctamente seleccionado',
+      });
+    }
+
     if (!edit) {
       Object.assign(
         userData,
@@ -160,7 +180,9 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             setErrorServer(res.message);
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     } else {
       const userData = {};
@@ -191,7 +213,9 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             cleanForm();
           }
         })
-        .catch((err) => setErrorServer(err.message))
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
         .finally(() => setOpenDialog(true));
     }
   };
@@ -291,7 +315,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
               size="large"
               onClick={() => setOpenDialogCliente(true)}
               style={
-                cliente
+                cliente.client?.nombre
                   ? { backgroundColor: '#18AF18', color: '#fff' }
                   : { backgroundColor: '#BCBFBC' }
               }
