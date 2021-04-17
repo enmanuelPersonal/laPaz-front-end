@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PeopleOutlineTwoTone,
   Cancel,
@@ -22,10 +22,14 @@ import {
 import { drawerWidth } from '../../../utils/consts.js';
 
 import TableCompra from './TableCompra';
-import ProductForm from './FormProducto';
-import FormSuplidor from './FormSuplidor';
 import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
+import ProductForm from '../productos/Form.js';
+import FormSuplidor from '../suplidor/Form.js';
+import TableSelectSuplidor from '../suplidor/TableSelectSuplidor.js';
+import TableSelectProuct from '../productos/TableSelectProduct';
+import { get, post } from '../../../helpers/fetch.js';
+import { DialogSlide } from '../../../components/alert/DialogSlide.js';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -64,10 +68,117 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialState = {
+  cantidad: 0,
+  precio: 0,
+};
+
+const initialBodyProduct = {
+  descripcion: '',
+};
+
 const Compra = () => {
   const classes = useStyles();
+  const [openPopupSelecctSuplidor, setOpenPopupSelecctSuplidor] = useState(
+    false
+  );
+  const [openPopupSelecctProducto, setOpenPopupSelecctProducto] = useState(
+    false
+  );
+  const [errorServer, setErrorServer] = useState(false);
+  const [isSuscripcionSuccess, setIsCompraSuccess] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [openPopupProducto, setOpenPopupProducto] = useState(false);
   const [openPopupSuplidor, setOpenPopupSuplidor] = useState(false);
+  const [productBodySelect, setProductBodySelect] = useState([]);
+  const [getItebis, setGetItebis] = useState([]);
+  const [productAdd, setProductAdd] = useState(initialState);
+
+  const [suplidorId, setSuplidorId] = useState('');
+  const [getTotal, setGetTotal] = useState(0.0);
+  const [getSubTotal, setGetSubTotal] = useState(0.0);
+  const [suplidorName, setSuplidorName] = useState('');
+  const [productoId, setProductoId] = useState('');
+  const [getItebisId, setGetItebisId] = useState('');
+  const [productBody, setProductBody] = useState(initialBodyProduct);
+
+  const { descripcion } = productBody;
+  const { cantidad, precio } = productAdd;
+
+  useEffect(() => {
+    get('itebis')
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setGetItebis(data || []);
+      });
+  }, []);
+
+  const handleChange = ({ value, name }) => {
+    setProductAdd({ ...productAdd, [name]: value });
+  };
+
+  const handleAddProduct = () => {
+    Object.assign(productBody, { cantidad }, { precio });
+    setProductBodySelect([...productBodySelect, productBody]);
+    setProductAdd(initialState);
+    setProductBody(initialBodyProduct);
+    setProductoId('');
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setErrorServer(false);
+    if (isSuscripcionSuccess) {
+      setIsCompraSuccess(false);
+    }
+  };
+
+  const handleSave = () => {
+    const userData = {};
+
+    const detalle = productBodySelect.map(
+      ({ idProducto, cantidad, precio }) => ({
+        idProducto,
+        cantidad,
+        precio,
+      })
+    );
+
+    Object.assign(
+      userData,
+      { detalle },
+      { total: getTotal },
+      { idSuplidor: suplidorId }
+    );
+
+    return post('compra/add', userData)
+      .then(async (response) => {
+        if (response.status === 201) {
+          setErrorServer(false);
+          setIsCompraSuccess(true);
+          cleanForm();
+        } else {
+          const res = await response.json();
+          setErrorServer(res.message);
+        }
+      })
+      .catch((err) =>
+        setErrorServer('Verifique que todos los campos esten correctos')
+      )
+      .finally(() => setOpenDialog(true));
+  };
+
+  const cleanForm = () => {
+    setProductBodySelect([]);
+    setProductAdd(initialState);
+    setProductBody(initialBodyProduct);
+    setProductoId('');
+    setGetSubTotal(0.0);
+    setGetTotal(0.0);
+    setSuplidorName('');
+    setGetItebisId('');
+  };
+
   return (
     <div>
       <PageHeader
@@ -90,6 +201,7 @@ const Compra = () => {
                   color="secondary"
                   className={classes.button}
                   startIcon={<Cancel />}
+                  onClick={cleanForm}
                 >
                   Cancelar
                 </Button>
@@ -103,6 +215,7 @@ const Compra = () => {
                   }}
                   className={classes.button}
                   startIcon={<ExitToApp />}
+                  onClick={handleSave}
                 >
                   Finalizar
                 </Button>
@@ -118,12 +231,9 @@ const Compra = () => {
                   type="text"
                   size="small"
                   fullWidth
-                  label="Suplidor"
-                  // error={Boolean(errors.nombre)}
-                  //   helperText={errors.nombre ? 'El nombre es requerido' : ''}
-                  /* inputRef={register({
-                    required: true,
-                  })}*/
+                  disabled={true}
+                  label={suplidorName ? '' : 'Suplidor'}
+                  value={suplidorName}
                 />
               </Grid>
               <Grid item xs={5}>
@@ -134,6 +244,7 @@ const Compra = () => {
                     style={{ backgroundColor: '#939393', color: '#fff' }}
                     aria-label="add"
                     component="span"
+                    onClick={() => setOpenPopupSelecctSuplidor(true)}
                   >
                     <Search />
                   </Button>
@@ -163,7 +274,9 @@ const Compra = () => {
                   name="nombre"
                   type="text"
                   size="small"
-                  label="Nombre"
+                  label={descripcion ? '' : 'Nombre'}
+                  value={descripcion}
+                  disabled={true}
                 />
               </Grid>
 
@@ -175,6 +288,7 @@ const Compra = () => {
                     style={{ backgroundColor: '#939393', color: '#fff' }}
                     aria-label="add"
                     component="span"
+                    onClick={() => setOpenPopupSelecctProducto(true)}
                   >
                     <Search />
                   </Button>
@@ -196,9 +310,13 @@ const Compra = () => {
                 <TextField
                   variant="outlined"
                   name="precio"
-                  type="text"
+                  type="number"
                   size="small"
                   label="Precio"
+                  value={precio}
+                  onChange={({ target: { value, name } }) =>
+                    handleChange({ value: parseFloat(value), name })
+                  }
                 />
               </Grid>
 
@@ -206,10 +324,14 @@ const Compra = () => {
                 <TextField
                   variant="outlined"
                   name="cantidad"
-                  type="text"
+                  type="number"
                   size="small"
                   label="Cantidad"
                   fullWidth
+                  value={cantidad}
+                  onChange={({ target: { value, name } }) =>
+                    handleChange({ value: parseInt(value), name })
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -218,6 +340,7 @@ const Compra = () => {
                   style={{ backgroundColor: '#630F5C', color: '#fff' }}
                   startIcon={<Add />}
                   fullWidth
+                  onClick={handleAddProduct}
                 >
                   Agregar
                 </Button>
@@ -231,17 +354,18 @@ const Compra = () => {
                   <InputLabel>ITBIS</InputLabel>
                   <Select
                     label="Tipo"
-                    name="idTipoProducto"
-                    //value={}
-
-                    /*onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
+                    name="idItebis"
+                    value={getItebisId}
+                    onChange={({ target: { value } }) => setGetItebisId(value)}
                   >
                     <MenuItem disabled value="">
                       Seleccione ITBIS
                     </MenuItem>
-                    <MenuItem>18%</MenuItem>
+                    {getItebis.map(({ porcentaje }) => (
+                      <MenuItem key={porcentaje} value={porcentaje}>
+                        {porcentaje}
+                      </MenuItem>
+                    ))}
                     ))
                   </Select>
                 </FormControl>
@@ -249,29 +373,63 @@ const Compra = () => {
               <Grid item xs={4}>
                 <TextField
                   variant="outlined"
-                  name="suplidor"
+                  name="subTotal"
                   type="text"
-                  label="Subtotal"
                   fullWidth
+                  label={getSubTotal ? '' : 'Subtotal'}
+                  disabled={true}
+                  value={getSubTotal.toString()}
                 />
               </Grid>
               <Grid item xs={4}>
                 <TextField
                   variant="outlined"
-                  name="suplidor"
+                  name="total"
                   type="text"
-                  label="Total"
                   fullWidth
+                  label={getTotal ? '' : 'Total'}
+                  disabled={true}
+                  value={getTotal.toString()}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TableCompra />
+                <TableCompra
+                  setProductBodySelect={setProductBodySelect}
+                  productBodySelect={productBodySelect}
+                  setGetTotal={setGetTotal}
+                  setGetSubTotal={setGetSubTotal}
+                  getItebisId={getItebisId}
+                />
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Box>
       <Container style={{ marginLeft: drawerWidth }}>
+        <Popup
+          title={'Seleccionar Suplidor'}
+          openPopup={openPopupSelecctSuplidor}
+          setOpenPopup={setOpenPopupSelecctSuplidor}
+        >
+          <TableSelectSuplidor
+            setSuplidorId={setSuplidorId}
+            suplidorId={suplidorId}
+            setSuplidorName={setSuplidorName}
+            setOpen={setOpenPopupSelecctSuplidor}
+          />
+        </Popup>
+        <Popup
+          title={'Seleccionar Producto'}
+          openPopup={openPopupSelecctProducto}
+          setOpenPopup={setOpenPopupSelecctProducto}
+        >
+          <TableSelectProuct
+            setProductoId={setProductoId}
+            productoId={productoId}
+            setProductBody={setProductBody}
+            setOpen={setOpenPopupSelecctProducto}
+          />
+        </Popup>
         <Popup
           title="Registrar Producto"
           openPopup={openPopupProducto}
@@ -289,6 +447,22 @@ const Compra = () => {
           <FormSuplidor setOpenPopup={setOpenPopupSuplidor} />
         </Popup>
       </Container>
+      {openDialog && (
+        <DialogSlide
+          handleClose={handleClose}
+          openDialog={openDialog}
+          title={
+            !errorServer
+              ? 'Compra completada!'
+              : 'La compra no se pudo completar'
+          }
+          body={
+            !errorServer
+              ? 'Su compra se ha completado correctamente.'
+              : `El registro no se pudo completar. ${errorServer} `
+          }
+        />
+      )}
     </div>
   );
 };

@@ -8,10 +8,15 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { get } from '../../../helpers/fetch';
-// import { formatDate } from '../../../helpers/formatDate';
+import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,36 +83,40 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TableCompra = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableCompra = ({
+  productBodySelect,
+  setProductBodySelect,
+  setGetTotal,
+  setGetSubTotal,
+  getItebisId,
+}) => {
   const classes = useStyles();
-  const [employes, setEmployes] = useState([]);
+  const [idDeleteProducto, setIdDeleteProducto] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
 
   useEffect(() => {
-    get('employe')
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setEmployes(data || []);
-      });
-  }, [openPopup, openDialog]);
+    let getPorciento = getItebisId ? parseFloat(getItebisId) : 0.18;
+    let gTotal = 0.0;
+    let gSubTotal = 0.0;
 
-  const handleUpdate = (employe) => {
-    setEdit(true);
-    setBody(employe);
-    setOpenPopup(true);
-  };
+    productBodySelect.forEach(({ precio, cantidad }) => {
+      gSubTotal += cantidad * precio;
+    });
+
+    gTotal = gSubTotal + gSubTotal * getPorciento;
+
+    setGetSubTotal(gSubTotal);
+    setGetTotal(gTotal);
+    
+    // eslint-disable-next-line
+  }, [productBodySelect, getItebisId]);
 
   const handleDelete = () => {
-    // const { idEntidad } = idDeleteEmploye;
-    // return remove('employe', { idEntidad })
-    //   .then((res) => res.json())
-    //   .then(({ data }) => {
-    //     if (data[0] === 1) {
-    //     }
-    //   })
-    //   .catch((err) => alert(err.message))
-    //   .finally(() => setOpenDialog(false));
+    const getProductos = productBodySelect.filter(
+      (v, i) => i !== idDeleteProducto
+    );
+    setProductBodySelect(getProductos);
+    setOpenDialog(false);
   };
 
   return (
@@ -126,19 +135,75 @@ const TableCompra = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableCell className={classes.head} align="center">
                   Cantidad
                 </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Acciones
+                </TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              <TableRow>
-                <TableCell align="center">10.00</TableCell>
-                <TableCell align="center">5.00</TableCell>
-                <TableCell align="center">1</TableCell>
-              </TableRow>
+              {productBodySelect.length ? (
+                productBodySelect.map((producto, index) => {
+                  const { nombre, cantidad, precio } = producto;
+
+                  return (
+                    <TableRow
+                      hover
+                      key={`${nombre} - ${index}`}
+                      style={
+                        index % 2 === 0
+                          ? { backgroundColor: '#fff' }
+                          : { backgroundColor: '#BCBFBC' }
+                      }
+                    >
+                      <TableCell align="center">{nombre}</TableCell>
+                      <TableCell align="center">{precio}</TableCell>
+                      <TableCell align="center">{cantidad}</TableCell>
+                      <TableCell align="center">
+                        <DeleteForever
+                          onClick={() => {
+                            setIdDeleteProducto(index);
+                            setOpenDialog(true);
+                          }}
+                        />{' '}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow></TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
+      <Dialog
+        open={openDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Eliminar Registro
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Esta seguro que desea eliminar este registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDelete()}
+          >
+            Aceptar
+          </Button>
+          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

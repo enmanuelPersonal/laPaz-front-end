@@ -8,11 +8,10 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Checkbox,
   Button,
+  Checkbox,
 } from '@material-ui/core';
 import { get } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,30 +71,29 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {
-    marginTop: 20,
-  },
+  button: {},
 }));
 
-const TableSelectSuplidor = ({
-  setSuplidorId,
-  suplidorId,
-  setSuplidorName,
+const TableSelectProuct = ({
+  setProductBody,
+  productBody,
+  setProductoId,
+  productoId,
   setOpen,
 }) => {
   const classes = useStyles();
-  const [suplidor, setSuplidor] = useState([]);
-  const [SuplidorSelect, setSuplidorSelect] = useState('');
-  const [SuplidorNameSelect, setSuplidorNameSelect] = useState('');
+  const [productos, setProductos] = useState([]);
+  const [ProductoSelect, setProductoSelect] = useState('');
+  const [ProductoBodySelect, setProductoBodySelect] = useState('');
 
   useEffect(() => {
-    get('suplidor')
+    get('producto')
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
           let checked = false;
-          const { idSuplidor } = data;
-          if (idSuplidor === suplidorId) {
+          const { idProducto } = data;
+          if (idProducto === productoId) {
             checked = true;
           }
 
@@ -104,19 +102,19 @@ const TableSelectSuplidor = ({
             checked,
           };
         });
-        setSuplidor(parseData || []);
+        setProductos(parseData || []);
       });
 
     // eslint-disable-next-line
   }, []);
 
-  const handleSelect = (idSuplido) => {
-    const parseData = suplidor.map((data) => {
-      const { idSuplidor, nombre, apellido, checked } = data;
+  const handleSelect = (productId) => {
+    const parseData = productos.map((data) => {
+      const { idProducto, checked } = data;
 
-      if (idSuplidor === idSuplido) {
-        setSuplidorSelect(!checked ? idSuplido : '');
-        setSuplidorNameSelect(`${nombre} ${apellido}`);
+      if (idProducto === productId) {
+        setProductoSelect(!checked ? productId : '');
+        setProductoBodySelect(data);
         return {
           ...data,
           checked: !checked,
@@ -128,12 +126,12 @@ const TableSelectSuplidor = ({
         };
       }
     });
-    setSuplidor(parseData || []);
+    setProductos(parseData || []);
   };
 
   const handleSave = () => {
-    setSuplidorId(SuplidorSelect);
-    setSuplidorName(SuplidorNameSelect);
+    setProductBody(ProductoBodySelect);
+    setProductoId(ProductoSelect);
     setOpen(false);
   };
 
@@ -142,23 +140,23 @@ const TableSelectSuplidor = ({
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {suplidor.length > 0 ? (
+            {productos.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombres
+                    Nombre
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Apellidos
+                    Descripcion
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Sexo
+                    Tipo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Identidad
+                    categoria
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Nacimiento
+                    Precio
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -167,21 +165,21 @@ const TableSelectSuplidor = ({
               </TableHead>
             ) : null}
             <TableBody>
-              {suplidor.length ? (
-                suplidor.map((client, index) => {
+              {productos.length ? (
+                productos.map((producto, index) => {
                   const {
-                    idSuplidor,
+                    idProducto,
                     nombre,
-                    apellido,
-                    nacimiento,
-                    sexo,
-                    identidades: { serie },
+                    descripcion,
+                    tipo,
+                    categoria,
+                    log: { precio },
                     checked,
-                  } = client;
+                  } = producto;
                   return (
                     <TableRow
                       hover
-                      key={serie + index}
+                      key={index}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -189,17 +187,15 @@ const TableSelectSuplidor = ({
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{apellido}</TableCell>
-                      <TableCell align="center">{sexo}</TableCell>
-                      <TableCell align="center">{serie}</TableCell>
-                      <TableCell align="center">
-                        {formatDate(nacimiento)}
-                      </TableCell>
+                      <TableCell align="center">{descripcion}</TableCell>
+                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">{categoria}</TableCell>
+                      <TableCell align="center">{precio}</TableCell>
                       <TableCell align="center">
                         <Checkbox
-                          name={idSuplidor}
+                          name={idProducto}
                           checked={checked}
-                          onChange={() => handleSelect(idSuplidor)}
+                          onChange={() => handleSelect(idProducto)}
                           inputProps={{ 'aria-label': 'primary checkbox' }}
                         />
                       </TableCell>
@@ -210,7 +206,7 @@ const TableSelectSuplidor = ({
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Suplidores registrados
+                      No hay Productos registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -219,7 +215,6 @@ const TableSelectSuplidor = ({
           </Table>
         </TableContainer>
       </Paper>
-
       <Button
         className={classes.button}
         variant="contained"
@@ -233,4 +228,4 @@ const TableSelectSuplidor = ({
   );
 };
 
-export default TableSelectSuplidor;
+export default TableSelectProuct;
