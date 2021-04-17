@@ -86,7 +86,7 @@ export const AppRouter = () => {
           </AppContext.Provider>
         </ThemeProvider>
       )) || <CircularProgress />}
-      {loggedIn ? <Redirect to="/admin/home" /> : <Redirect to="/login" />}
+      {/* {loggedIn ? <Redirect to="/admin/home" /> : <Redirect to="/login" />} */}
     </Router>
   );
 };
