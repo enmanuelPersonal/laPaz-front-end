@@ -195,13 +195,13 @@ const FormPariente = ({
       });
     }
 
-    if (!clientId) {
-      return setAttributes({
-        openDialog: true,
-        error:
-          'Por favor verifique que el cliente este correctamente seleccionado',
-      });
-    }
+    // if (!clientId) {
+    //   return setAttributes({
+    //     openDialog: true,
+    //     error:
+    //       'Por favor verifique que el cliente este correctamente seleccionado',
+    //   });
+    // }
 
     if (isSuscripcion) {
       Object.assign(
