@@ -73,25 +73,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const TableVenta = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableVenta = () => {
   const classes = useStyles();
-  const [employes, setEmployes] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
   // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
 
-  useEffect(() => {
-    get('employe')
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setEmployes(data || []);
-      });
-  }, [openPopup, openDialog]);
+  // useEffect(() => {
+  //   get('employe')
+  //     .then((res) => res.json())
+  //     .then(({ data }) => {
+  //       setEmployes(data || []);
+  //     });
+  // }, [openPopup, openDialog]);
 
-  const handleUpdate = (employe) => {
-    setEdit(true);
-    setBody(employe);
-    setOpenPopup(true);
-  };
+  // const handleUpdate = (employe) => {
+  //   setEdit(true);
+  //   setBody(employe);
+  //   setOpenPopup(true);
+  // };
 
   const handleDelete = () => {
     // const { idEntidad } = idDeleteEmploye;

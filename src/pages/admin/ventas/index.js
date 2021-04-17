@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   PeopleOutlineTwoTone,
   Cancel,
@@ -19,12 +19,17 @@ import {
   InputLabel,
   Divider,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 import { drawerWidth } from '../../../utils/consts.js';
 
 import TableVenta from './TableVenta';
 import PageHeader from '../../../components/PageHeader';
-import Popup from '../../../components/Popup';
+import Popup from '../../../components/Popup.js';
+import TableSelectCliente from '../clientes/TableSelectClient.js';
+import FormCliente from '../clientes/Form.js';
+import AppContext from '../../../auth/AuthContext.js';
+import { get } from '../../../helpers/fetch.js';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -67,10 +72,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialCliente = {
+  nombre: '',
+  apellido: '',
+};
+
 const Venta = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const {
+    state: {
+      userData: { idUsuario, nombre: nameUser },
+    },
+  } = useContext(AppContext);
   const [openPopupProducto, setOpenPopupProducto] = useState(false);
-  const [openPopupSuplidor, setOpenPopupSuplidor] = useState(false);
+  const [openPopupCliente, setOpenPopupCliente] = useState(false);
+  const [openPopupSelecctCliente, setOpenPopupSelecctCliente] = useState(false);
+  const [getTypePlan, setGetTypePlan] = useState([]);
+  const [typePago, setTypePago] = useState([]);
+
+  const [clienteId, setClienteId] = useState('');
+  const [getTypePagoId, setGetTypePagoId] = useState('');
+  const [getTypePlanId, setGetTypePlanId] = useState('');
+  const [clienteName, setClienteName] = useState(initialCliente);
+
+  const { nombre, apellido } = clienteName;
+
+  useEffect(() => {
+    const fetchGetTypePlan = async () => {
+      await get('typePlan')
+        .then((res) => res.json())
+        .then(({ data }) => setGetTypePlan(data))
+        .catch(() => {});
+    };
+
+    const fetchGetTypePago = async () => {
+      await get('typePago')
+        .then((res) => res.json())
+        .then(({ data }) => setTypePago(data))
+        .catch(() => {});
+    };
+
+    fetchGetTypePlan();
+    fetchGetTypePago();
+
+    // eslint-disable-next-line
+  }, []);
   return (
     <div>
       <PageHeader
@@ -105,6 +152,7 @@ const Venta = () => {
                   }}
                   className={classes.btn}
                   startIcon={<ExitToApp />}
+                  onClick={() => history.push('/admin/inventario')}
                 >
                   Inventario
                 </Button>
@@ -147,12 +195,9 @@ const Venta = () => {
                   name="cliente"
                   type="text"
                   fullWidth
-                  label="Cliente"
-                  // error={Boolean(errors.nombre)}
-                  //   helperText={errors.nombre ? 'El nombre es requerido' : ''}
-                  /* inputRef={register({
-                    required: true,
-                  })}*/
+                  label={'Cliente'}
+                  value={`${nombre || ''} ${apellido || ''}`}
+                  disabled={true}
                 />
               </Grid>
 
@@ -163,6 +208,7 @@ const Venta = () => {
                   style={{ backgroundColor: '#939393', color: '#fff' }}
                   aria-label="add"
                   component="span"
+                  onClick={() => setOpenPopupSelecctCliente(true)}
                 >
                   <Search />
                 </Button>
@@ -172,7 +218,7 @@ const Venta = () => {
                   aria-label="add"
                   component="span"
                   onClick={() => {
-                    setOpenPopupSuplidor(true);
+                    setOpenPopupCliente(true);
                   }}
                 >
                   <Add />
@@ -185,16 +231,19 @@ const Venta = () => {
                   <Select
                     label="Tipo"
                     name="idTipoProducto"
-                    //value={}
-
-                    /*onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
+                    value={getTypePagoId}
+                    onChange={({ target: { value } }) =>
+                      setGetTypePagoId(value)
+                    }
                   >
                     <MenuItem disabled value="">
                       Seleccione Método de Pago
                     </MenuItem>
-                    <MenuItem>Tarjeta</MenuItem>
+                    {typePago.map(({ idTipoPago, tipo }) => (
+                      <MenuItem key={idTipoPago} value={idTipoPago}>
+                        {tipo}
+                      </MenuItem>
+                    ))}
                     ))
                   </Select>
                 </FormControl>
@@ -206,12 +255,9 @@ const Venta = () => {
                   name="usuario"
                   type="text"
                   fullWidth
-                  label="Usuario"
-                  // error={Boolean(errors.nombre)}
-                  //   helperText={errors.nombre ? 'El nombre es requerido' : ''}
-                  /* inputRef={register({
-                    required: true,
-                  })}*/
+                  label={nameUser ? '' : 'Usuario'}
+                  value={nameUser}
+                  disabled={true}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -226,16 +272,19 @@ const Venta = () => {
                   <Select
                     label="Tipo"
                     name="idTipoProducto"
-                    //value={}
-
-                    /*onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
+                    value={getTypePlanId}
+                    onChange={({ target: { value } }) =>
+                      setGetTypePlanId(value)
+                    }
                   >
                     <MenuItem disabled value="">
                       Seleccione Plan Funerario
                     </MenuItem>
-                    <MenuItem>Plan Premium</MenuItem>
+                    {getTypePlan.map(({ idTipoPlan, tipo }) => (
+                      <MenuItem key={idTipoPlan} value={idTipoPlan}>
+                        {tipo}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -351,6 +400,29 @@ const Venta = () => {
           </Grid>
         </Grid>
       </Box>
+      <Container style={{ marginLeft: drawerWidth }}>
+        <Popup
+          title={'Seleccionar Cliente'}
+          openPopup={openPopupSelecctCliente}
+          setOpenPopup={setOpenPopupSelecctCliente}
+        >
+          <TableSelectCliente
+            setClientId={setClienteId}
+            clientId={clienteId}
+            getClienteSelect={setClienteName}
+            setOpen={setOpenPopupSelecctCliente}
+            isVenta={true}
+            isSuscripcion={true}
+          />
+        </Popup>
+        <Popup
+          title="Registrar Cliente"
+          openPopup={openPopupCliente}
+          setOpenPopup={setOpenPopupCliente}
+        >
+          <FormCliente setOpenPopup={setOpenPopupCliente} />
+        </Popup>
+      </Container>
     </div>
   );
 };
