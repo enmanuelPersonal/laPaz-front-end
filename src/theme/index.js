@@ -7,8 +7,11 @@ const theme = createMuiTheme({
       light: '#3c44b126',
     },
     secondary: {
-      main: '#f83245',
+      main: '#E21327',
       light: '#f8324526',
+    },
+    success: {
+      main: '#51CD58',
     },
     progressBar: {
       main: '#fff',
@@ -17,6 +20,9 @@ const theme = createMuiTheme({
     background: {
       default: '#f4f5fd',
     },
+  },
+  typography: {
+    fontFamily: ['Roboto'],
   },
   overrides: {
     MuiAppBar: {

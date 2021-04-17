@@ -62,10 +62,10 @@ const Inventario = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [body, setBody] = useState({});
+  //const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
         title="Inventario"
@@ -136,7 +136,7 @@ const Inventario = () => {
           <Grid item xs={12}>
             <TableInventario
               setEdit={setEdit}
-              setBody={setBody}
+              //setBody={setBody}
               setOpenPopup={setOpenPopup}
               openPopup={openPopup}
             />

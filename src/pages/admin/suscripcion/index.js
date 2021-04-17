@@ -59,7 +59,7 @@ const Suscripcion = () => {
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
         title="Nueva Suscripción"
@@ -127,7 +127,7 @@ const Suscripcion = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Suscripcion' : 'Registrar Suscripcion'}`}
+          title={`${edit ? 'Actualizar Suscripción' : 'Registrar Suscripción'}`}
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
