@@ -109,7 +109,7 @@ const Inventario = () => {
                 className={classes.newButton}
                 onClick={() => {}}
               >
-                Ver inventario
+                Imprimir
               </Button>
 
               <Button

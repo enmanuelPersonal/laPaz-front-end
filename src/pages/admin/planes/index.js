@@ -56,11 +56,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#fff',
     marginRight: 15,
     borderRadius: 10,
-    padding: '1rem',
+    padding: '2rem',
   },
   btn: {
     marginRight: theme.spacing(1),
   },
+  formControl: {
+    minWidth: 222,
+  },
+  inputLabel: {},
 }));
 
 const Plan = () => {
@@ -71,7 +75,7 @@ const Plan = () => {
     <div>
       <PageHeader
         className={classes.root}
-        title="Compras"
+        title="Planes Funerarios"
         subTitle="Registrar, consultar y actualizar"
         icon={<PeopleOutlineTwoTone fontSize="large" />}
       />
@@ -81,49 +85,25 @@ const Plan = () => {
         className={classes.containerTable}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box display="flex">
-              <Box flexGrow={1}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  className={classes.button}
-                  startIcon={<Cancel />}
-                >
-                  Cancelar
-                </Button>
-              </Box>
-              <Box>
-                <Button
-                  variant="contained"
-                  style={{
-                    backgroundColor: '#630F5C',
-                    color: '#fff',
-                  }}
-                  className={classes.button}
-                  startIcon={<ExitToApp />}
-                >
-                  Finalizar
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
           <Grid item xs={4}>
             <Grid container spacing={2}>
               <Grid item xs={7}>
-                <TextField
-                  variant="outlined"
-                  name="suplidor"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  label="Suplidor"
-                  // error={Boolean(errors.nombre)}
-                  //   helperText={errors.nombre ? 'El nombre es requerido' : ''}
-                  /* inputRef={register({
-                    required: true,
-                  })}*/
-                />
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel>Tipo</InputLabel>
+                  <Select
+                    label="Tipo"
+                    name="idTipoProducto"
+                    //value={idTipoProducto}
+                    /*  onChange={({ target: { value, name } }) =>
+                      handleChange({ value, name })
+                    }*/
+                  >
+                    <MenuItem disabled value="">
+                      Seleccione su tipo
+                    </MenuItem>
+                    <MenuItem></MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={5}>
                 <Box display="flex" justifyContent="flex-end">
@@ -161,7 +141,6 @@ const Plan = () => {
                   variant="outlined"
                   name="nombre"
                   type="text"
-                  size="small"
                   label="Nombre"
                 />
               </Grid>
@@ -192,13 +171,25 @@ const Plan = () => {
               </Grid>
 
               <Grid item xs={8}>
-                <TextField
-                  variant="outlined"
-                  name="precio"
-                  type="text"
-                  size="small"
-                  label="Precio"
-                />
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel className={classes.inputLabel}>
+                    Unidad de Medida
+                  </InputLabel>
+                  <Select
+                    label="Tipo"
+                    name="idTipoProducto"
+                    size="small"
+                    //value={idTipoProducto}
+                    /*  onChange={({ target: { value, name } }) =>
+                      handleChange({ value, name })
+                    }*/
+                  >
+                    <MenuItem disabled value="">
+                      Seleccione Unidad de Medida
+                    </MenuItem>
+                    <MenuItem></MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
 
               <Grid item xs={4}>
@@ -206,7 +197,6 @@ const Plan = () => {
                   variant="outlined"
                   name="cantidad"
                   type="text"
-                  size="small"
                   label="Cantidad"
                   fullWidth
                 />
@@ -225,44 +215,6 @@ const Plan = () => {
           </Grid>
           <Grid item xs={8}>
             <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel>ITBIS</InputLabel>
-                  <Select
-                    label="Tipo"
-                    name="idTipoProducto"
-                    //value={}
-
-                    /*onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
-                  >
-                    <MenuItem disabled value="">
-                      Seleccione ITBIS
-                    </MenuItem>
-                    <MenuItem>18%</MenuItem>
-                    ))
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  variant="outlined"
-                  name="suplidor"
-                  type="text"
-                  label="Subtotal"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  variant="outlined"
-                  name="suplidor"
-                  type="text"
-                  label="Total"
-                  fullWidth
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TablePlan />
               </Grid>
