@@ -8,16 +8,10 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
+import { get } from '../../../helpers/fetch';
+// import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,9 +78,37 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TablePlan = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableVenta = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();
+  const [employes, setEmployes] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  // const [idDeleteEmploye, setIdDeleteEmploye] = useState('');
+
+  useEffect(() => {
+    get('employe')
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setEmployes(data || []);
+      });
+  }, [openPopup, openDialog]);
+
+  const handleUpdate = (employe) => {
+    setEdit(true);
+    setBody(employe);
+    setOpenPopup(true);
+  };
+
+  const handleDelete = () => {
+    // const { idEntidad } = idDeleteEmploye;
+    // return remove('employe', { idEntidad })
+    //   .then((res) => res.json())
+    //   .then(({ data }) => {
+    //     if (data[0] === 1) {
+    //     }
+    //   })
+    //   .catch((err) => alert(err.message))
+    //   .finally(() => setOpenDialog(false));
+  };
 
   return (
     <div>
@@ -99,73 +121,26 @@ const TablePlan = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                   Nombre
                 </TableCell>
                 <TableCell className={classes.head} align="center">
+                  Precio
+                </TableCell>
+                <TableCell className={classes.head} align="center">
                   Cantidad
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Unidad Medida
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Tipo
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Categoría
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Acciones
                 </TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              <TableRow
-                hover
-                /*
-                      key={index + `${usuario}`}
-                      style={
-                        index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
-                      }*/
-              >
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center">
-                  <Edit />
-                  <DeleteForever />
-                </TableCell>
+              <TableRow>
+                <TableCell align="center">10.00</TableCell>
+                <TableCell align="center">5.00</TableCell>
+                <TableCell align="center">1</TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
-      <Dialog
-        open={openDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="alert-dialog-slide-title">
-          Eliminar Registro
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Está seguro que desea eliminar este registro?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="primary">
-            Aceptar
-          </Button>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };
 
-export default TablePlan;
+export default TableVenta;
