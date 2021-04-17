@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -16,8 +16,7 @@ import {
   DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
+import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,9 +83,18 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TablePlan = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TablePlan = ({ setProductBodySelect, productBodySelect }) => {
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
+  const [idDeleteProducto, setIdDeleteProducto] = useState('');
+
+  const handleDelete = () => {
+    const getProductos = productBodySelect.filter(
+      (v, i) => i !== idDeleteProducto
+    );
+    setProductBodySelect(getProductos);
+    setOpenDialog(false);
+  };
 
   return (
     <div>
@@ -117,26 +125,45 @@ const TablePlan = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
             </TableHead>
 
             <TableBody>
-              <TableRow
-                hover
-                /*
-                      key={index + `${usuario}`}
+              {productBodySelect.length ? (
+                productBodySelect.map((producto, index) => {
+                  const {
+                    nombre,
+                    cantidad,
+                    unidadMedida,
+                    tipo,
+                    categoria,
+                  } = producto;
+
+                  return (
+                    <TableRow
+                      hover
+                      key={`${nombre} - ${index}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#BCBFBC' }
-                      }*/
-              >
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center">
-                  <Edit />
-                  <DeleteForever />
-                </TableCell>
-              </TableRow>
+                      }
+                    >
+                      <TableCell align="center">{nombre}</TableCell>
+                      <TableCell align="center">{cantidad}</TableCell>
+                      <TableCell align="center">{unidadMedida}</TableCell>
+                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">{categoria}</TableCell>
+                      <TableCell align="center">
+                        <DeleteForever
+                          onClick={() => {
+                            setIdDeleteProducto(index);
+                            setOpenDialog(true);
+                          }}
+                        />{' '}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow></TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -158,7 +185,11 @@ const TablePlan = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDelete()}
+          >
             Aceptar
           </Button>
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>

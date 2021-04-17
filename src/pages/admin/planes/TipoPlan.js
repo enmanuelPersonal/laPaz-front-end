@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
   Dialog,
   Typography,
-  FormControl,
   Grid,
   TextField,
   DialogActions as MuiDialogActions,
   DialogTitle as MuiDialogTitle,
   DialogContent as MuiDialogContent,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { get, post } from '../../../helpers/fetch';
+import { post } from '../../../helpers/fetch';
 import { DialogSlide } from '../../../components/alert/DialogSlide';
 
 const styles = (theme) => ({
@@ -88,67 +84,44 @@ const DialogActions = withStyles((theme) => ({
 
 const initialState = {
   tipo: '',
+  monto: '',
 };
 
 export const FormTipoPlan = ({ setOpen, open }) => {
   const classes = useStyles();
-  const [typeUserData, setTypeUserData] = useState(initialState);
-  const [getPermisos, setGetPermisos] = useState([]);
-  const [permisosSelect, setPermisosSelect] = useState([]);
+  const [typePlanData, setTypePlanData] = useState(initialState);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [errorServer, setErrorServer] = useState(false);
-  const [isTypeUserSuccess, setIsTypeUserSuccess] = useState(false);
+  const [isTypePlanSuccess, setIsTypePlanSuccess] = useState(false);
 
-  const { tipo } = typeUserData;
-
-  useEffect(() => {
-    const fetchGetPermisos = async () => {
-      await get('permisos')
-        .then((res) => res.json())
-        .then(({ data }) => setGetPermisos(data))
-        .catch(() => {});
-    };
-
-    if (getPermisos && !getPermisos.length) fetchGetPermisos();
-    // eslint-disable-next-line
-  }, []);
+  const { tipo, monto } = typePlanData;
 
   const handleChange = ({ value, name }) => {
-    setTypeUserData({ ...typeUserData, [name]: value });
-  };
-
-  const handleSelect = ({ target: { name, checked } }) => {
-    if (checked) {
-      setPermisosSelect([...permisosSelect, name]);
-    } else {
-      const newPermisos = permisosSelect.filter((value) => value !== name);
-      setPermisosSelect(newPermisos);
-    }
+    setTypePlanData({ ...typePlanData, [name]: value });
   };
 
   const cleanForm = () => {
-    setTypeUserData(initialState);
-    setPermisosSelect([]);
+    setTypePlanData(initialState);
   };
 
   const handleClose = () => {
     setOpenDialog(false);
     setErrorServer(false);
-    if (isTypeUserSuccess) {
+    if (isTypePlanSuccess) {
       setOpen(false);
-      setIsTypeUserSuccess(false);
+      setIsTypePlanSuccess(false);
     }
   };
 
   const handleSave = () => {
-    Object.assign(typeUserData, { permisos: permisosSelect });
+    Object.assign(typePlanData, { monto: parseFloat(monto) });
 
-    return post('userType/add', typeUserData)
+    return post('typePlan/add', typePlanData)
       .then(async (response) => {
         if (response.status === 201) {
           setErrorServer(false);
-          setIsTypeUserSuccess(true);
+          setIsTypePlanSuccess(true);
           cleanForm();
         } else {
           const res = await response.json();
@@ -180,7 +153,7 @@ export const FormTipoPlan = ({ setOpen, open }) => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
-                name="nombre"
+                name="tipo"
                 label="Nombre"
                 type="text"
                 value={tipo}
@@ -196,8 +169,8 @@ export const FormTipoPlan = ({ setOpen, open }) => {
                 variant="outlined"
                 name="monto"
                 label="Monto"
-                type="text"
-                value={tipo}
+                type="number"
+                value={monto}
                 onChange={({ target: { value, name } }) =>
                   handleChange({ value, name })
                 }

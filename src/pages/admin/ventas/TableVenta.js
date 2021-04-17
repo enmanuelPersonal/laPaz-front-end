@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -8,10 +8,8 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Slide,
 } from '@material-ui/core';
 import { get } from '../../../helpers/fetch';
-// import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,9 +72,6 @@ const useStyles = makeStyles((theme) => ({
   button: {},
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const TableVenta = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   const classes = useStyles();

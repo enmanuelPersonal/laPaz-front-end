@@ -7,28 +7,20 @@ import {
   Select,
   MenuItem,
   FormControl,
-  FormGroup,
-  Checkbox,
-  OutlinedInput,
   Box,
-  FormControlLabel,
   Button,
   makeStyles,
-  CircularProgress,
   Container,
-  IconButton,
-  InputAdornment,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff, Add, Search } from '@material-ui/icons';
-
-import { DialogSlide } from '../../../components/alert/DialogSlide';
+import { Add, Search } from '@material-ui/icons';
 
 import Form from '../../../components/Form';
-import { get, post, put } from '../../../helpers/fetch';
-import TableSelectEmploye from '../employe/TableSelectEmploye';
+import { get } from '../../../helpers/fetch';
 import Popup from '../../../components/Popup';
 import { drawerWidth } from '../../../utils/consts';
 import { FormTipoPlan } from './TipoPlan';
+import TableSelectProuct from '../productos/TableSelectProduct';
+import ProductForm from '../productos/Form';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -56,319 +48,253 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let initialState = {
-  usuario: '',
-  password: '',
-  idTipoUsuario: '',
+const initialBodyProduct = {
+  descripcion: '',
 };
 
-const FormUsuario = ({ edit = false, body = {}, setOpenPopup }) => {
+const FormArmarPlan = ({
+  setProductBodySelect,
+  productBodySelect,
+  setGetTypePlan,
+  getTypePlan,
+  setGetProductPlan,
+  getIdTypePlan,
+  setGetIdTypePlan,
+}) => {
   const classes = useStyles();
-  const [employeId, setEmployeId] = useState('');
-  const [openPopupEmploye, setOpenPopupEmploye] = useState(false);
-  const [openPopupTypeUser, setOpenPopupTypeUser] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [errorSubmit, setErrorSubmit] = useState(false);
-  const [isUserSuccess, setIsUserSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [getPermisos, setGetPermisos] = useState([]);
-  const [getUserType, setGetUserType] = useState([]);
-  const [userData, setUserData] = useState(initialState);
+  const [openPopupSelecctProducto, setOpenPopupSelecctProducto] = useState(
+    false
+  );
+  const [openPopupTypePlan, setOpenPopupTypePlan] = useState(false);
+  const [openPopupProducto, setOpenPopupProducto] = useState(false);
+  const [getUnidadMedida, setGetUnidadMedida] = useState([]);
 
-  const setAttributes = ({ openDialog = true, error = false }) => {
-    setErrorSubmit(error);
-    setOpenDialog(openDialog);
-  };
+  const [productCantidad, setProductCantidad] = useState(1);
+  const [productBody, setProductBody] = useState(initialBodyProduct);
+  const [productoId, setProductoId] = useState('');
+  const [getIdUnidadMedida, setGetIdUnidadMedida] = useState('');
 
-  //PASSWORD FIELD
-  const [values, setValues] = useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
-  });
-
-  //SELECTS
-
-  const { usuario, password, idTipoUsuario } = userData;
+  const { descripcion } = productBody;
 
   useEffect(() => {
-    const fetchGetUserType = async () => {
-      await get('userType')
+    const fetchGetTypePlan = async () => {
+      await get('typePlan')
         .then((res) => res.json())
-        .then(({ data }) => setGetUserType(data))
+        .then(({ data }) => setGetTypePlan(data))
         .catch(() => {});
     };
 
-    fetchGetUserType();
+    const fetchGetUnidadMedida = async () => {
+      await get('unidadMedida')
+        .then((res) => res.json())
+        .then(({ data }) => setGetUnidadMedida(data))
+        .catch(() => {});
+    };
 
-    if (edit) {
-      const { usuario, idTipoUsuario, idEntidad } = body;
+    fetchGetTypePlan();
+    fetchGetUnidadMedida();
 
-      setUserData({ ...userData, usuario, idTipoUsuario });
-      setEmployeId(idEntidad);
-    } else {
-      cleanForm();
+    // eslint-disable-next-line
+  }, [openPopupTypePlan]);
+
+  useEffect(() => {
+    const fetchGetProductPlan = async () => {
+      await get(`plan/${getIdTypePlan}`)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setProductBodySelect([...data]);
+          setGetProductPlan(data);
+        })
+        .catch(() => {});
+    };
+
+    if (getIdTypePlan) {
+      fetchGetProductPlan();
     }
 
     // eslint-disable-next-line
-  }, [openPopupTypeUser]);
+  }, [getIdTypePlan]);
 
-  useEffect(() => {
-    const fetchGetPermisos = async () => {
-      await get(`permisos/${idTipoUsuario}`)
-        .then((res) => res.json())
-        .then(({ data }) => setGetPermisos(data))
-        .catch(() => {});
-    };
-
-    if (idTipoUsuario) {
-      fetchGetPermisos();
-    }
-  }, [idTipoUsuario]);
-
-  const cleanForm = () => {
-    setUserData(initialState);
-    setEmployeId('');
-    setGetPermisos([]);
-  };
-
-  const handleClose = () => {
-    setOpenDialog(false);
-    setErrorSubmit(false);
-    if (isUserSuccess) {
-      setOpenPopup(false);
-      setIsUserSuccess(false);
-    }
-  };
-
-  const handleChange = ({ value, name }) => {
-    setUserData({ ...userData, [name]: value });
-  };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!userData.idTipoUsuario) {
-      return setAttributes({
-        openDialog: true,
-        error:
-          'Por favor verifique que el tipo de usuario este correctamente seleccionado',
-      });
-    }
-
-    if (!userData.password) {
-      return setAttributes({
-        openDialog: true,
-        error:
-          'Por favor verifique que la contrasena este correctamente digitado',
-      });
-    }
-
-    if (!userData.usuario) {
-      return setAttributes({
-        openDialog: true,
-        error: 'Por favor verifique que el usuario este correctamente digitado',
-      });
-    }
-
-    if (!employeId) {
-      return setAttributes({
-        openDialog: true,
-        error:
-          'Por favor verifique que el empleado este correctamente seleccionado',
-      });
-    }
-
-    Object.assign(userData, { idEntidad: employeId });
-
-    if (!edit) {
-      return post('user/add', userData)
-        .then(async (response) => {
-          setLoading(false);
-          if (response.status === 201) {
-            setErrorSubmit(false);
-            setIsUserSuccess(true);
-            cleanForm();
-          } else {
-            const res = await response.json();
-            setErrorSubmit(res.message);
-          }
-        })
-        .catch((err) => setErrorSubmit(err.message))
-        .finally(() => setOpenDialog(true));
-    } else {
-      Object.assign(userData, { idUsuario: body.idUsuario });
-
-      return put('user', userData)
-        .then((res) => res.json())
-        .then(({ data }) => {
-          if (data[0] === 1) {
-            setErrorSubmit(false);
-            setIsUserSuccess(true);
-            cleanForm();
-          }
-        })
-        .catch((err) => setErrorSubmit(err.message))
-        .finally(() => setOpenDialog(true));
-    }
+  const handleAddProduct = () => {
+    let unidadMedida = '';
+    getUnidadMedida.forEach(({ descripcion, idUnidadMedida }) => {
+      if (idUnidadMedida === getIdUnidadMedida) {
+        unidadMedida = descripcion;
+      }
+    });
+    Object.assign(
+      productBody,
+      { cantidad: productCantidad },
+      { idUnidadMedida: getIdUnidadMedida },
+      { unidadMedida: unidadMedida }
+    );
+    setProductBodySelect([...productBodySelect, productBody]);
+    setProductCantidad(1);
+    setProductBody(initialBodyProduct);
+    setProductoId('');
+    setGetIdUnidadMedida('');
   };
 
   return (
     <Form className={classes.form}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={7}>
-              <FormControl
-                variant="outlined"
-                className={classes.formControl}
-                fullWidth
-              >
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Tipo
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  name="idTipoUsuario"
-                  value={idTipoUsuario}
-                  onChange={({ target: { value, name } }) =>
-                    handleChange({ value, name })
-                  }
-                  label="Tipo Plan"
-                >
-                  <MenuItem disabled value="">
-                    Seleccione Tipo Plan
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={3}>
-              <Button
-                className={classes.addBtn}
-                variant="contained"
-                color="primary"
-                aria-label="add"
-                component="span"
-                onClick={() => setOpenPopupTypeUser(true)}
-              >
-                <Add />
-              </Button>
-            </Grid>
-            <Grid item xs={7}>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-                name="nombre"
-                label="Nombre Plan"
-                type="text"
-                value={usuario}
-                onChange={({ target: { value, name } }) =>
-                  handleChange({ value, name })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-                name="monto"
-                label="Monto"
-                type="text"
-                value={usuario}
-                onChange={({ target: { value, name } }) =>
-                  handleChange({ value, name })
-                }
-                fullWidth
-              />
-            </Grid>
-          </Grid>
+        <Grid item xs={7}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Tipo</InputLabel>
+            <Select
+              label="Tipo"
+              name="idTipoProducto"
+              value={getIdTypePlan}
+              onChange={({ target: { value } }) => setGetIdTypePlan(value)}
+            >
+              <MenuItem disabled value="">
+                Seleccione su tipo
+              </MenuItem>
+              {getTypePlan.map(({ idTipoPlan, tipo }) => (
+                <MenuItem key={idTipoPlan} value={idTipoPlan}>
+                  {tipo}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
-      </Grid>
-      <Grid container>
+        <Grid item xs={5}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              style={{ backgroundColor: '#630F5C', color: '#fff' }}
+              aria-label="add"
+              component="span"
+              onClick={() => {
+                setOpenPopupTypePlan(true);
+              }}
+            >
+              <Add />
+            </Button>
+          </Box>
+        </Grid>
+
         <Grid item xs={12}>
-          <div style={{ marginTop: 20 }}>
+          <Box fontWeight="fontWeightBold" fontSize={18}>
+            Producto:
+          </Box>
+        </Grid>
+
+        <Grid item xs={7}>
+          <TextField
+            variant="outlined"
+            name="nombre"
+            type="text"
+            label={descripcion ? '' : 'Nombre'}
+            value={descripcion}
+            disabled={true}
+          />
+        </Grid>
+
+        <Grid item xs={5}>
+          <Box display="flex" justifyContent="flex-end">
             <Button
-              type="submit"
               variant="contained"
-              size="large"
-              color="primary"
-              className={classes.button}
-              onClick={handleSubmit}
+              className={classes.btn}
+              style={{ backgroundColor: '#939393', color: '#fff' }}
+              aria-label="add"
+              component="span"
+              onClick={() => {
+                setOpenPopupSelecctProducto(true);
+              }}
             >
-              {loading ? (
-                <div className={classes.loading}>
-                  <CircularProgress />
-                </div>
-              ) : (
-                `${edit ? 'ACTUALIZAR' : 'GUARDAR'}`
-              )}
+              <Search />
             </Button>
             <Button
               variant="contained"
-              size="large"
-              color="inherit"
-              className={classes.button}
-              onClick={cleanForm}
+              style={{ backgroundColor: '#630F5C', color: '#fff' }}
+              aria-label="add"
+              component="span"
+              onClick={() => {
+                setOpenPopupProducto(true);
+              }}
             >
-              LIMPIAR
+              <Add />
             </Button>
-          </div>
+          </Box>
+        </Grid>
+
+        <Grid item xs={8}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel className={classes.inputLabel}>
+              Unidad de Medida
+            </InputLabel>
+            <Select
+              label="Tipo"
+              name="unidadMedida"
+              size="small"
+              value={getIdUnidadMedida}
+              onChange={({ target: { value } }) => setGetIdUnidadMedida(value)}
+            >
+              <MenuItem disabled value="">
+                Seleccione Unidad de Medida
+              </MenuItem>
+              {getUnidadMedida.map(({ idUnidadMedida, descripcion }) => (
+                <MenuItem key={idUnidadMedida} value={idUnidadMedida}>
+                  {descripcion}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={4}>
+          <TextField
+            variant="outlined"
+            name="cantidad"
+            type="number"
+            label="Cantidad"
+            fullWidth
+            value={productCantidad}
+            onChange={({ target: { value } }) =>
+              setProductCantidad(parseInt(value))
+            }
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: '#630F5C', color: '#fff' }}
+            startIcon={<Add />}
+            fullWidth
+            onClick={handleAddProduct}
+          >
+            Agregar
+          </Button>
         </Grid>
       </Grid>
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={'Seleccionar Plan'}
-          openPopup={openPopupEmploye}
-          setOpenPopup={setOpenPopupEmploye}
+          title={'Seleccionar Productos y servicios'}
+          openPopup={openPopupSelecctProducto}
+          setOpenPopup={setOpenPopupSelecctProducto}
         >
-          <TableSelectEmploye
-            setEmployeId={setEmployeId}
-            employeId={employeId}
-            setOpen={setOpenPopupEmploye}
+          <TableSelectProuct
+            setProductoId={setProductoId}
+            productoId={productoId}
+            setProductBody={setProductBody}
+            setOpen={setOpenPopupSelecctProducto}
           />
         </Popup>
+        <Popup
+          title="Registrar Producto"
+          openPopup={openPopupProducto}
+          setOpenPopup={setOpenPopupProducto}
+        >
+          <ProductForm setOpenPopup={setOpenPopupProducto} />
+        </Popup>
       </Container>
-      {openPopupTypeUser && (
-        <FormTipoPlan setOpen={setOpenPopupTypeUser} open={openPopupTypeUser} />
-      )}
-      {openDialog && (
-        <DialogSlide
-          handleClose={handleClose}
-          openDialog={openDialog}
-          title={
-            !errorSubmit
-              ? edit
-                ? 'Datos Actualizados!'
-                : 'Registro completado!'
-              : edit
-              ? 'La Actualizacion no se pudo completar'
-              : 'El registro no se pudo completar'
-          }
-          body={
-            !errorSubmit
-              ? edit
-                ? 'Su Actualizacion se ha completado correctamente.'
-                : 'Su registro se ha completado correctamente.'
-              : `${
-                  edit ? 'La  actualizacion' : 'El registro'
-                } no se pudo completar. ${errorSubmit} `
-          }
-        />
+
+      {openPopupTypePlan && (
+        <FormTipoPlan setOpen={setOpenPopupTypePlan} open={openPopupTypePlan} />
       )}
     </Form>
   );
 };
 
-export default FormUsuario;
+export default FormArmarPlan;

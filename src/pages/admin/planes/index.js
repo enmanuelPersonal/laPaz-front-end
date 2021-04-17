@@ -3,28 +3,22 @@ import {
   PeopleOutlineTwoTone,
   Cancel,
   ExitToApp,
-  Search,
-  Add,
 } from '@material-ui/icons';
 import {
   makeStyles,
   Box,
   Grid,
   Button,
-  TextField,
-  Container,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from '@material-ui/core';
 
 import { drawerWidth } from '../../../utils/consts.js';
 
 import TablePlan from './TablePlan';
+import FormArmarPlan from './Form';
 
 import PageHeader from '../../../components/PageHeader';
-import Popup from '../../../components/Popup';
+import { post, put } from '../../../helpers/fetch.js';
+import { DialogSlide } from '../../../components/alert/DialogSlide.js';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -69,8 +63,75 @@ const useStyles = makeStyles((theme) => ({
 
 const Plan = () => {
   const classes = useStyles();
-  const [openPopupProducto, setOpenPopupProducto] = useState(false);
-  const [openPopupSuplidor, setOpenPopupSuplidor] = useState(false);
+  const [productBodySelect, setProductBodySelect] = useState([]);
+  const [errorServer, setErrorServer] = useState(false);
+  const [isArmarPlanSuccess, setIsArmarPlanSuccess] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [getTypePlan, setGetTypePlan] = useState([]);
+  const [getIdTypePlan, setGetIdTypePlan] = useState('');
+  const [ProductPlan, setGetProductPlan] = useState([]);
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setErrorServer(false);
+    if (isArmarPlanSuccess) {
+      setIsArmarPlanSuccess(false);
+    }
+  };
+
+  const cleanForm = () => {
+    setProductBodySelect([]);
+    setGetIdTypePlan('');
+    setGetProductPlan([]);
+  };
+
+  const handleSave = () => {
+    const userData = {};
+
+    const detalle = productBodySelect.map(
+      ({ idProducto, cantidad, idUnidadMedida }) => ({
+        idProducto,
+        cantidad,
+        idUnidadMedida,
+      })
+    );
+
+    Object.assign(userData, { detalle }, { idTipoPlan: getIdTypePlan });
+
+    if (ProductPlan.length) {
+      return put('plan', userData)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          if (data) {
+            setErrorServer(false);
+            setIsArmarPlanSuccess(true);
+            cleanForm();
+          }
+        })
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
+        .finally(() => setOpenDialog(true));
+    } else {
+      return post('plan/add', userData)
+        .then(async (response) => {
+          if (response.status === 201) {
+            setErrorServer(false);
+            setIsArmarPlanSuccess(true);
+            cleanForm();
+          } else {
+            const res = await response.json();
+            setErrorServer(res.message);
+          }
+        })
+        .catch((err) =>
+          setErrorServer('Verifique que todos los campos esten correctos')
+        )
+        .finally(() => setOpenDialog(true));
+    }
+  };
+
   return (
     <div>
       <PageHeader
@@ -85,143 +146,83 @@ const Plan = () => {
         className={classes.containerTable}
       >
         <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Grid container spacing={2}>
-              <Grid item xs={7}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel>Tipo</InputLabel>
-                  <Select
-                    label="Tipo"
-                    name="idTipoProducto"
-                    //value={idTipoProducto}
-                    /*  onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
-                  >
-                    <MenuItem disabled value="">
-                      Seleccione su tipo
-                    </MenuItem>
-                    <MenuItem></MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={5}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    className={classes.btn}
-                    style={{ backgroundColor: '#939393', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                  >
-                    <Search />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => {
-                      setOpenPopupSuplidor(true);
-                    }}
-                  >
-                    <Add />
-                  </Button>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box fontWeight="fontWeightBold" fontSize={18}>
-                  Producto:
-                </Box>
-              </Grid>
-
-              <Grid item xs={7}>
-                <TextField
-                  variant="outlined"
-                  name="nombre"
-                  type="text"
-                  label="Nombre"
-                />
-              </Grid>
-
-              <Grid item xs={5}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    className={classes.btn}
-                    style={{ backgroundColor: '#939393', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                  >
-                    <Search />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => {
-                      setOpenPopupProducto(true);
-                    }}
-                  >
-                    <Add />
-                  </Button>
-                </Box>
-              </Grid>
-
-              <Grid item xs={8}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel className={classes.inputLabel}>
-                    Unidad de Medida
-                  </InputLabel>
-                  <Select
-                    label="Tipo"
-                    name="idTipoProducto"
-                    size="small"
-                    //value={idTipoProducto}
-                    /*  onChange={({ target: { value, name } }) =>
-                      handleChange({ value, name })
-                    }*/
-                  >
-                    <MenuItem disabled value="">
-                      Seleccione Unidad de Medida
-                    </MenuItem>
-                    <MenuItem></MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={4}>
-                <TextField
-                  variant="outlined"
-                  name="cantidad"
-                  type="text"
-                  label="Cantidad"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
+          <Grid item xs={12}>
+            <Box display="flex">
+              <Box flexGrow={1}>
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                  startIcon={<Add />}
-                  fullWidth
+                  color="secondary"
+                  className={classes.button}
+                  startIcon={<Cancel />}
+                  onClick={cleanForm}
                 >
-                  Agregar
+                  Cancelar
                 </Button>
-              </Grid>
-            </Grid>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: '#630F5C',
+                    color: '#fff',
+                  }}
+                  className={classes.button}
+                  startIcon={<ExitToApp />}
+                  onClick={handleSave}
+                >
+                  Finalizar
+                </Button>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={4}>
+            <FormArmarPlan
+              setProductBodySelect={setProductBodySelect}
+              productBodySelect={productBodySelect}
+              setGetTypePlan={setGetTypePlan}
+              getTypePlan={getTypePlan}
+              ProductPlan={ProductPlan}
+              setGetProductPlan={setGetProductPlan}
+              setGetIdTypePlan={setGetIdTypePlan}
+              getIdTypePlan={getIdTypePlan}
+            />
           </Grid>
           <Grid item xs={8}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TablePlan />
+                <TablePlan
+                  setProductBodySelect={setProductBodySelect}
+                  productBodySelect={productBodySelect}
+                />
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Box>
+      {openDialog && (
+        <DialogSlide
+          handleClose={handleClose}
+          openDialog={openDialog}
+          title={
+            !errorServer
+              ? ProductPlan.length
+                ? 'Armado de plan actualizado!'
+                : 'Armado de plan completado!'
+              : ProductPlan.length
+              ? 'La Actualizacion del armado de plan no se pudo completar'
+              : 'El armado de plan no se pudo completar'
+          }
+          body={
+            !errorServer
+              ? ProductPlan.length
+                ? 'Su armado de plan se ha actualizado correctamente.'
+                : `Su armado de plan se ha completado correctamente.`
+              : `${
+                  ProductPlan.length ? 'La  actualizacion' : 'El registro'
+                } no se pudo completar. ${errorServer} `
+          }
+        />
+      )}
     </div>
   );
 };
