@@ -22,7 +22,10 @@ const useStyles = makeStyles((theme) => ({
       margin: "auto",
     },
   },
-  avatar: { width: "27%", height: "4em", margin: "auto" },
+  avatar: { width: "27%", height: "4em", margin: "auto",
+  [theme.breakpoints.up(500)]: {
+     width:'30%'
+   }},
   verticalLine: {
     height: "15em",
     [theme.breakpoints.down(1020)]: {
