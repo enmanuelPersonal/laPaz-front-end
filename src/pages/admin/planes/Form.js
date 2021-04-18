@@ -24,14 +24,14 @@ import ProductForm from '../productos/Form';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(0.5),
+    marginRight: theme.spacing(1),
     textTransform: 'none',
   },
   textField: {
     marginBottom: theme.spacing(2),
   },
   formControl: {
-    minWidth: 135,
+    minWidth: 200,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: 350,
-    margin: theme.spacing(2),
   },
 }));
 
@@ -195,7 +194,7 @@ const FormArmarPlan = ({
           <Box display="flex" justifyContent="flex-end">
             <Button
               variant="contained"
-              className={classes.btn}
+              className={classes.button}
               style={{ backgroundColor: '#939393', color: '#fff' }}
               aria-label="add"
               component="span"

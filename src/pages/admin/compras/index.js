@@ -194,7 +194,7 @@ const Compra = () => {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Box display="flex">
+            <Box display="flex" mb={2}>
               <Box flexGrow={1}>
                 <Button
                   variant="contained"

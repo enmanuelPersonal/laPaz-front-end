@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-  PeopleOutlineTwoTone,
-  Cancel,
-  ExitToApp,
-} from '@material-ui/icons';
-import {
-  makeStyles,
-  Box,
-  Grid,
-  Button,
-} from '@material-ui/core';
+import { PeopleOutlineTwoTone, Cancel, ExitToApp } from '@material-ui/icons';
+import { makeStyles, Box, Grid, Button } from '@material-ui/core';
 
 import { drawerWidth } from '../../../utils/consts.js';
 
@@ -23,7 +14,7 @@ import { DialogSlide } from '../../../components/alert/DialogSlide.js';
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
   },
   searchInput: {
     width: '75%',
@@ -147,12 +138,11 @@ const Plan = () => {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Box display="flex">
+            <Box display="flex" mb={2}>
               <Box flexGrow={1}>
                 <Button
                   variant="contained"
                   color="secondary"
-                  className={classes.button}
                   startIcon={<Cancel />}
                   onClick={cleanForm}
                 >

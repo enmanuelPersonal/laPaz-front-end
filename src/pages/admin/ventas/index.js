@@ -297,8 +297,32 @@ const Venta = () => {
 
           <Grid item xs={3}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={3.8}>
                 <Box fontWeight="fontWeightBold">Producto:</Box>
+              </Grid>
+              <Grid item xs={3}>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: '#939393', color: '#fff' }}
+                  aria-label="add"
+                  component="span"
+                  onClick={() => setOpenPopupSelecctCliente(true)}
+                >
+                  <Search />
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: '#630F5C', color: '#fff' }}
+                  aria-label="add"
+                  component="span"
+                  onClick={() => {
+                    setOpenPopupCliente(true);
+                  }}
+                >
+                  <Add />
+                </Button>
               </Grid>
               <Grid item xs={6}>
                 <TextField
