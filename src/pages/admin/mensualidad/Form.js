@@ -35,9 +35,9 @@ const FormMensualidad = () => {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(Date.now());
   return (
-    <Form>
+    <Form style={{ width: 600 }}>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Grid container>
             <Grid item xs={6}>
               <TextField
@@ -45,7 +45,7 @@ const FormMensualidad = () => {
                 name="cliente"
                 label="Cliente"
                 type="text"
-                style={{ maxWidth: 235 }}
+                style={{ maxWidth: 300 }}
               />
             </Grid>
             <Grid item xs={6}>
@@ -67,7 +67,7 @@ const FormMensualidad = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             variant="outlined"
             name="cantidad"
@@ -76,7 +76,7 @@ const FormMensualidad = () => {
             style={{ maxWidth: 150 }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             variant="outlined"
             name="monto"
@@ -85,7 +85,7 @@ const FormMensualidad = () => {
             style={{ maxWidth: 180 }}
           />
         </Grid>
-        <Grid>
+        <Grid item xs={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               variant="outlined"
@@ -99,10 +99,20 @@ const FormMensualidad = () => {
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
-              required={true}
             />
           </MuiPickersUtilsProvider>
         </Grid>
+        <div style={{ marginTop: 50, marginLeft: 12 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            color="primary"
+            className={classes.button}
+          >
+            GUARDAR
+          </Button>
+        </div>
       </Grid>
     </Form>
   );
