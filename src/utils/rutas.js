@@ -61,6 +61,12 @@ const routes = [
   },
   {
     children: false,
+    Component: DifuntoIcon,
+    label: 'Difuntos',
+    path: '/admin/difuntos',
+  },
+  {
+    children: false,
     Component: EmpleadoIcon,
     label: 'Empleados',
     path: '/admin/empleado',

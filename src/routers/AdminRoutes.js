@@ -16,6 +16,7 @@ import Suplidor from '../pages/admin/suplidor';
 import Compra from '../pages/admin/compras';
 import Venta from '../pages/admin/ventas';
 import Plan from '../pages/admin/planes';
+import Difunto from '../pages/admin/difuntos';
 
 export const AdminRoutes = () => {
   return (
@@ -36,6 +37,7 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/compras" component={Compra} />
           <Route exact path="/admin/ventas" component={Venta} />
           <Route exact path="/admin/planes" component={Plan} />
+          <Route exact path="/admin/difuntos" component={Difunto} />
           <Redirect to="/admin/dashboar" />
         </Switch>
       </div>
