@@ -8,8 +8,8 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Button,
   Checkbox,
+  Button,
 } from '@material-ui/core';
 import { get } from '../../../helpers/fetch';
 
@@ -71,29 +71,24 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {},
+  button: {
+    marginTop: 20,
+  },
 }));
 
-const TableSelectProuct = ({
-  setProductBody,
-  productBody,
-  setProductoId,
-  productoId,
-  setOpen,
-}) => {
+const TableSelectVehiculo = ({ setVehiculoId, vehiculoId, setOpen }) => {
   const classes = useStyles();
-  const [productos, setProductos] = useState([]);
-  const [ProductoSelect, setProductoSelect] = useState('');
-  const [ProductoBodySelect, setProductoBodySelect] = useState('');
+  const [vehiculo, setVehiculo] = useState([]);
+  const [vehiculoSelect, setVehiculoSelect] = useState('');
 
   useEffect(() => {
-    get('producto/all')
+    get('vehiculo')
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
           let checked = false;
-          const { idProducto } = data;
-          if (idProducto === productoId) {
+          const { idVehiculo } = data;
+          if (idVehiculo === vehiculoId) {
             checked = true;
           }
 
@@ -102,19 +97,18 @@ const TableSelectProuct = ({
             checked,
           };
         });
-        setProductos(parseData || []);
+        setVehiculo(parseData || []);
       });
 
     // eslint-disable-next-line
   }, []);
 
-  const handleSelect = (productId) => {
-    const parseData = productos.map((data) => {
-      const { idProducto, checked } = data;
+  const handleSelect = (idVehiculoGet) => {
+    const parseData = vehiculo.map((data) => {
+      const { idVehiculo, checked } = data;
 
-      if (idProducto === productId) {
-        setProductoSelect(!checked ? productId : '');
-        setProductoBodySelect(data);
+      if (idVehiculo === idVehiculoGet) {
+        setVehiculoSelect(!checked ? idVehiculoGet : '');
         return {
           ...data,
           checked: !checked,
@@ -126,12 +120,11 @@ const TableSelectProuct = ({
         };
       }
     });
-    setProductos(parseData || []);
+    setVehiculo(parseData || []);
   };
 
   const handleSave = () => {
-    setProductBody(ProductoBodySelect);
-    setProductoId(ProductoSelect);
+    setVehiculoId(vehiculoSelect);
     setOpen(false);
   };
 
@@ -140,23 +133,17 @@ const TableSelectProuct = ({
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {productos.length > 0 ? (
+            {vehiculo.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombre
+                    Marca
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Descripcion
+                    Modelo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Tipo
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    categoria
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Precio
+                    Estado
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -165,37 +152,35 @@ const TableSelectProuct = ({
               </TableHead>
             ) : null}
             <TableBody>
-              {productos.length ? (
-                productos.map((producto, index) => {
+              {vehiculo.length ? (
+                vehiculo.map((vehiculoTable, index) => {
                   const {
-                    idProducto,
-                    nombre,
-                    descripcion,
-                    tipo,
-                    categoria,
-                    log: { precio },
+                    idVehiculo,
+                    status,
+                    marca,
+                    modelo,
                     checked,
-                  } = producto;
+                  } = vehiculoTable;
                   return (
                     <TableRow
                       hover
-                      key={index}
+                      key={idVehiculo}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#BCBFBC' }
                       }
                     >
-                      <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{descripcion}</TableCell>
-                      <TableCell align="center">{tipo}</TableCell>
-                      <TableCell align="center">{categoria}</TableCell>
-                      <TableCell align="center">{precio}</TableCell>
+                      <TableCell align="center">{marca}</TableCell>
+                      <TableCell align="center">{modelo}</TableCell>
+                      <TableCell align="center">{`${
+                        status ? 'Disponible' : 'Ocupado'
+                      }`}</TableCell>
                       <TableCell align="center">
                         <Checkbox
-                          name={idProducto}
+                          name={idVehiculo}
                           checked={checked}
-                          onChange={() => handleSelect(idProducto)}
+                          onChange={() => handleSelect(idVehiculo)}
                           inputProps={{ 'aria-label': 'primary checkbox' }}
                         />
                       </TableCell>
@@ -206,7 +191,7 @@ const TableSelectProuct = ({
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Productos registrados
+                      No hay vehiculos registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -215,6 +200,7 @@ const TableSelectProuct = ({
           </Table>
         </TableContainer>
       </Paper>
+
       <Button
         className={classes.button}
         variant="contained"
@@ -228,4 +214,4 @@ const TableSelectProuct = ({
   );
 };
 
-export default TableSelectProuct;
+export default TableSelectVehiculo;

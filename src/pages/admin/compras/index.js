@@ -69,12 +69,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialState = {
-  cantidad: 0,
+  cantidad: 1,
   precio: 0,
 };
 
 const initialBodyProduct = {
-  descripcion: '',
+  nombre: '',
 };
 
 const Compra = () => {
@@ -102,7 +102,7 @@ const Compra = () => {
   const [getItebisId, setGetItebisId] = useState('');
   const [productBody, setProductBody] = useState(initialBodyProduct);
 
-  const { descripcion } = productBody;
+  const { nombre: descripcion } = productBody;
   const { cantidad, precio } = productAdd;
 
   useEffect(() => {
