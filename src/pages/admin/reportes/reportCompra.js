@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Search as SearchIcon,
   ViewList,
@@ -25,6 +25,8 @@ import {
 import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 import { drawerWidth } from '../../../utils/consts.js';
+import { get } from '../../../helpers/fetch';
+import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -78,6 +80,17 @@ const useStyles = makeStyles((theme) => ({
 const ReportCompra = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const [compra, setCompra] = useState([]);
+  const [getDetalle, setGetDetalle] = useState([]);
+
+  useEffect(() => {
+    get('compra')
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setCompra(data || []);
+      });
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div>
@@ -139,7 +152,7 @@ const ReportCompra = () => {
                           Suplidor
                         </TableCell>
                         <TableCell className={classes.head} align="center">
-                          Método
+                          Estado
                         </TableCell>
                         <TableCell className={classes.head} align="center">
                           Monto Total
@@ -154,30 +167,56 @@ const ReportCompra = () => {
                     </TableHead>
 
                     <TableBody>
-                      <TableRow
-                        hover
-                        /*  key={idProducto}
-                      style={
-                        index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#ECECEC' }
-                      } */
-                      >
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-
-                        <TableCell align="center">
-                          <Button
-                            onClick={() => {
-                              setOpenPopup(true);
-                            }}
-                          >
-                            <Visibility />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
+                      {compra.length ? (
+                        compra.map((compra, index) => {
+                          const {
+                            nombre,
+                            apellido,
+                            total,
+                            status,
+                            createdAt,
+                            detalle,
+                          } = compra;
+                          return (
+                            <TableRow
+                              hover
+                              key={`${nombre} - ${index}`}
+                              style={
+                                index % 2 === 0
+                                  ? { backgroundColor: '#fff' }
+                                  : { backgroundColor: '#ECECEC' }
+                              }
+                            >
+                              <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
+                              <TableCell align="center">{`${
+                                status ? 'Completada' : 'Cancelada'
+                              }`}</TableCell>
+                              <TableCell align="center">{total}</TableCell>
+                              <TableCell align="center">
+                                {formatDate(createdAt)}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setGetDetalle(detalle);
+                                    setOpenPopup(true);
+                                  }}
+                                >
+                                  <Visibility />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow className={classes.emptyRow}>
+                          <TableCell align="center" colSpan="2">
+                            <span className={classes.tableLabel}>
+                              No hay compras registrados
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -204,10 +243,7 @@ const ReportCompra = () => {
                       Descripción
                     </TableCell>
                     <TableCell className={classes.head} align="center">
-                      Tipo
-                    </TableCell>
-                    <TableCell className={classes.head} align="center">
-                      Categoría
+                      Cantidad
                     </TableCell>
                     <TableCell className={classes.head} align="center">
                       Costo
@@ -216,21 +252,35 @@ const ReportCompra = () => {
                 </TableHead>
 
                 <TableBody>
-                  <TableRow
-                    hover
-                    /*  key={idProducto}
-                      style={
-                        index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#ECECEC' }
-                      } */
-                  >
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                  </TableRow>
+                  {getDetalle.length ? (
+                    getDetalle.map((detalle, index) => {
+                      const { nombre, descripcion, cantidad, precio } = detalle;
+                      return (
+                        <TableRow
+                          hover
+                          key={`${nombre} - ${index}`}
+                          style={
+                            index % 2 === 0
+                              ? { backgroundColor: '#fff' }
+                              : { backgroundColor: '#ECECEC' }
+                          }
+                        >
+                          <TableCell align="center">{nombre}</TableCell>
+                          <TableCell align="center">{descripcion}</TableCell>
+                          <TableCell align="center">{cantidad}</TableCell>
+                          <TableCell align="center">{precio}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow className={classes.emptyRow}>
+                      <TableCell align="center" colSpan="2">
+                        <span className={classes.tableLabel}>
+                          No hay getDetalles registrados
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

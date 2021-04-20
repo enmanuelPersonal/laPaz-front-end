@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Search as SearchIcon,
   ViewList,
@@ -25,6 +25,8 @@ import {
 import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 import { drawerWidth } from '../../../utils/consts.js';
+import { formatDate } from '../../../helpers/formatDate';
+import { get } from '../../../helpers/fetch';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -78,6 +80,18 @@ const useStyles = makeStyles((theme) => ({
 const ReportVenta = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const [venta, setVenta] = useState([]);
+  const [getDetalle, setGetDetalle] = useState([]);
+
+  useEffect(() => {
+    get('venta')
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setVenta(data || []);
+      });
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div>
       <PageHeader
@@ -138,10 +152,7 @@ const ReportVenta = () => {
                           Cliente
                         </TableCell>
                         <TableCell className={classes.head} align="center">
-                          Método
-                        </TableCell>
-                        <TableCell className={classes.head} align="center">
-                          Usuario
+                          Estado
                         </TableCell>
                         <TableCell className={classes.head} align="center">
                           Monto Total
@@ -152,40 +163,60 @@ const ReportVenta = () => {
                         <TableCell className={classes.head} align="center">
                           Productos
                         </TableCell>
-                        {/* <TableCell className={classes.head} align="center">
-                    Acciones
-                  </TableCell> */}
                       </TableRow>
                     </TableHead>
 
                     <TableBody>
-                      <TableRow
-                        hover
-                        /*  key={idProducto}
-                      style={
-                        index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#ECECEC' }
-                      } */
-                      >
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center">
-                          <Button
-                            onClick={() => {
-                              setOpenPopup(true);
-                            }}
-                          >
-                            <Visibility />
-                          </Button>
-                        </TableCell>
-                        {/* <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(producto)} />
-                      </TableCell> */}
-                      </TableRow>
+                      {venta.length ? (
+                        venta.map((venta, index) => {
+                          const {
+                            nombre,
+                            apellido,
+                            total,
+                            status,
+                            createdAt,
+                            detalle,
+                          } = venta;
+                          return (
+                            <TableRow
+                              hover
+                              key={`${nombre} - ${index}`}
+                              style={
+                                index % 2 === 0
+                                  ? { backgroundColor: '#fff' }
+                                  : { backgroundColor: '#ECECEC' }
+                              }
+                            >
+                              <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
+                              <TableCell align="center">{`${
+                                status ? 'Completada' : 'Cancelada'
+                              }`}</TableCell>
+                              <TableCell align="center">{total}</TableCell>
+                              <TableCell align="center">
+                                {formatDate(createdAt)}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Button
+                                  onClick={() => {
+                                    setGetDetalle(detalle);
+                                    setOpenPopup(true);
+                                  }}
+                                >
+                                  <Visibility />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow className={classes.emptyRow}>
+                          <TableCell align="center" colSpan="2">
+                            <span className={classes.tableLabel}>
+                              No hay ventas registrados
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -212,10 +243,7 @@ const ReportVenta = () => {
                       Descripción
                     </TableCell>
                     <TableCell className={classes.head} align="center">
-                      Tipo
-                    </TableCell>
-                    <TableCell className={classes.head} align="center">
-                      Categoría
+                      Cantidad
                     </TableCell>
                     <TableCell className={classes.head} align="center">
                       Costo
@@ -224,21 +252,35 @@ const ReportVenta = () => {
                 </TableHead>
 
                 <TableBody>
-                  <TableRow
-                    hover
-                    /*  key={idProducto}
-                      style={
-                        index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#ECECEC' }
-                      } */
-                  >
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="center"></TableCell>
-                  </TableRow>
+                  {getDetalle.length ? (
+                    getDetalle.map((detalle, index) => {
+                      const { nombre, descripcion, cantidad, precio } = detalle;
+                      return (
+                        <TableRow
+                          hover
+                          key={`${nombre} - ${index}`}
+                          style={
+                            index % 2 === 0
+                              ? { backgroundColor: '#fff' }
+                              : { backgroundColor: '#ECECEC' }
+                          }
+                        >
+                          <TableCell align="center">{nombre}</TableCell>
+                          <TableCell align="center">{descripcion}</TableCell>
+                          <TableCell align="center">{cantidad}</TableCell>
+                          <TableCell align="center">{precio}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow className={classes.emptyRow}>
+                      <TableCell align="center" colSpan="2">
+                        <span className={classes.tableLabel}>
+                          No hay getDetalles registrados
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
