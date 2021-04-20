@@ -149,7 +149,7 @@ const TableDifuntos = ({ openPopup }) => {
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>

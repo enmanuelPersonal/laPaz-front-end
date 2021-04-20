@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
+import { Add, AirlineSeatFlat } from '@material-ui/icons';
 import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
@@ -64,7 +64,7 @@ const Difunto = () => {
         className={classes.root}
         title="Difuntos"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<AirlineSeatFlat fontSize="large" />}
       />
       <Box
         justifyContent="center"

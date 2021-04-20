@@ -69,9 +69,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {},
 }));
-
 
 const TableInventario = () => {
   const classes = useStyles();
@@ -139,7 +137,7 @@ const TableInventario = () => {
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>

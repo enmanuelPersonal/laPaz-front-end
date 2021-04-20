@@ -107,7 +107,7 @@ const TableCompra = ({
 
     setGetSubTotal(gSubTotal);
     setGetTotal(gTotal);
-    
+
     // eslint-disable-next-line
   }, [productBodySelect, getItebisId]);
 
@@ -153,7 +153,7 @@ const TableCompra = ({
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>

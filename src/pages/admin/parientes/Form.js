@@ -15,7 +15,9 @@ import {
   makeStyles,
   CircularProgress,
   Container,
+  Tooltip,
 } from '@material-ui/core';
+import { Search, CheckCircle } from '@material-ui/icons';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -443,6 +445,7 @@ const FormPariente = ({
           </FormControl>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              style={{ marginBottom: 25 }}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -458,20 +461,26 @@ const FormPariente = ({
             />
           </MuiPickersUtilsProvider>
           {!isSuscripcion ? (
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setOpenPopupClient(true)}
-              style={
-                clientId
-                  ? { backgroundColor: '#18AF18', color: '#fff' }
-                  : { backgroundColor: '#BCBFBC' }
-              }
-              className={classes.button}
-            >
-              {' '}
-              Seleccionar Cliente
-            </Button>
+            <Tooltip title="Propietario Suscripción" placement="right-start">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => setOpenPopupClient(true)}
+                style={
+                  clientId
+                    ? { backgroundColor: '#18AF18', color: '#fff' }
+                    : { backgroundColor: '#BCBFBC' }
+                }
+                className={classes.button}
+              >
+                {clientId ? (
+                  <CheckCircle style={{ marginRight: 8 }} />
+                ) : (
+                  <Search style={{ marginRight: 8 }} />
+                )}
+                Cliente
+              </Button>
+            </Tooltip>
           ) : (
             <div style={{ marginBottom: 90 }}></div>
           )}

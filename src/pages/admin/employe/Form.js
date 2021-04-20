@@ -437,7 +437,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
             })}
           />
           <FormControl>
-            <FormLabel>Genero</FormLabel>
+            <FormLabel>Género</FormLabel>
             <MuiRadioGroup
               row
               name="sexo"
@@ -456,6 +456,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
           </FormControl>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              style={{ marginBottom: 25 }}
               variant="outlined"
               fullWidth
               margin="normal"

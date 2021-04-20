@@ -100,7 +100,7 @@ const TableVenta = ({
     let gSubTotal = 0.0;
 
     productBodySelect.forEach(({ log: { precio }, cantidad }) => {
-      gSubTotal += (cantidad * precio);
+      gSubTotal += cantidad * precio;
     });
 
     gTotal = parseFloat(gSubTotal + gSubTotal * getPorciento).toFixed(2);
@@ -157,7 +157,7 @@ const TableVenta = ({
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>

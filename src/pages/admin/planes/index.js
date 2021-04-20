@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PeopleOutlineTwoTone, Cancel, ExitToApp } from '@material-ui/icons';
+import { Assessment, Cancel, ExitToApp } from '@material-ui/icons';
 import { makeStyles, Box, Grid, Button } from '@material-ui/core';
 
 import { drawerWidth } from '../../../utils/consts.js';
@@ -129,7 +129,7 @@ const Plan = () => {
         className={classes.root}
         title="Planes Funerarios"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<Assessment fontSize="large" />}
       />
       <Box
         justifyContent="center"
