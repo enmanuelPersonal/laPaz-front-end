@@ -234,7 +234,7 @@ const LoginPage = () => {
             <div />
           </Grid>
         </Grid>
-      {isRedirect && <Redirect to="/home" />}
+      {isRedirect && <Redirect to="/admin/dasboard" />}
     </Paper>
   );
 };

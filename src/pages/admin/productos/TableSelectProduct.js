@@ -71,7 +71,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
-  button: {},
+  button: {
+    marginTop: 10,
+    marginBottom: 10
+  },
 }));
 
 const TableSelectProuct = ({
@@ -136,9 +139,9 @@ const TableSelectProuct = ({
   };
 
   return (
-    <div>
-      <Paper display="flex" justifyContent="center">
-        <TableContainer>
+    <div >
+      <Paper display="flex" justifyContent="center" >
+        <TableContainer style={{height: 500}}>
           <Table>
             {productos.length > 0 ? (
               <TableHead>

@@ -231,7 +231,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
   return (
     <Form>
       <Grid container spacing={3}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControl variant="outlined">
             <InputLabel>Tipo de Plan</InputLabel>
             <Select
@@ -252,7 +252,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             variant="outlined"
             name="monto"
@@ -262,7 +262,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             disabled={true}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             variant="outlined"
             name="cuotas"
@@ -272,7 +272,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             disabled={true}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControl variant="outlined">
             <InputLabel>Estado Suscripcion</InputLabel>
             <Select
@@ -410,7 +410,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
         </Grid>
 
         <Grid item xs={6}>
-          <div style={{ marginTop: 50 }}>
+          <div style={{ marginTop: 0 }}>
             <Button
               onClick={handleSubmit}
               variant="contained"
