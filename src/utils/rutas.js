@@ -97,12 +97,12 @@ const routesChilds = {
       Icon: ComprasIcon,
       path: '/admin/reportes/reportCompra',
     },
-    { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
-    {
-      label: 'Difuntos',
-      Icon: DifuntoIcon,
-      path: '/admin/reportDifunto',
-    },
+    // { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
+    // {
+    //   label: 'Difuntos',
+    //   Icon: DifuntoIcon,
+    //   path: '/admin/reportDifunto',
+    // },
   ],
   inventario: [
     { label: 'Inventario', Icon: InventarioIcon, path: '/admin/inventario' },
