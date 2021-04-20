@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -8,9 +8,11 @@ import {
   TableHead,
   TableRow,
   makeStyles,
-  Button,
-  Slide,
+  // Button,
+  // Slide,
 } from '@material-ui/core';
+import { formatDate } from '../../../helpers/formatDate';
+import { get } from '../../../helpers/fetch';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,12 +75,44 @@ const useStyles = makeStyles((theme) => ({
   button: {},
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+// const Transition = forwardRef(function Transition(props, ref) {
+//   return <Slide direction="up" ref={ref} {...props} />;
+// });
 
-const TableDifuntos = () => {
+const TableDifuntos = ({ openPopup }) => {
   const classes = useStyles();
+  const [difunto, setDifunto] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  // const [idDeletedifunto, setIdDeletedifunto] = useState('');
+
+  useEffect(() => {
+    get('deceased')
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setDifunto(data || []);
+      });
+    // eslint-disable-next-line
+  }, [openPopup, openDialog]);
+
+  // const handleUpdate = (difunto) => {
+  //   setEdit(true);
+  //   setBody(difunto);
+  //   setOpenPopup(true);
+  // };
+
+  // const handleDelete = () => {
+  //   const { idEntidad } = idDeletedifunto;
+
+  //   return remove('difunto', { idEntidad })
+  //     .then((res) => res.json())
+  //     .then(({ data }) => {
+  //       if (data[0] === 1) {
+  //       }
+  //     })
+  //     .catch((err) => alert(err.message))
+  //     .finally(() => setOpenDialog(false));
+  // };
+
   return (
     <div>
       <Paper display="flex" justifyContent="center">
@@ -99,19 +133,42 @@ const TableDifuntos = () => {
             </TableHead>
 
             <TableBody>
-              <TableRow
-              /*hover
-                      key={serie + index}
+              {difunto.length ? (
+                difunto.map((difunto, index) => {
+                  const {
+                    nombre,
+                    apellido,
+                    updatedAt,
+                    nombreCliente,
+                    appellidoCliente,
+                  } = difunto;
+                  return (
+                    <TableRow
+                      hover
+                      key={`${updatedAt} - ${index}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#BCBFBC' }
-                      }*/
-              >
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-                <TableCell align="center"></TableCell>
-              </TableRow>
+                      }
+                    >
+                      <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
+                      <TableCell align="center">{`${nombreCliente} ${appellidoCliente}`}</TableCell>
+                      <TableCell align="center">
+                        {formatDate(updatedAt)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow className={classes.emptyRow}>
+                  <TableCell align="center" colSpan="2">
+                    <span className={classes.tableLabel}>
+                      No hay difuntos registrados
+                    </span>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

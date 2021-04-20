@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
-import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
   makeStyles,
   Box,
-  Paper,
   Grid,
   Button,
-  InputBase,
-  IconButton,
 } from '@material-ui/core';
 
 import Form from './Form';

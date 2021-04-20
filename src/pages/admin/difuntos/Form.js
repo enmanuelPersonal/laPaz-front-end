@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, TextField, Button, makeStyles, Box } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  makeStyles,
+  Box,
+  Container,
+} from '@material-ui/core';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -9,6 +16,14 @@ import {
 import { Search } from '@material-ui/icons';
 
 import Form from '../../../components/Form';
+import Popup from '../../../components/Popup';
+import TableSelectCliente from '../clientes/TableSelectClient';
+import { drawerWidth } from '../../../utils/consts';
+import TableSelectParientes from '../parientes/TableSelectParientes';
+import { DialogSlide } from '../../../components/alert/DialogSlide';
+import { uploadImagen } from '../../../helpers/uploadImagen';
+import { post } from '../../../helpers/fetch';
+
 const { REACT_APP_API_URL } = process.env;
 
 const useStyles = makeStyles((theme) => ({
@@ -24,23 +39,89 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const genderItems = [
-  { id: 'M', genero: 'M' },
-  { id: 'F', genero: 'F' },
-  { id: 'Otro', genero: 'Otro' },
-];
+const initialCliente = {
+  nombre: '',
+  apellido: '',
+};
 
-const phoneItems = [
-  { id: 'casa', tipo: 'Casa' },
-  { id: 'celular', tipo: 'Celular' },
-];
-
-const FormDifuntos = () => {
+const FormDifuntos = ({ edit = false, body = {}, setOpenPopup }) => {
   const classes = useStyles();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [errorServer, setErrorServer] = useState(false);
+  const [isDifuntoSuccess, setIsDifuntoSuccess] = useState(false);
   const [selectedDate, setSelectedDate] = useState(Date.now());
+  const [openPopupSelecctCliente, setOpenPopupSelecctCliente] = useState(false);
+  const [openPopupParientes, setOpenPopupParientes] = useState(false);
+
+  const [clienteId, setClienteId] = useState('');
+  const [clientePersonId, setClientePersonId] = useState('');
+  const [clienteName, setClienteName] = useState(initialCliente);
+  const [parientes, setParientes] = useState([]);
+  const [uploadImg, setUploadImg] = useState('');
+
+  const { nombre, apellido } = clienteName;
+
+  const cleanForm = () => {
+    setSelectedDate(Date.now());
+    setClienteId('');
+    setClientePersonId('');
+    setClienteName(initialCliente);
+    setParientes([]);
+    setUploadImg('');
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setErrorServer(false);
+    if (isDifuntoSuccess) {
+      setOpenPopup(false);
+      setIsDifuntoSuccess(false);
+    }
+  };
+
+  const onChangeImagen = ({ target: { files } }) => {
+    setUploadImg(files);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const url = await uploadImagen(uploadImg);
+
+    const userData = {};
+
+    let difuntoPerson = clientePersonId;
+
+    if (parientes.length) {
+      difuntoPerson = parientes[0].idPersona;
+    }
+
+    Object.assign(
+      userData,
+      { idCliente: clienteId },
+      { idPersona: difuntoPerson },
+      { urlActa: url }
+    );
+
+    return post('deceased/add', userData)
+      .then(async (response) => {
+        if (response.status === 201) {
+          setErrorServer(false);
+          setIsDifuntoSuccess(true);
+          cleanForm();
+        } else {
+          const res = await response.json();
+          setErrorServer(res.message);
+        }
+      })
+      .catch((err) =>
+        setErrorServer('Verifique que todos los campos esten correctos')
+      )
+      .finally(() => setOpenDialog(true));
+  };
 
   return (
-    <Form style={{ width: 800 }}>
+    <Form style={{ width: 800 }} onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={6}>
           <Grid container spacing={1}>
@@ -48,7 +129,9 @@ const FormDifuntos = () => {
               <TextField
                 variant="outlined"
                 name="cliente"
-                label="Propietario Suscripción"
+                label={'Cliente'}
+                value={`${nombre || ''} ${apellido || ''}`}
+                disabled={true}
                 type="text"
                 style={{ maxWidth: 200 }}
               />
@@ -66,6 +149,7 @@ const FormDifuntos = () => {
                   }}
                   aria-label="add"
                   component="span"
+                  onClick={() => setOpenPopupSelecctCliente(true)}
                 >
                   <Search />
                 </Button>
@@ -78,8 +162,33 @@ const FormDifuntos = () => {
               name="nombre"
               label="Nombre Difunto"
               type="text"
+              value={
+                parientes.length
+                  ? `${parientes[0].nombre} ${parientes[0].apellido}`
+                  : ''
+              }
+              disabled={true}
               style={{ maxWidth: 200 }}
             />
+            <Grid item xs={2}>
+              <Box>
+                <Button
+                  variant="contained"
+                  className={classes.btn}
+                  style={{
+                    backgroundColor: '#939393',
+                    color: '#fff',
+                    marginTop: 15,
+                  }}
+                  aria-label="add"
+                  component="span"
+                  onClick={() => setOpenPopupParientes(true)}
+                  disabled={!clienteId}
+                >
+                  <Search />
+                </Button>
+              </Box>
+            </Grid>
             <Box justifyContet="flex-start">
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -111,7 +220,7 @@ const FormDifuntos = () => {
           >
             <img
               style={{ height: 200, width: 200 }}
-              //src={`${REACT_APP_API_URL}/uploads/${url}`}
+              // src={`${REACT_APP_API_URL}/uploads/${url}`}
               alt="Acta Defunción"
             />
           </Box>
@@ -119,7 +228,7 @@ const FormDifuntos = () => {
             className={classes.input}
             id="contained-button-file"
             type="file"
-            // onChange={}
+            onChange={onChangeImagen}
           />
           <label htmlFor="contained-button-file">
             <Button
@@ -146,6 +255,53 @@ const FormDifuntos = () => {
           </div>
         </Grid>
       </Grid>
+      <Container style={{ marginLeft: drawerWidth }}>
+        <Popup
+          title={'Seleccionar Cliente'}
+          openPopup={openPopupSelecctCliente}
+          setOpenPopup={setOpenPopupSelecctCliente}
+        >
+          <TableSelectCliente
+            setClientId={setClienteId}
+            clientId={clienteId}
+            getClienteSelect={setClienteName}
+            setOpen={setOpenPopupSelecctCliente}
+            isVenta={true}
+            isSuscripcion={true}
+            isDifunto={true}
+            setClientePersonId={setClientePersonId}
+          />
+        </Popup>
+        <Popup
+          title={'Seleccionar Difuntos'}
+          openPopup={openPopupParientes}
+          setOpenPopup={setOpenPopupParientes}
+        >
+          <TableSelectParientes
+            setParientesIds={setParientes}
+            parientesIds={parientes}
+            idCliente={clienteId}
+            setOpen={setOpenPopupParientes}
+            isSuscripcion={true}
+          />
+        </Popup>
+      </Container>
+      {openDialog && (
+        <DialogSlide
+          handleClose={handleClose}
+          openDialog={openDialog}
+          title={
+            !errorServer
+              ? 'Registro completado!'
+              : 'El registro no se pudo completar'
+          }
+          body={
+            !errorServer
+              ? 'Su registro se ha completado correctamente.'
+              : `El registro no se pudo completar. ${errorServer} `
+          }
+        />
+      )}
     </Form>
   );
 };

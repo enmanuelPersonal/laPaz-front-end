@@ -85,6 +85,8 @@ const TableSelectCliente = ({
   setClientEntidadId,
   isSuscripcion = false,
   isVenta = false,
+  isDifunto = false,
+  setClientePersonId,
 }) => {
   const classes = useStyles();
   const [cliente, setCliente] = useState([]);
@@ -135,6 +137,9 @@ const TableSelectCliente = ({
                   }
                 : {}
             );
+            if (isDifunto) {
+              setClientePersonId(data.idPersona);
+            }
           } else {
             setClientEntidadId(!checked ? idEntidad : '');
 
