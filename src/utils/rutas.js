@@ -87,6 +87,16 @@ const routes = [
 
 const routesChilds = {
   reportes: [
+    {
+      label: 'Ventas',
+      Icon: VentasIcon,
+      path: '/admin/reportes/reportVenta',
+    },
+    {
+      label: 'Compras',
+      Icon: ComprasIcon,
+      path: '/admin/reportes/reportCompra',
+    },
     { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
     {
       label: 'Difuntos',
@@ -125,7 +135,7 @@ const routesChilds = {
     },
   ],
   compras: [
-    { label: 'Compras', Icon: VentasIcon, path: '/admin/compras' },
+    { label: 'Compras', Icon: ComprasIcon, path: '/admin/compras' },
     {
       label: 'Suplidores',
       Icon: ParienteIcon,

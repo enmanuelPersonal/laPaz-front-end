@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
+import { Add, HowToReg } from '@material-ui/icons';
 import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
@@ -64,7 +64,7 @@ const Suscripcion = () => {
         className={classes.root}
         title="Nueva Suscripción"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<HowToReg fontSize="large" />}
       />
       <Box
         justifyContent="center"

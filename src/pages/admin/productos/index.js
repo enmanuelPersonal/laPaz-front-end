@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Add, PeopleOutlineTwoTone } from '@material-ui/icons';
+import { Add, Archive } from '@material-ui/icons';
 import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
@@ -59,12 +59,12 @@ const Producto = () => {
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
         title="Nuevo Producto"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<Archive fontSize="large" />}
       />
       <Box
         justifyContent="center"

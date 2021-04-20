@@ -5,8 +5,12 @@ import {
   ExitToApp,
   Search,
   Add,
+  ViewList,
+  Print,
+  MonetizationOn,
 } from '@material-ui/icons';
 import {
+  Tooltip,
   makeStyles,
   Box,
   Grid,
@@ -328,7 +332,7 @@ const Venta = () => {
         className={classes.root}
         title="Ventas"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<MonetizationOn fontSize="large" />}
       />
       <Box
         justifyContent="center"
@@ -355,14 +359,14 @@ const Venta = () => {
                     color: '#fff',
                   }}
                   className={classes.btn}
-                  startIcon={<ExitToApp />}
+                  startIcon={<ViewList />}
                   onClick={() => history.push('/admin/inventario')}
                 >
                   Inventario
                 </Button>
               </Box>
 
-              <Box>
+              {/*     <Box>
                 <Button
                   variant="contained"
                   style={{
@@ -370,16 +374,16 @@ const Venta = () => {
                     color: '#fff',
                   }}
                   className={classes.btn}
-                  startIcon={<ExitToApp />}
+                  startIcon={<Print />}
                 >
                   Imprimir
                 </Button>
-              </Box>
+              </Box> */}
               <Box>
                 <Button
                   variant="contained"
                   style={{
-                    backgroundColor: '#630F5C',
+                    backgroundColor: '#336D12',
                     color: '#fff',
                   }}
                   className={classes.button}
@@ -407,27 +411,31 @@ const Venta = () => {
               </Grid>
 
               <Grid item xs={3}>
-                <Button
-                  variant="contained"
-                  className={classes.btn}
-                  style={{ backgroundColor: '#939393', color: '#fff' }}
-                  aria-label="add"
-                  component="span"
-                  onClick={() => setOpenPopupSelecctCliente(true)}
-                >
-                  <Search />
-                </Button>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                  aria-label="add"
-                  component="span"
-                  onClick={() => {
-                    setOpenPopupCliente(true);
-                  }}
-                >
-                  <Add />
-                </Button>
+                <Tooltip title="Buscar Cliente" placement="top">
+                  <Button
+                    variant="contained"
+                    className={classes.btn}
+                    style={{ backgroundColor: '#939393', color: '#fff' }}
+                    aria-label="add"
+                    component="span"
+                    onClick={() => setOpenPopupSelecctCliente(true)}
+                  >
+                    <Search />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Registrar Cliente" placement="top">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
+                    aria-label="add"
+                    component="span"
+                    onClick={() => {
+                      setOpenPopupCliente(true);
+                    }}
+                  >
+                    <Add />
+                  </Button>
+                </Tooltip>
               </Grid>
 
               <Grid item xs={3}>
@@ -502,32 +510,36 @@ const Venta = () => {
 
           <Grid item xs={3}>
             <Grid container spacing={2}>
-              <Grid item xs={3.8}>
+              <Grid item xs={3}>
                 <Box fontWeight="fontWeightBold">Producto:</Box>
               </Grid>
               <Grid item xs={3}>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: '#939393', color: '#fff' }}
-                  aria-label="add"
-                  component="span"
-                  onClick={() => setOpenPopupSelecctProducto(true)}
-                >
-                  <Search />
-                </Button>
+                <Tooltip title="Buscar Producto" placement="top">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: '#939393', color: '#fff' }}
+                    aria-label="add"
+                    component="span"
+                    onClick={() => setOpenPopupSelecctProducto(true)}
+                  >
+                    <Search />
+                  </Button>
+                </Tooltip>
               </Grid>
               <Grid item xs={3}>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                  aria-label="add"
-                  component="span"
-                  onClick={() => {
-                    setOpenPopupProducto(true);
-                  }}
-                >
-                  <Add />
-                </Button>
+                <Tooltip title="Registrar Producto" placement="top">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
+                    aria-label="add"
+                    component="span"
+                    onClick={() => {
+                      setOpenPopupProducto(true);
+                    }}
+                  >
+                    <Add />
+                  </Button>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -554,7 +566,7 @@ const Venta = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
                   variant="outlined"
                   name="precio"
@@ -597,7 +609,6 @@ const Venta = () => {
                         {porcentaje}
                       </MenuItem>
                     ))}
-                    ))
                   </Select>
                 </FormControl>
               </Grid>
@@ -714,12 +725,10 @@ const Venta = () => {
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle id="alert-dialog-slide-title">
-          Desea realizar esta venta con envio
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-slide-title">Venta con Envío</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Esta seguro que desea realizar esta venta con envio?
+            Desea realizar esta venta con envío?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

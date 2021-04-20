@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  PeopleOutlineTwoTone,
   Cancel,
   ExitToApp,
   Search,
   Add,
+  ShoppingBasket,
 } from '@material-ui/icons';
 import {
+  Tooltip,
   makeStyles,
   Box,
   Grid,
@@ -185,7 +186,7 @@ const Compra = () => {
         className={classes.root}
         title="Compras"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<ShoppingBasket fontSize="large" />}
       />
       <Box
         justifyContent="center"
@@ -210,7 +211,7 @@ const Compra = () => {
                 <Button
                   variant="contained"
                   style={{
-                    backgroundColor: '#630F5C',
+                    backgroundColor: '#336D12',
                     color: '#fff',
                   }}
                   className={classes.button}
@@ -238,27 +239,31 @@ const Compra = () => {
               </Grid>
               <Grid item xs={5}>
                 <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    className={classes.btn}
-                    style={{ backgroundColor: '#939393', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => setOpenPopupSelecctSuplidor(true)}
-                  >
-                    <Search />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => {
-                      setOpenPopupSuplidor(true);
-                    }}
-                  >
-                    <Add />
-                  </Button>
+                  <Tooltip title="Buscar Suplidor" placement="top">
+                    <Button
+                      variant="contained"
+                      className={classes.btn}
+                      style={{ backgroundColor: '#939393', color: '#fff' }}
+                      aria-label="add"
+                      component="span"
+                      onClick={() => setOpenPopupSelecctSuplidor(true)}
+                    >
+                      <Search />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Registrar Suplidor" placement="top">
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: '#630F5C', color: '#fff' }}
+                      aria-label="add"
+                      component="span"
+                      onClick={() => {
+                        setOpenPopupSuplidor(true);
+                      }}
+                    >
+                      <Add />
+                    </Button>
+                  </Tooltip>
                 </Box>
               </Grid>
 
@@ -282,27 +287,31 @@ const Compra = () => {
 
               <Grid item xs={5}>
                 <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    className={classes.btn}
-                    style={{ backgroundColor: '#939393', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => setOpenPopupSelecctProducto(true)}
-                  >
-                    <Search />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: '#630F5C', color: '#fff' }}
-                    aria-label="add"
-                    component="span"
-                    onClick={() => {
-                      setOpenPopupProducto(true);
-                    }}
-                  >
-                    <Add />
-                  </Button>
+                  <Tooltip title="Buscar Producto" placement="top">
+                    <Button
+                      variant="contained"
+                      className={classes.btn}
+                      style={{ backgroundColor: '#939393', color: '#fff' }}
+                      aria-label="add"
+                      component="span"
+                      onClick={() => setOpenPopupSelecctProducto(true)}
+                    >
+                      <Search />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Registrar Producto" placement="top">
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: '#630F5C', color: '#fff' }}
+                      aria-label="add"
+                      component="span"
+                      onClick={() => {
+                        setOpenPopupProducto(true);
+                      }}
+                    >
+                      <Add />
+                    </Button>
+                  </Tooltip>
                 </Box>
               </Grid>
 

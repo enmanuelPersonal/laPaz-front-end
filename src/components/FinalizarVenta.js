@@ -17,7 +17,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import TableSelectEmploye from '../pages/admin/employe/TableSelectEmploye';
 import Popup from './Popup';
 import TableSelectVehiculo from '../pages/admin/vehiculo/TableSelectVehiculo';
-import { Search } from '@material-ui/icons';
+import { Search, CheckCircle } from '@material-ui/icons';
 import { drawerWidth } from '../utils/consts';
 import { Direccion } from './Direccion';
 
@@ -39,6 +39,9 @@ const styles = (theme) => ({
       color: theme.palette.secondary.main,
     },
   },
+  btn: {
+    textTransform: 'none',
+  },
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(7),
+  },
+  dialog: {
+    maxWidth: 330,
   },
 }));
 
@@ -118,11 +124,11 @@ export const Transporte = ({
         >
           Registro para el transporte
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers className={classes.dialog}>
           <Grid container spacing={2}>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <Grid container spacing={2}>
-                <Grid item xs={7}>
+                <Grid item xs={8}>
                   <TextField
                     variant="outlined"
                     name="empleado"
@@ -134,67 +140,72 @@ export const Transporte = ({
                     value={empleadoName}
                   />
                 </Grid>
-                <Grid item xs={5}>
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      variant="contained"
-                      className={classes.btn}
-                      style={{ backgroundColor: '#939393', color: '#fff' }}
-                      aria-label="add"
-                      component="span"
-                      onClick={() => setOpenPopupEmploye(true)}
-                    >
-                      <Search />
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={4}>
-              <Grid container spacing={2}>
-                <Grid item xs={7}>
-                  <div>Vehiculo: </div>
-                </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={3}>
                   <Box display="flex" justifyContent="flex-end">
                     <Button
                       variant="contained"
                       className={classes.btn}
                       style={
-                         vehiculoId
+                        empleadoName
                           ? { backgroundColor: '#18AF18', color: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#939393', color: '#fff' }
                       }
                       aria-label="add"
                       component="span"
-                      onClick={() => setOpenPopupVehiculo(true)}
+                      onClick={() => setOpenPopupEmploye(true)}
                     >
-                      <Search />
+                      {' '}
+                      {empleadoName ? <CheckCircle /> : <Search />}
                     </Button>
                   </Box>
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <Grid container spacing={2}>
-                <Grid item xs={7}>
-                  <div>Direccion: </div>
+                <Grid item xs={4}>
+                  <div>Vehiculo: </div>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={2}>
                   <Box display="flex" justifyContent="flex-end">
                     <Button
+                      variant="contained"
+                      className={classes.btn}
+                      style={
+                        vehiculoId
+                          ? { backgroundColor: '#18AF18', color: '#fff' }
+                          : { backgroundColor: '#939393', color: '#fff' }
+                      }
+                      aria-label="add"
+                      component="span"
+                      onClick={() => setOpenPopupVehiculo(true)}
+                    >
+                      {vehiculoId ? <CheckCircle /> : <Search />}
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <div>Dirección: </div>
+                </Grid>
+                <Grid item xs={2}>
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button
+                      className={classes.btn}
                       variant="contained"
                       size="large"
                       onClick={() => setOpenDireccion(true)}
                       style={
                         getDireccion.length
                           ? { backgroundColor: '#18AF18', color: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#939393', color: '#fff' }
                       }
                       className={classes.button}
                     >
-                      {' '}
-                      Registrar Dirección
+                      {getDireccion.length ? <CheckCircle /> : <Search />}
                     </Button>
                   </Box>
                 </Grid>

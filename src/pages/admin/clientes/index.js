@@ -59,7 +59,7 @@ const Cliente = () => {
   const [body, setBody] = useState({});
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
         title="Nuevo Cliente"
@@ -98,7 +98,8 @@ const Cliente = () => {
               </IconButton>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+
+          {/*  <Grid item xs={4}>
             <Box display="flex" justifyContent="flex-end">
               <Button
                 variant="outlined"
@@ -113,7 +114,7 @@ const Cliente = () => {
                 Agregar Cliente
               </Button>
             </Box>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <TableCliente
               setEdit={setEdit}

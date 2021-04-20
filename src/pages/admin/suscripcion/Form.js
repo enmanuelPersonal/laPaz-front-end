@@ -10,7 +10,11 @@ import {
   makeStyles,
   CircularProgress,
   Container,
+  Divider,
+  Tooltip,
 } from '@material-ui/core';
+
+import { Add, Search, CheckCircle } from '@material-ui/icons';
 
 import { DialogSlide } from '../../../components/alert/DialogSlide';
 
@@ -32,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     width: '20ch',
+  },
+  divider: {
+    marginBottom: 5,
+    marginTop: 5,
   },
 }));
 
@@ -223,7 +231,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
   return (
     <Form>
       <Grid container spacing={3}>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <FormControl variant="outlined">
             <InputLabel>Tipo de Plan</InputLabel>
             <Select
@@ -244,7 +252,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             variant="outlined"
             name="monto"
@@ -254,7 +262,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             disabled={true}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             variant="outlined"
             name="cuotas"
@@ -264,7 +272,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             disabled={true}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <FormControl variant="outlined">
             <InputLabel>Estado Suscripcion</InputLabel>
             <Select
@@ -285,6 +293,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} style={{ margin: '-20px auto -40px 10px' }}>
+          <Divider className={classes.divider} />
           <h3>Cliente</h3>
         </Grid>
         <Grid item xs={4}>
@@ -310,25 +319,32 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
         </Grid>
         <Grid item xs={4}>
           {!edit ? (
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setOpenDialogCliente(true)}
-              style={
-                cliente.client?.nombre
-                  ? { backgroundColor: '#18AF18', color: '#fff' }
-                  : { backgroundColor: '#BCBFBC' }
-              }
-              className={classes.button}
-            >
-              {' '}
-              Nuevo Cliente
-            </Button>
+            <Tooltip title="Registrar Cliente" placement="top">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => setOpenDialogCliente(true)}
+                style={
+                  cliente.client?.nombre
+                    ? { backgroundColor: '#18AF18', color: '#fff' }
+                    : { backgroundColor: '#BCBFBC' }
+                }
+                className={classes.button}
+              >
+                {cliente.client ? (
+                  <CheckCircle style={{ marginRight: 8 }} />
+                ) : (
+                  <Add style={{ marginRight: 8 }} />
+                )}
+                Cliente
+              </Button>
+            </Tooltip>
           ) : (
             <Button
               variant="contained"
               size="large"
               onClick={() => setOpenPopupClient(true)}
+              startIcon={<Search />}
               style={
                 clientId
                   ? { backgroundColor: '#18AF18', color: '#fff' }
@@ -336,44 +352,52 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
               }
               className={classes.button}
             >
-              {' '}
-              Seleccionar Cliente
+              Cliente
             </Button>
           )}
         </Grid>
-        <Grid item xs={8} style={{ margin: '-20px auto -40px auto' }}>
-          <h3>Parientes</h3>
+        <Grid item xs={12} style={{ margin: '-20px auto -40px auto' }}>
+          <Divider className={classes.divider} />
+          <h3 style={{ marginBottom: 25 }}>Parientes</h3>
         </Grid>
-        <Grid item xs={4}>
+
+        <Grid item xs={2}>
           {!edit ? (
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setOpenDialogPariente(true)}
-              style={
-                parientes.length
-                  ? { backgroundColor: '#18AF18', color: '#fff' }
-                  : { backgroundColor: '#BCBFBC' }
-              }
-              className={classes.button}
-            >
-              {' '}
-              Agregar Parientes
-            </Button>
+            <Tooltip title="Agregar Pariente" placement="right">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => setOpenDialogPariente(true)}
+                mb={3}
+                className={classes.button}
+                style={
+                  parientes.length
+                    ? { backgroundColor: '#18AF18', color: '#fff' }
+                    : { backgroundColor: '#BCBFBC' }
+                }
+              >
+                {parientes.length ? (
+                  <CheckCircle style={{ marginRight: 8 }} />
+                ) : (
+                  <Add style={{ marginRight: 8 }} />
+                )}
+                Parientes
+              </Button>
+            </Tooltip>
           ) : (
             <Button
               variant="contained"
               size="large"
+              startIcon={<Search />}
               onClick={() => setOpenPopupParientes(true)}
+              className={classes.button}
               style={
                 clientId
                   ? { backgroundColor: '#18AF18', color: '#fff' }
                   : { backgroundColor: '#BCBFBC' }
               }
-              className={classes.button}
             >
-              {' '}
-              Seleccionar Parientes
+              Parientes
             </Button>
           )}
         </Grid>
@@ -384,7 +408,7 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
             setParientes={setParientes}
           />
         </Grid>
-        <Grid item xs={6}></Grid>
+
         <Grid item xs={6}>
           <div style={{ marginTop: 50 }}>
             <Button
@@ -409,7 +433,6 @@ const FormSuscripcion = ({ edit = false, body = {}, setOpenPopup }) => {
               className={classes.button}
               onClick={cleanForm}
             >
-              {' '}
               LIMPIAR
             </Button>
           </div>

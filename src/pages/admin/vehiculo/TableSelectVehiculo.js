@@ -168,7 +168,7 @@ const TableSelectVehiculo = ({ setVehiculoId, vehiculoId, setOpen }) => {
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{marca}</TableCell>

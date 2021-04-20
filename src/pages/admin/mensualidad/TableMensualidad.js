@@ -120,7 +120,7 @@ const TableMensualidad = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }*/
               >
                 <TableCell align="center"></TableCell>

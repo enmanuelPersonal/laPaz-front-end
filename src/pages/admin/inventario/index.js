@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { PeopleOutlineTwoTone } from '@material-ui/icons';
 import {
   Search as SearchIcon,
-  FindInPage,
   Archive,
   ViewList,
+  Print,
 } from '@material-ui/icons';
 import {
   makeStyles,
@@ -68,7 +68,7 @@ const Inventario = () => {
         className={classes.root}
         title="Inventario"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<ViewList fontSize="large" />}
       />
       <Box
         justifyContent="center"
@@ -103,7 +103,7 @@ const Inventario = () => {
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<FindInPage />}
+                startIcon={<Print />}
                 className={classes.newButton}
                 onClick={() => {}}
               >
