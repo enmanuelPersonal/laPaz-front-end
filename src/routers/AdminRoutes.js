@@ -13,6 +13,12 @@ import Usuario from '../pages/admin/usuarios';
 import Producto from '../pages/admin/productos';
 import Inventario from '../pages/admin/inventario';
 import Suplidor from '../pages/admin/suplidor';
+import Compra from '../pages/admin/compras';
+import Venta from '../pages/admin/ventas';
+import Plan from '../pages/admin/planes';
+import Difunto from '../pages/admin/difuntos';
+import ReportVenta from '../pages/admin/reportes/reportVenta';
+import ReportCompra from '../pages/admin/reportes/reportCompra';
 
 export const AdminRoutes = () => {
   return (
@@ -30,6 +36,20 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/mensualidad" component={Mensualidad} />
           <Route exact path="/admin/productos" component={Producto} />
           <Route exact path="/admin/inventario" component={Inventario} />
+          <Route exact path="/admin/compras" component={Compra} />
+          <Route exact path="/admin/ventas" component={Venta} />
+          <Route exact path="/admin/planes" component={Plan} />
+          <Route exact path="/admin/difuntos" component={Difunto} />
+          <Route
+            exact
+            path="/admin/reportes/reportVenta"
+            component={ReportVenta}
+          />
+          <Route
+            exact
+            path="/admin/reportes/reportCompra"
+            component={ReportCompra}
+          />
           <Redirect to="/admin/dashboar" />
         </Switch>
       </div>

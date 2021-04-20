@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { PeopleOutlineTwoTone } from '@material-ui/icons';
 import {
   Search as SearchIcon,
-  FindInPage,
   Archive,
   ViewList,
+  Print,
 } from '@material-ui/icons';
 import {
-  Container,
   makeStyles,
   Box,
   Paper,
@@ -16,9 +15,9 @@ import {
   InputBase,
   IconButton,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 import PageHeader from '../../../components/PageHeader';
-import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
 import TableInventario from './TableInventario';
@@ -61,16 +60,15 @@ const useStyles = makeStyles((theme) => ({
 const Inventario = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [body, setBody] = useState({});
+  const history = useHistory();
 
   return (
-    <div  >
+    <div>
       <PageHeader
         className={classes.root}
         title="Inventario"
         subTitle="Registrar, consultar y actualizar"
-        icon={<PeopleOutlineTwoTone fontSize="large" />}
+        icon={<ViewList fontSize="large" />}
       />
       <Box
         justifyContent="center"
@@ -105,11 +103,11 @@ const Inventario = () => {
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<FindInPage />}
+                startIcon={<Print />}
                 className={classes.newButton}
                 onClick={() => {}}
               >
-                Ver inventario
+                Imprimir
               </Button>
 
               <Button
@@ -117,7 +115,7 @@ const Inventario = () => {
                 color="primary"
                 startIcon={<Archive />}
                 className={classes.newButton}
-                onClick={() => {}}
+                onClick={() => history.push('/admin/productos')}
               >
                 Productos
               </Button>
@@ -127,7 +125,7 @@ const Inventario = () => {
                 color="primary"
                 startIcon={<ViewList />}
                 className={classes.newButton}
-                onClick={() => {}}
+                onClick={() => history.push('/admin/compras')}
               >
                 Registrar compras
               </Button>
@@ -135,22 +133,12 @@ const Inventario = () => {
           </Grid>
           <Grid item xs={12}>
             <TableInventario
-              setEdit={setEdit}
-              setBody={setBody}
               setOpenPopup={setOpenPopup}
               openPopup={openPopup}
             />
           </Grid>
         </Grid>
       </Box>
-
-      <Container style={{ marginLeft: drawerWidth }}>
-        <Popup
-          title={`${edit ? 'Actualizar Inventario' : 'Registrar Inventario'}`}
-          openPopup={openPopup}
-          setOpenPopup={setOpenPopup}
-        ></Popup>
-      </Container>
     </div>
   );
 };

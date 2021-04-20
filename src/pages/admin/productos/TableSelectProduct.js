@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -9,16 +9,9 @@ import {
   TableRow,
   makeStyles,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
+  Checkbox,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
+import { get } from '../../../helpers/fetch';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,41 +74,65 @@ const useStyles = makeStyles((theme) => ({
   button: {},
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TableSelectProuct = ({
+  setProductBody,
+  productBody,
+  setProductoId,
+  productoId,
+  setOpen,
+}) => {
   const classes = useStyles();
-  const [pariente, setPariente] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [idDeletePariente, setIdDeletePariente] = useState('');
+  const [productos, setProductos] = useState([]);
+  const [ProductoSelect, setProductoSelect] = useState('');
+  const [ProductoBodySelect, setProductoBodySelect] = useState('');
 
   useEffect(() => {
-    get('pariente')
+    get('producto/all')
       .then((res) => res.json())
       .then(({ data }) => {
-        setPariente(data || []);
-      });
-  }, [openPopup, openDialog]);
+        const parseData = data.map((data) => {
+          let checked = false;
+          const { idProducto } = data;
+          if (idProducto === productoId) {
+            checked = true;
+          }
 
-  const handleUpdate = (pariente) => {
-    setEdit(true);
-    setBody(pariente);
-    setOpenPopup(true);
+          return {
+            ...data,
+            checked,
+          };
+        });
+        setProductos(parseData || []);
+      });
+
+    // eslint-disable-next-line
+  }, []);
+
+  const handleSelect = (productId) => {
+    const parseData = productos.map((data) => {
+      const { idProducto, checked } = data;
+
+      if (idProducto === productId) {
+        setProductoSelect(!checked ? productId : '');
+        setProductoBodySelect(data);
+        return {
+          ...data,
+          checked: !checked,
+        };
+      } else {
+        return {
+          ...data,
+          checked: false,
+        };
+      }
+    });
+    setProductos(parseData || []);
   };
 
-  const handleDelete = () => {
-    const { idEntidad } = idDeletePariente;
-
-    return remove('pariente', { idEntidad })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data[0] === 1) {
-        }
-      })
-      .catch((err) => alert(err.message))
-      .finally(() => setOpenDialog(false));
+  const handleSave = () => {
+    setProductBody(ProductoBodySelect);
+    setProductoId(ProductoSelect);
+    setOpen(false);
   };
 
   return (
@@ -123,23 +140,23 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {pariente.length > 0 ? (
+            {productos.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombres
+                    Nombre
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Apellidos
+                    Descripcion
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Sexo
+                    Tipo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Identidad
+                    categoria
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Nacimiento
+                    Precio
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -148,19 +165,21 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
               </TableHead>
             ) : null}
             <TableBody>
-              {pariente.length ? (
-                pariente.map((pariente, index) => {
+              {productos.length ? (
+                productos.map((producto, index) => {
                   const {
+                    idProducto,
                     nombre,
-                    apellido,
-                    nacimiento,
-                    sexo,
-                    identidades,
-                  } = pariente;
+                    descripcion,
+                    tipo,
+                    categoria,
+                    log: { precio },
+                    checked,
+                  } = producto;
                   return (
                     <TableRow
                       hover
-                      key={`${nacimiento} - ${index}`}
+                      key={index}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -168,22 +187,17 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{apellido}</TableCell>
-                      <TableCell align="center">{sexo}</TableCell>
+                      <TableCell align="center">{descripcion}</TableCell>
+                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">{categoria}</TableCell>
+                      <TableCell align="center">{precio}</TableCell>
                       <TableCell align="center">
-                        {identidades.length ? identidades[0].serie : ''}
-                      </TableCell>
-                      <TableCell align="center">
-                        {formatDate(nacimiento)}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(pariente)} />{' '}
-                        <DeleteForever
-                          onClick={() => {
-                            setIdDeletePariente(pariente);
-                            setOpenDialog(true);
-                          }}
-                        />{' '}
+                        <Checkbox
+                          name={idProducto}
+                          checked={checked}
+                          onChange={() => handleSelect(idProducto)}
+                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
                       </TableCell>
                     </TableRow>
                   );
@@ -192,7 +206,7 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Parientes registrados
+                      No hay Productos registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -201,35 +215,17 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
           </Table>
         </TableContainer>
       </Paper>
-      <Dialog
-        open={openDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
+      <Button
+        className={classes.button}
+        variant="contained"
+        autoFocus
+        onClick={handleSave}
+        color="primary"
       >
-        <DialogTitle id="alert-dialog-slide-title">
-          Eliminar Registro
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Esta seguro que desea eliminar este registro?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDelete()}
-          >
-            Aceptar
-          </Button>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-        </DialogActions>
-      </Dialog>
+        GUARDAR
+      </Button>
     </div>
   );
 };
 
-export default TablePariente;
+export default TableSelectProuct;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, forwardRef } from 'react';
 import {
   Paper,
   Table,
@@ -16,9 +16,7 @@ import {
   DialogTitle,
   Slide,
 } from '@material-ui/core';
-import { DeleteForever, Edit } from '@material-ui/icons';
-import { get, remove } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
+import { DeleteForever } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,37 +83,17 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
+const TablePlan = ({ setProductBodySelect, productBodySelect }) => {
   const classes = useStyles();
-  const [pariente, setPariente] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [idDeletePariente, setIdDeletePariente] = useState('');
-
-  useEffect(() => {
-    get('pariente')
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setPariente(data || []);
-      });
-  }, [openPopup, openDialog]);
-
-  const handleUpdate = (pariente) => {
-    setEdit(true);
-    setBody(pariente);
-    setOpenPopup(true);
-  };
+  const [idDeleteProducto, setIdDeleteProducto] = useState('');
 
   const handleDelete = () => {
-    const { idEntidad } = idDeletePariente;
-
-    return remove('pariente', { idEntidad })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data[0] === 1) {
-        }
-      })
-      .catch((err) => alert(err.message))
-      .finally(() => setOpenDialog(false));
+    const getProductos = productBodySelect.filter(
+      (v, i) => i !== idDeleteProducto
+    );
+    setProductBodySelect(getProductos);
+    setOpenDialog(false);
   };
 
   return (
@@ -123,44 +101,44 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {pariente.length > 0 ? (
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.head} align="center">
-                    Nombres
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Apellidos
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Sexo
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Identidad
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Nacimiento
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Acciones
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-            ) : null}
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.head} align="center">
+                  Nombre
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Cantidad
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Unidad Medida
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Tipo
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Categoría
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Acciones
+                </TableCell>
+              </TableRow>
+            </TableHead>
+
             <TableBody>
-              {pariente.length ? (
-                pariente.map((pariente, index) => {
+              {productBodySelect.length ? (
+                productBodySelect.map((producto, index) => {
                   const {
                     nombre,
-                    apellido,
-                    nacimiento,
-                    sexo,
-                    identidades,
-                  } = pariente;
+                    cantidad,
+                    unidadMedida,
+                    tipo,
+                    categoria,
+                  } = producto;
+
                   return (
                     <TableRow
                       hover
-                      key={`${nacimiento} - ${index}`}
+                      key={`${nombre} - ${index}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
@@ -168,19 +146,14 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{apellido}</TableCell>
-                      <TableCell align="center">{sexo}</TableCell>
+                      <TableCell align="center">{cantidad}</TableCell>
+                      <TableCell align="center">{unidadMedida}</TableCell>
+                      <TableCell align="center">{tipo}</TableCell>
+                      <TableCell align="center">{categoria}</TableCell>
                       <TableCell align="center">
-                        {identidades.length ? identidades[0].serie : ''}
-                      </TableCell>
-                      <TableCell align="center">
-                        {formatDate(nacimiento)}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(pariente)} />{' '}
                         <DeleteForever
                           onClick={() => {
-                            setIdDeletePariente(pariente);
+                            setIdDeleteProducto(index);
                             setOpenDialog(true);
                           }}
                         />{' '}
@@ -189,13 +162,7 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
                   );
                 })
               ) : (
-                <TableRow className={classes.emptyRow}>
-                  <TableCell align="center" colSpan="2">
-                    <span className={classes.tableLabel}>
-                      No hay Parientes registrados
-                    </span>
-                  </TableCell>
-                </TableRow>
+                <TableRow></TableRow>
               )}
             </TableBody>
           </Table>
@@ -214,7 +181,7 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Esta seguro que desea eliminar este registro?
+            Está seguro que desea eliminar este registro?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -232,4 +199,4 @@ const TablePariente = ({ setEdit, setBody, setOpenPopup, openPopup }) => {
   );
 };
 
-export default TablePariente;
+export default TablePlan;

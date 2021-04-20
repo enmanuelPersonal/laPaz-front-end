@@ -109,9 +109,15 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
         cargos,
       } = body;
       const getCargos = [];
+      let getCorreo = [];
       cargos.forEach(({ cargo }) => getCargos.push(cargo));
+
+      if (correos.length) {
+        const { correo } = correos[0];
+        getCorreo = correo;
+      }
+
       const { telefono, tipo } = telefonos[0];
-      const { correo } = correos[0];
 
       setGetCargo(getCargos);
       setGetDireccion([
@@ -131,7 +137,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
       setSelectedDate(new Date(nacimiento));
       setGetGenero(sexo);
       setValue('nombre', nombre);
-      setValue('correos', correo);
+      setValue('correos', getCorreo);
       setValue('identidades', serie);
       setValue('telefonos', telefono);
       setValue('apellido', apellido);
@@ -431,7 +437,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
             })}
           />
           <FormControl>
-            <FormLabel>Genero</FormLabel>
+            <FormLabel>Género</FormLabel>
             <MuiRadioGroup
               row
               name="sexo"
@@ -450,6 +456,7 @@ const FormEmploye = ({ edit = false, body = {}, setOpenPopup }) => {
           </FormControl>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              style={{ marginBottom: 25 }}
               variant="outlined"
               fullWidth
               margin="normal"

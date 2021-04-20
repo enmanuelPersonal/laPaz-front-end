@@ -77,10 +77,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableSelectEmploye = ({ setEmployeId, employeId, setOpen }) => {
+const TableSelectEmploye = ({
+  setEmployeId,
+  employeId,
+  setOpen,
+  venta = false,
+  setEmpleadoName,
+}) => {
   const classes = useStyles();
   const [employes, setEmployes] = useState([]);
   const [employeSelect, setEmployeSelect] = useState('');
+  const [employeSelectBody, setEmployeSelectBody] = useState('');
 
   useEffect(() => {
     get('employe')
@@ -108,7 +115,14 @@ const TableSelectEmploye = ({ setEmployeId, employeId, setOpen }) => {
       const { idEntidad, checked } = data;
 
       if (idEntidad === employeId) {
-        setEmployeSelect(!checked ? employeId : '');
+        if (venta) {
+          setEmployeSelectBody(
+            !checked ? `${data.nombre} ${data.apellido}` : ''
+          );
+          setEmployeSelect(!checked ? data.idEmpleado : '');
+        } else {
+          setEmployeSelect(!checked ? employeId : '');
+        }
         return {
           ...data,
           checked: !checked,
@@ -125,6 +139,9 @@ const TableSelectEmploye = ({ setEmployeId, employeId, setOpen }) => {
 
   const handleSave = () => {
     setEmployeId(employeSelect);
+    if (venta) {
+      setEmpleadoName(employeSelectBody);
+    }
     setOpen(false);
   };
 
@@ -176,7 +193,7 @@ const TableSelectEmploye = ({ setEmployeId, employeId, setOpen }) => {
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>

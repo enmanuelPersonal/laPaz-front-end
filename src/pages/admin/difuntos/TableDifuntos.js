@@ -8,7 +8,10 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  // Button,
+  // Slide,
 } from '@material-ui/core';
+import { formatDate } from '../../../helpers/formatDate';
 import { get } from '../../../helpers/fetch';
 
 const useStyles = makeStyles((theme) => ({
@@ -69,87 +72,91 @@ const useStyles = makeStyles((theme) => ({
     color: '#630F5C',
     backgroundColor: '#E6C3E2',
   },
+  button: {},
 }));
 
-const TableInventario = () => {
+// const Transition = forwardRef(function Transition(props, ref) {
+//   return <Slide direction="up" ref={ref} {...props} />;
+// });
+
+const TableDifuntos = ({ openPopup }) => {
   const classes = useStyles();
-  const [inventario, setInventario] = useState([]);
+  const [difunto, setDifunto] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  // const [idDeletedifunto, setIdDeletedifunto] = useState('');
 
   useEffect(() => {
-    get('inventario')
+    get('deceased')
       .then((res) => res.json())
       .then(({ data }) => {
-        setInventario(data || []);
+        setDifunto(data || []);
       });
-  }, []);
+    // eslint-disable-next-line
+  }, [openPopup, openDialog]);
+
+  // const handleUpdate = (difunto) => {
+  //   setEdit(true);
+  //   setBody(difunto);
+  //   setOpenPopup(true);
+  // };
+
+  // const handleDelete = () => {
+  //   const { idEntidad } = idDeletedifunto;
+
+  //   return remove('difunto', { idEntidad })
+  //     .then((res) => res.json())
+  //     .then(({ data }) => {
+  //       if (data[0] === 1) {
+  //       }
+  //     })
+  //     .catch((err) => alert(err.message))
+  //     .finally(() => setOpenDialog(false));
+  // };
 
   return (
     <div>
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {inventario.length > 0 ? (
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.head} align="center">
-                    Producto
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Descripción
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Categoria
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Tipo
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Almacén
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Unidades
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Precio
-                  </TableCell>
-                  {/* <TableCell className={classes.head} align="center">
-                    Acciones
-                  </TableCell> */}
-                </TableRow>
-              </TableHead>
-            ) : null}
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.head} align="center">
+                  Nombre
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Propietario Suscripción
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Fecha Defunción
+                </TableCell>
+              </TableRow>
+            </TableHead>
+
             <TableBody>
-              {inventario.length ? (
-                inventario.map((producto, index) => {
+              {difunto.length ? (
+                difunto.map((difunto, index) => {
                   const {
-                    idProducto,
-                    descripcion,
-                    tipo,
-                    categoria,
                     nombre,
-                    log: { stock, precio },
-                    almacen,
-                  } = producto;
+                    apellido,
+                    updatedAt,
+                    nombreCliente,
+                    appellidoCliente,
+                  } = difunto;
                   return (
                     <TableRow
                       hover
-                      key={idProducto}
+                      key={`${updatedAt} - ${index}`}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#ECECEC' }
                       }
                     >
-                      <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{descripcion}</TableCell>
-                      <TableCell align="center">{categoria}</TableCell>
-                      <TableCell align="center">{tipo}</TableCell>
-                      <TableCell align="center">{almacen}</TableCell>
-                      <TableCell align="center">{stock}</TableCell>
-                      <TableCell align="center">{precio}</TableCell>
-                      {/* <TableCell align="center">
-                        <Edit onClick={() => handleUpdate(producto)} />
-                      </TableCell> */}
+                      <TableCell align="center">{`${nombre} ${apellido}`}</TableCell>
+                      <TableCell align="center">{`${nombreCliente} ${appellidoCliente}`}</TableCell>
+                      <TableCell align="center">
+                        {formatDate(updatedAt)}
+                      </TableCell>
                     </TableRow>
                   );
                 })
@@ -157,7 +164,7 @@ const TableInventario = () => {
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No existe algún item en inventario
+                      No hay difuntos registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -170,4 +177,4 @@ const TableInventario = () => {
   );
 };
 
-export default TableInventario;
+export default TableDifuntos;

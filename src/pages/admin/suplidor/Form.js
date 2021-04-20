@@ -15,6 +15,7 @@ import {
   makeStyles,
   CircularProgress,
 } from '@material-ui/core';
+import { Search, CheckCircle } from '@material-ui/icons';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -444,6 +445,7 @@ const FormSuplidor = ({ edit = false, body = {}, setOpenPopup }) => {
           </FormControl>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              style={{ marginBottom: 25 }}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -469,8 +471,12 @@ const FormSuplidor = ({ edit = false, body = {}, setOpenPopup }) => {
             }
             className={classes.button}
           >
-            {' '}
-            Registrar Dirección
+            {getDireccion.length ? (
+              <CheckCircle style={{ marginRight: 8 }} />
+            ) : (
+              <Search style={{ marginRight: 8 }} />
+            )}
+            Dirección
           </Button>
           <div style={{ marginTop: 50 }}>
             <Button

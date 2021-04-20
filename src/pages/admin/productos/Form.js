@@ -9,7 +9,6 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  TextareaAutosize,
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -35,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginBottom: theme.spacing(2),
+  },
+  button: {
+    marginRight: theme.spacing(2),
   },
 }));
 

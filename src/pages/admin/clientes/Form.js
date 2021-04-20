@@ -448,7 +448,7 @@ const FormCliente = ({
             })}
           />
           <FormControl>
-            <FormLabel>Genero</FormLabel>
+            <FormLabel>Género</FormLabel>
             <MuiRadioGroup
               row
               name="sexo"
@@ -467,6 +467,7 @@ const FormCliente = ({
           </FormControl>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              style={{ marginBottom: 25 }}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -492,7 +493,6 @@ const FormCliente = ({
             }
             className={classes.button}
           >
-            {' '}
             Registrar Dirección
           </Button>
           <div style={{ marginTop: 50 }}>

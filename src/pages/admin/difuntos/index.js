@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Add, Archive } from '@material-ui/icons';
+import { Add, AirlineSeatFlat } from '@material-ui/icons';
 import { Search as SearchIcon } from '@material-ui/icons';
 import {
   Container,
@@ -17,7 +17,7 @@ import PageHeader from '../../../components/PageHeader';
 import Popup from '../../../components/Popup';
 
 import { drawerWidth } from '../../../utils/consts.js';
-import TableProducto from './TableProducto';
+import TableDifuntos from './TableDifuntos';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Producto = () => {
+const Difunto = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -62,9 +62,9 @@ const Producto = () => {
     <div>
       <PageHeader
         className={classes.root}
-        title="Nuevo Producto"
+        title="Difuntos"
         subTitle="Registrar, consultar y actualizar"
-        icon={<Archive fontSize="large" />}
+        icon={<AirlineSeatFlat fontSize="large" />}
       />
       <Box
         justifyContent="center"
@@ -86,10 +86,8 @@ const Producto = () => {
             >
               <InputBase
                 className={classes.input}
-                placeholder="Buscar Producto por Nombre de Producto"
-                inputProps={{
-                  'aria-label': 'Buscar Producto por Nombre de Producto',
-                }}
+                placeholder="Buscar Difunto por Nombre"
+                inputProps={{ 'aria-label': 'Buscar empleado por cedula' }}
               />
               <IconButton
                 // onClick={}
@@ -112,12 +110,12 @@ const Producto = () => {
                   setOpenPopup(true);
                 }}
               >
-                Agregar Producto
+                Agregar Difunto
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <TableProducto
+            <TableDifuntos
               setEdit={setEdit}
               setBody={setBody}
               setOpenPopup={setOpenPopup}
@@ -129,7 +127,8 @@ const Producto = () => {
 
       <Container style={{ marginLeft: drawerWidth }}>
         <Popup
-          title={`${edit ? 'Actualizar Producto' : 'Registrar Producto'}`}
+          display="flex"
+          title="Registrar Difunto"
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
         >
@@ -140,4 +139,4 @@ const Producto = () => {
   );
 };
 
-export default Producto;
+export default Difunto;

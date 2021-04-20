@@ -12,7 +12,6 @@ import {
   Button,
 } from '@material-ui/core';
 import { get } from '../../../helpers/fetch';
-import { formatDate } from '../../../helpers/formatDate';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,25 +76,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableSelectSuplidor = ({
-  setSuplidorId,
-  suplidorId,
-  setSuplidorName,
-  setOpen,
-}) => {
+const TableSelectVehiculo = ({ setVehiculoId, vehiculoId, setOpen }) => {
   const classes = useStyles();
-  const [suplidor, setSuplidor] = useState([]);
-  const [SuplidorSelect, setSuplidorSelect] = useState('');
-  const [SuplidorNameSelect, setSuplidorNameSelect] = useState('');
+  const [vehiculo, setVehiculo] = useState([]);
+  const [vehiculoSelect, setVehiculoSelect] = useState('');
 
   useEffect(() => {
-    get('suplidor')
+    get('vehiculo')
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
           let checked = false;
-          const { idSuplidor } = data;
-          if (idSuplidor === suplidorId) {
+          const { idVehiculo } = data;
+          if (idVehiculo === vehiculoId) {
             checked = true;
           }
 
@@ -104,19 +97,18 @@ const TableSelectSuplidor = ({
             checked,
           };
         });
-        setSuplidor(parseData || []);
+        setVehiculo(parseData || []);
       });
 
     // eslint-disable-next-line
   }, []);
 
-  const handleSelect = (idSuplido) => {
-    const parseData = suplidor.map((data) => {
-      const { idSuplidor, nombre, apellido, checked } = data;
+  const handleSelect = (idVehiculoGet) => {
+    const parseData = vehiculo.map((data) => {
+      const { idVehiculo, checked } = data;
 
-      if (idSuplidor === idSuplido) {
-        setSuplidorSelect(!checked ? idSuplido : '');
-        setSuplidorNameSelect(`${nombre} ${apellido}`);
+      if (idVehiculo === idVehiculoGet) {
+        setVehiculoSelect(!checked ? idVehiculoGet : '');
         return {
           ...data,
           checked: !checked,
@@ -128,12 +120,11 @@ const TableSelectSuplidor = ({
         };
       }
     });
-    setSuplidor(parseData || []);
+    setVehiculo(parseData || []);
   };
 
   const handleSave = () => {
-    setSuplidorId(SuplidorSelect);
-    setSuplidorName(SuplidorNameSelect);
+    setVehiculoId(vehiculoSelect);
     setOpen(false);
   };
 
@@ -142,23 +133,17 @@ const TableSelectSuplidor = ({
       <Paper display="flex" justifyContent="center">
         <TableContainer>
           <Table>
-            {suplidor.length > 0 ? (
+            {vehiculo.length > 0 ? (
               <TableHead>
                 <TableRow>
                   <TableCell className={classes.head} align="center">
-                    Nombres
+                    Marca
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Apellidos
+                    Modelo
                   </TableCell>
                   <TableCell className={classes.head} align="center">
-                    Sexo
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Identidad
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Nacimiento
+                    Estado
                   </TableCell>
                   <TableCell className={classes.head} align="center">
                     Acciones
@@ -167,39 +152,35 @@ const TableSelectSuplidor = ({
               </TableHead>
             ) : null}
             <TableBody>
-              {suplidor.length ? (
-                suplidor.map((client, index) => {
+              {vehiculo.length ? (
+                vehiculo.map((vehiculoTable, index) => {
                   const {
-                    idSuplidor,
-                    nombre,
-                    apellido,
-                    nacimiento,
-                    sexo,
-                    identidades: { serie },
+                    idVehiculo,
+                    status,
+                    marca,
+                    modelo,
                     checked,
-                  } = client;
+                  } = vehiculoTable;
                   return (
                     <TableRow
                       hover
-                      key={serie + index}
+                      key={idVehiculo}
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
                           : { backgroundColor: '#ECECEC' }
                       }
                     >
-                      <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{apellido}</TableCell>
-                      <TableCell align="center">{sexo}</TableCell>
-                      <TableCell align="center">{serie}</TableCell>
-                      <TableCell align="center">
-                        {formatDate(nacimiento)}
-                      </TableCell>
+                      <TableCell align="center">{marca}</TableCell>
+                      <TableCell align="center">{modelo}</TableCell>
+                      <TableCell align="center">{`${
+                        status ? 'Disponible' : 'Ocupado'
+                      }`}</TableCell>
                       <TableCell align="center">
                         <Checkbox
-                          name={idSuplidor}
+                          name={idVehiculo}
                           checked={checked}
-                          onChange={() => handleSelect(idSuplidor)}
+                          onChange={() => handleSelect(idVehiculo)}
                           inputProps={{ 'aria-label': 'primary checkbox' }}
                         />
                       </TableCell>
@@ -210,7 +191,7 @@ const TableSelectSuplidor = ({
                 <TableRow className={classes.emptyRow}>
                   <TableCell align="center" colSpan="2">
                     <span className={classes.tableLabel}>
-                      No hay Suplidores registrados
+                      No hay vehiculos registrados
                     </span>
                   </TableCell>
                 </TableRow>
@@ -233,4 +214,4 @@ const TableSelectSuplidor = ({
   );
 };
 
-export default TableSelectSuplidor;
+export default TableSelectVehiculo;

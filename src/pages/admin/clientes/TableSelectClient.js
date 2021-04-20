@@ -84,6 +84,9 @@ const TableSelectCliente = ({
   getClienteSelect,
   setClientEntidadId,
   isSuscripcion = false,
+  isVenta = false,
+  isDifunto = false,
+  setClientePersonId,
 }) => {
   const classes = useStyles();
   const [cliente, setCliente] = useState([]);
@@ -125,18 +128,33 @@ const TableSelectCliente = ({
 
       if (idCliente === idClient) {
         if (isSuscripcion) {
-          setClientEntidadId(!checked ? idEntidad : '');
-          setGetDataClienteSelect(
-            !checked
-              ? {
-                  client: {
+          if (isVenta) {
+            setGetDataClienteSelect(
+              !checked
+                ? {
                     nombre,
                     apellido,
-                    identidades: { identidad: serie },
-                  },
-                }
-              : {}
-          );
+                  }
+                : {}
+            );
+            if (isDifunto) {
+              setClientePersonId(data.idPersona);
+            }
+          } else {
+            setClientEntidadId(!checked ? idEntidad : '');
+
+            setGetDataClienteSelect(
+              !checked
+                ? {
+                    client: {
+                      nombre,
+                      apellido,
+                      identidades: { identidad: serie },
+                    },
+                  }
+                : {}
+            );
+          }
         }
         setClienteSelect(!checked ? idClient : '');
         return {
@@ -209,7 +227,7 @@ const TableSelectCliente = ({
                       style={
                         index % 2 === 0
                           ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#BCBFBC' }
+                          : { backgroundColor: '#ECECEC' }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
