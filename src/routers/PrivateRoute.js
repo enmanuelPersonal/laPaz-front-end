@@ -13,11 +13,11 @@ export const PrivateRoute = ({
     <Route
       {...rest}
       component={(props) =>
-        // isUserLoggedIn && userType === 'cliente corriente' ? (
+        isUserLoggedIn && userType === 'cliente corriente' ? (
           <Component {...props} />
-        // ) : (
-          // <Redirect to="/" />
-        // )
+        ) : (
+          <Redirect to="/" />
+        )
       }
     />
   );

@@ -5,10 +5,12 @@ import { PrivateRoute } from './PrivateRoute';
 
 import { ClientProfile } from '../pages/client/Profile/ClientProfile';
 import HomePage from '../pages/HomePage';
+import { Menu } from '../pages/client/AppBar';
 
 export const ClientRoutes = ({ isUserLoggedIn, userType }) => {
   return (
     <>
+      <Menu />
       <div>
         <Switch>
           <PrivateRoute
