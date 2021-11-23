@@ -68,7 +68,7 @@ const SymptomsChart = () => {
           legend: { display: false },
           title: {
             display: true,
-            text: 'Ventas por meses del Ano',
+            text: 'VENTAS POR MESES DEL AÑO',
           },
         },
       });
