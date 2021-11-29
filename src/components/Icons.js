@@ -21,7 +21,8 @@ import {
   HowToReg as SuscripcionIcon,
   WatchLater as MensualidadIcon,
   PeopleAlt as ParienteIcon,
-} from '@material-ui/icons';
+  LocalFlorist as ArregloIcon,
+} from "@material-ui/icons";
 
 export {
   HomeIcon,
@@ -46,4 +47,5 @@ export {
   SuscripcionIcon,
   MensualidadIcon,
   ParienteIcon,
+  ArregloIcon,
 };

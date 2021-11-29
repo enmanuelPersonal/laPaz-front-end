@@ -14,6 +14,7 @@ import {
   SuscripcionIcon,
   MensualidadIcon,
   ParienteIcon,
+  ArregloIcon
 } from '../components/Icons.js';
 
 const routes = [
@@ -58,6 +59,12 @@ const routes = [
     Component: AssessmentIcon,
     label: 'Planes fúnebres',
     path: '/admin/planes',
+  },
+  {
+    children: false,
+    Component: ArregloIcon,
+    label: 'Armar Arreglos',
+    path: '/admin/arreglos',
   },
   {
     children: false,

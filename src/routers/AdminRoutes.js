@@ -16,6 +16,7 @@ import Suplidor from '../pages/admin/suplidor';
 import Compra from '../pages/admin/compras';
 import Venta from '../pages/admin/ventas';
 import Plan from '../pages/admin/planes';
+import Arreglos from '../pages/admin/arreglos';
 import Difunto from '../pages/admin/difuntos';
 import ReportVenta from '../pages/admin/reportes/reportVenta';
 import ReportCompra from '../pages/admin/reportes/reportCompra';
@@ -39,6 +40,7 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/compras" component={Compra} />
           <Route exact path="/admin/ventas" component={Venta} />
           <Route exact path="/admin/planes" component={Plan} />
+          <Route exact path="/admin/arreglos" component={Arreglos} />
           <Route exact path="/admin/difuntos" component={Difunto} />
           <Route
             exact
