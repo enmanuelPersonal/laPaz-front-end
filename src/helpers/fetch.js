@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const { REACT_APP_API_URL } = process.env;
-
+const  REACT_APP_API_URL = 'http://localhost:8080/'
+// console.log(REACT_APP_API_URL)
 export const get = (url) => {
   const token = localStorage.getItem('LaPaz_auth_token');
 

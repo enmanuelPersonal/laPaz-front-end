@@ -90,7 +90,7 @@ const TableSelectProuct = ({
   const [ProductoBodySelect, setProductoBodySelect] = useState('');
 
   useEffect(() => {
-    get('producto/all')
+    get('producto/categoria?categoria=arreglos')
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
