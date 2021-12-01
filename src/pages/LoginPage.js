@@ -77,6 +77,7 @@ const LoginPage = () => {
   const classes = useStyles();
   const { dispatch } = useContext(AppContext);
   const [isRedirect, setIsRedirect] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signInError, setSignInError] = useState(false);
   const { register, errors, getValues } = useForm({
@@ -113,6 +114,7 @@ const LoginPage = () => {
             setSignInError(true);
             return;
           } else {
+            setIsAdmin(tipoUsuario === 'administrador');
             dispatch({
               type: USER_LOGIN,
               payload: {
@@ -234,7 +236,9 @@ const LoginPage = () => {
             <div />
           </Grid>
         </Grid>
-      {isRedirect && <Redirect to="/admin/dasboard" />}
+      {isRedirect && (
+      isAdmin ? <Redirect to="/admin/dasboard" /> : <Redirect to="/home" />
+      )}
     </Paper>
   );
 };
