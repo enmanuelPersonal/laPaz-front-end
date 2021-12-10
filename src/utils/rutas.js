@@ -14,6 +14,8 @@ import {
   SuscripcionIcon,
   MensualidadIcon,
   ParienteIcon,
+  PedidoIcon,
+  ConfigIcon,
 } from '../components/Icons.js';
 
 const routes = [
@@ -55,6 +57,12 @@ const routes = [
   },
   {
     children: false,
+    Component: PedidoIcon,
+    label: 'Pedidos',
+    path: '/admin/pedidos',
+  },
+  {
+    children: false,
     Component: AssessmentIcon,
     label: 'Planes fúnebres',
     path: '/admin/planes',
@@ -79,6 +87,12 @@ const routes = [
   },
   {
     children: false,
+    Component: ConfigIcon,
+    label: 'Configuración',
+    path: '/admin/config',
+  },
+  {
+    children: false,
     Component: LogOutIcon,
     label: 'LogOut',
     path: '/login',
@@ -97,12 +111,7 @@ const routesChilds = {
       Icon: ComprasIcon,
       path: '/admin/reportes/reportCompra',
     },
-    // { label: 'Clientes', Icon: ClienteIcon, path: '/admin/reportClientes' },
-    // {
-    //   label: 'Difuntos',
-    //   Icon: DifuntoIcon,
-    //   path: '/admin/reportDifunto',
-    // },
+
   ],
   inventario: [
     { label: 'Inventario', Icon: InventarioIcon, path: '/admin/inventario' },

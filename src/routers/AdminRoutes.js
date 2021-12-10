@@ -1,24 +1,26 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import React from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
 
-import Sidebar from '../pages/admin/sidebar/Sidebar';
+import Sidebar from "../pages/admin/sidebar/Sidebar";
 
-import Dashboard from '../pages/admin/Dashboard';
-import Employe from '../pages/admin/employe';
-import Suscripcion from '../pages/admin/suscripcion';
-import Cliente from '../pages/admin/clientes';
-import Mensualidad from '../pages/admin/mensualidad';
-import Pariente from '../pages/admin/parientes';
-import Usuario from '../pages/admin/usuarios';
-import Producto from '../pages/admin/productos';
-import Inventario from '../pages/admin/inventario';
-import Suplidor from '../pages/admin/suplidor';
-import Compra from '../pages/admin/compras';
-import Venta from '../pages/admin/ventas';
-import Plan from '../pages/admin/planes';
-import Difunto from '../pages/admin/difuntos';
-import ReportVenta from '../pages/admin/reportes/reportVenta';
-import ReportCompra from '../pages/admin/reportes/reportCompra';
+import Dashboard from "../pages/admin/Dashboard";
+import Employe from "../pages/admin/employe";
+import Suscripcion from "../pages/admin/suscripcion";
+import Cliente from "../pages/admin/clientes";
+import Mensualidad from "../pages/admin/mensualidad";
+import Pariente from "../pages/admin/parientes";
+import Usuario from "../pages/admin/usuarios";
+import Producto from "../pages/admin/productos";
+import Inventario from "../pages/admin/inventario";
+import Suplidor from "../pages/admin/suplidor";
+import Compra from "../pages/admin/compras";
+import Venta from "../pages/admin/ventas";
+import Plan from "../pages/admin/planes";
+import Difunto from "../pages/admin/difuntos";
+import ReportVenta from "../pages/admin/reportes/reportVenta";
+import ReportCompra from "../pages/admin/reportes/reportCompra";
+import Pedidos from "../pages/admin/Pedidos/pedidos";
+import Config from "../pages/admin/config";
 
 export const AdminRoutes = () => {
   return (
@@ -40,6 +42,8 @@ export const AdminRoutes = () => {
           <Route exact path="/admin/ventas" component={Venta} />
           <Route exact path="/admin/planes" component={Plan} />
           <Route exact path="/admin/difuntos" component={Difunto} />
+          <Route exact path="/admin/pedidos" component={Pedidos} />
+          <Route exact path="/admin/config" component={Config} />
           <Route
             exact
             path="/admin/reportes/reportVenta"

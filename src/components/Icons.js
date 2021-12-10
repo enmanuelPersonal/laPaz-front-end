@@ -21,7 +21,9 @@ import {
   HowToReg as SuscripcionIcon,
   WatchLater as MensualidadIcon,
   PeopleAlt as ParienteIcon,
-} from '@material-ui/icons';
+  LocalShipping as PedidoIcon,
+  Build as ConfigIcon,
+} from "@material-ui/icons";
 
 export {
   HomeIcon,
@@ -46,4 +48,6 @@ export {
   SuscripcionIcon,
   MensualidadIcon,
   ParienteIcon,
+  PedidoIcon,
+  ConfigIcon,
 };
