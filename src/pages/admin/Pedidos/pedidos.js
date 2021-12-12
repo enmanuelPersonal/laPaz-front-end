@@ -94,7 +94,7 @@ const ReportPedidos = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
   const [openPopupStatus, setOpenPopupStatus] = useState(false);
-  const [numPedidoDelete, setNumPedidoDelete] = useState("");
+  const [numPedidoDelete, setNumPedidoDelete] = useState({});
   const [pedido, setPedido] = useState([]);
   const [body, setBody] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -116,7 +116,7 @@ const ReportPedidos = () => {
   };
 
   const handleDelete = () => {
-    return remove("pedido", { numPedido: numPedidoDelete })
+    return remove("pedido", numPedidoDelete)
       .then((res) => res.json())
       .then(({ data }) => {
         if (data[0] === 1) {
@@ -218,6 +218,7 @@ const ReportPedidos = () => {
                             createdAt,
                             fechaEntrega,
                             detalle,
+                            idSuplidor,
                           } = pedido;
                           return (
                             <TableRow
@@ -258,7 +259,12 @@ const ReportPedidos = () => {
                                 )}
                                 <DeleteForever
                                   onClick={() => {
-                                    setNumPedidoDelete(numPedido);
+                                    setNumPedidoDelete({
+                                      numPedido,
+                                      idSuplidor,
+                                      total,
+                                      fecha: formatDate(createdAt),
+                                    });
                                     setOpenDialog(true);
                                   }}
                                 />{" "}
@@ -335,7 +341,9 @@ const ReportPedidos = () => {
                           <TableCell align="center">{nombre}</TableCell>
                           <TableCell align="center">{descripcion}</TableCell>
                           <TableCell align="center">{cantidad}</TableCell>
-                          <TableCell align="center">{precio}</TableCell>
+                          <TableCell align="center">
+                            {Number.parseFloat(precio).toFixed(2)}
+                          </TableCell>
                         </TableRow>
                       );
                     })

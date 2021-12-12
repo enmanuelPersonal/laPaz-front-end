@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Paper,
   Table,
@@ -10,70 +10,70 @@ import {
   makeStyles,
   Button,
   Checkbox,
-} from '@material-ui/core';
-import { get } from '../../../helpers/fetch';
+} from "@material-ui/core";
+import { get } from "../../../helpers/fetch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'absolute',
-    bottom: '-108px',
-    minWidth: '92%',
-    margin: 'auto',
-    height: '500px',
-    display: 'block',
-    textAlign: 'center',
-    justifyContent: 'center',
-    '& > div:first-child': {
-      '&::before': {
-        position: 'absolute',
-        top: '-60px',
-        left: '0',
-        color: '#00205C',
-        'font-size': '20px',
-        'font-family': 'Montserrat',
-        'font-weight': 'bold',
+    position: "absolute",
+    bottom: "-108px",
+    minWidth: "92%",
+    margin: "auto",
+    height: "500px",
+    display: "block",
+    textAlign: "center",
+    justifyContent: "center",
+    "& > div:first-child": {
+      "&::before": {
+        position: "absolute",
+        top: "-60px",
+        left: "0",
+        color: "#00205C",
+        "font-size": "20px",
+        "font-family": "Montserrat",
+        "font-weight": "bold",
       },
     },
     [theme.breakpoints.down(400)]: {
-      bottom: '1em',
-      height: '55vh',
+      bottom: "1em",
+      height: "55vh",
     },
     [theme.breakpoints.down(700)]: {
-      top: '0',
-      left: '0',
-      right: '0',
+      top: "0",
+      left: "0",
+      right: "0",
     },
     [theme.breakpoints.down(1400)]: {
-      top: '200px',
-      left: '0',
-      right: '0',
+      top: "200px",
+      left: "0",
+      right: "0",
     },
     [theme.breakpoints.up(1400)]: {
-      top: '340px',
-      left: '0',
-      right: '0',
+      top: "340px",
+      left: "0",
+      right: "0",
     },
     [theme.breakpoints.down(1300)]: {
       marginLeft: 250,
     },
   },
   emptyRow: {
-    height: '200px',
+    height: "200px",
   },
   tableLabel: {
-    color: '#630F5C',
-    fontSize: '16px',
-    fontFamily: 'Montserrat',
-    fontWeight: 'bold',
+    color: "#630F5C",
+    fontSize: "16px",
+    fontFamily: "Montserrat",
+    fontWeight: "bold",
   },
   head: {
-    fontWeight: 'bold',
-    color: '#630F5C',
-    backgroundColor: '#E6C3E2',
+    fontWeight: "bold",
+    color: "#630F5C",
+    backgroundColor: "#E6C3E2",
   },
   button: {
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
 }));
 
@@ -86,11 +86,11 @@ const TableSelectProuct = ({
 }) => {
   const classes = useStyles();
   const [productos, setProductos] = useState([]);
-  const [ProductoSelect, setProductoSelect] = useState('');
-  const [ProductoBodySelect, setProductoBodySelect] = useState('');
+  const [ProductoSelect, setProductoSelect] = useState("");
+  const [ProductoBodySelect, setProductoBodySelect] = useState("");
 
   useEffect(() => {
-    get('producto/all')
+    get("producto/all")
       .then((res) => res.json())
       .then(({ data }) => {
         const parseData = data.map((data) => {
@@ -116,7 +116,7 @@ const TableSelectProuct = ({
       const { idProducto, checked } = data;
 
       if (idProducto === productId) {
-        setProductoSelect(!checked ? productId : '');
+        setProductoSelect(!checked ? productId : "");
         setProductoBodySelect(data);
         return {
           ...data,
@@ -139,9 +139,9 @@ const TableSelectProuct = ({
   };
 
   return (
-    <div >
-      <Paper display="flex" justifyContent="center" >
-        <TableContainer style={{height: 500}}>
+    <div>
+      <Paper display="flex" justifyContent="center">
+        <TableContainer style={{ height: 500 }}>
           <Table>
             {productos.length > 0 ? (
               <TableHead>
@@ -185,21 +185,23 @@ const TableSelectProuct = ({
                       key={index}
                       style={
                         index % 2 === 0
-                          ? { backgroundColor: '#fff' }
-                          : { backgroundColor: '#ECECEC' }
+                          ? { backgroundColor: "#fff" }
+                          : { backgroundColor: "#ECECEC" }
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
                       <TableCell align="center">{descripcion}</TableCell>
                       <TableCell align="center">{tipo}</TableCell>
                       <TableCell align="center">{categoria}</TableCell>
-                      <TableCell align="center">{precio}</TableCell>
+                      <TableCell align="center">
+                        {Number.parseFloat(precio).toFixed(2)}
+                      </TableCell>
                       <TableCell align="center">
                         <Checkbox
                           name={idProducto}
                           checked={checked}
                           onChange={() => handleSelect(idProducto)}
-                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                          inputProps={{ "aria-label": "primary checkbox" }}
                         />
                       </TableCell>
                     </TableRow>

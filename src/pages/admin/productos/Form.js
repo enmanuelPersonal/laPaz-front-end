@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
+import dotenv from "dotenv";
+import React, { useState, useEffect } from "react";
+import Button from "@material-ui/core/Button";
 import {
   Grid,
   TextField,
@@ -10,13 +10,13 @@ import {
   MenuItem,
   InputLabel,
   CircularProgress,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-import Form from '../../../components/Form';
-import { get, post, put } from '../../../helpers/fetch';
-import { uploadImagen } from '../../../helpers/uploadImagen';
-import { DialogSlide } from '../../../components/alert/DialogSlide';
+import Form from "../../../components/Form";
+import { get, post, put } from "../../../helpers/fetch";
+import { uploadImagen } from "../../../helpers/uploadImagen";
+import { DialogSlide } from "../../../components/alert/DialogSlide";
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   input: {
-    display: 'none',
+    display: "none",
   },
   textField: {
     marginBottom: theme.spacing(2),
@@ -41,12 +41,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 let initialState = {
-  nombre: '',
-  descripcion: '',
-  idTipoProducto: '',
-  idCategoria: '',
-  url: '',
+  nombre: "",
+  descripcion: "",
+  idTipoProducto: "",
+  idCategoria: "",
+  url: "",
   reorden: 0,
+  cantCompra: 0,
 };
 
 const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
@@ -58,7 +59,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
   const [productoData, setProductoData] = useState(initialState);
   const [getTipoProducto, setGetTipoProducto] = useState([]);
   const [getCategoria, setGetCategoria] = useState([]);
-  const [uploadImg, setUploadImg] = useState('');
+  const [uploadImg, setUploadImg] = useState("");
 
   const {
     nombre,
@@ -67,6 +68,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     idCategoria,
     reorden,
     url,
+    cantCompra,
   } = productoData;
 
   const setAttributes = ({ openDialog = true, error = false }) => {
@@ -76,12 +78,12 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
 
   useEffect(() => {
     const fetchGetTipoProducto = async () => {
-      await get('producto/type')
+      await get("producto/type")
         .then((res) => res.json())
         .then(({ data }) => {
           if (!edit) {
             data.forEach(({ idTipoProducto, tipo }) => {
-              if (tipo === 'producto') {
+              if (tipo === "producto") {
                 setProductoData({ ...productoData, idTipoProducto });
                 return;
               }
@@ -94,7 +96,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     };
 
     const fetchGetCategoria = async () => {
-      await get('producto/categorias')
+      await get("producto/categorias")
         .then((res) => res.json())
         .then(({ data }) => setGetCategoria(data))
         .catch(() => {});
@@ -111,9 +113,9 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
         idTipoProducto,
         idCategoria,
         imagenes,
-        log: { reorden },
+        log: { reorden, cantCompra },
       } = body;
-      let url = '/img/qqq';
+      let url = "/img/qqq";
 
       if (imagenes.length) {
         url = imagenes[0].url;
@@ -127,6 +129,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
         idCategoria,
         url,
         reorden,
+        cantCompra,
       });
     } else {
       cleanForm();
@@ -161,7 +164,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
     if (!nombre) {
       return setAttributes({
         openDialog: true,
-        error: 'Por favor verifique que el nombre este correctamente digitado',
+        error: "Por favor verifique que el nombre este correctamente digitado",
       });
     }
 
@@ -169,7 +172,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
       return setAttributes({
         openDialog: true,
         error:
-          'Por favor verifique que la descripcion este correctamente digitado',
+          "Por favor verifique que la descripcion este correctamente digitado",
       });
     }
 
@@ -177,7 +180,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
       return setAttributes({
         openDialog: true,
         error:
-          'Por favor verifique que la categoria este correctamente seleccionada',
+          "Por favor verifique que la categoria este correctamente seleccionada",
       });
     }
 
@@ -186,7 +189,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
 
       Object.assign(productoData, { url });
 
-      return post('producto/add', productoData)
+      return post("producto/add", productoData)
         .then(async (response) => {
           setLoading(false);
           if (response.status === 201) {
@@ -199,7 +202,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
           }
         })
         .catch((err) =>
-          setErrorServer('Verifique que todos los campos esten correctos')
+          setErrorServer("Verifique que todos los campos esten correctos")
         )
         .finally(() => setOpenDialog(true));
     } else {
@@ -208,7 +211,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
         imagenes,
         log: { idProductoLog },
       } = body;
-      let idImagenProducto = '';
+      let idImagenProducto = "";
 
       if (imagenes.length) {
         idImagenProducto = imagenes[0].idImagenProducto;
@@ -221,7 +224,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
         { idProducto }
       );
 
-      return put('producto', productoData)
+      return put("producto", productoData)
         .then((res) => res.json())
         .then(({ data }) => {
           if (data[0] === 1) {
@@ -231,7 +234,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
           }
         })
         .catch((err) =>
-          setErrorServer('Verifique que todos los campos esten correctos')
+          setErrorServer("Verifique que todos los campos esten correctos")
         )
         .finally(() => setOpenDialog(true));
     }
@@ -319,6 +322,18 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
               ))}
             </Select>
           </FormControl>
+          <TextField
+            className={classes.textField}
+            variant="outlined"
+            name="cantCompra"
+            label="Cantidad a comprar"
+            type="number"
+            value={cantCompra}
+            onChange={({ target: { value, name } }) =>
+              handleChange({ value, name })
+            }
+            fullWidth
+          />
         </Grid>
         <Grid item xs={3} lg={4}>
           <Box border={1} p={8} mb={2}>
@@ -357,7 +372,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
                 <CircularProgress />
               </div>
             ) : (
-              `${edit ? 'ACTUALIZAR' : 'GUARDAR'}`
+              `${edit ? "ACTUALIZAR" : "GUARDAR"}`
             )}
           </Button>
           <Button
@@ -367,7 +382,7 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
             className={classes.button}
             onClick={cleanForm}
           >
-            {' '}
+            {" "}
             LIMPIAR
           </Button>
         </Grid>
@@ -378,19 +393,19 @@ const ProductForm = ({ edit = false, body = {}, setOpenPopup }) => {
             title={
               !errorServer
                 ? edit
-                  ? 'Datos Actualizados!'
-                  : 'Registro completado!'
+                  ? "Datos Actualizados!"
+                  : "Registro completado!"
                 : edit
-                ? 'La Actualizacion no se pudo completar'
-                : 'El registro no se pudo completar'
+                ? "La Actualizacion no se pudo completar"
+                : "El registro no se pudo completar"
             }
             body={
               !errorServer
                 ? edit
-                  ? 'Su Actualizacion se ha completado correctamente.'
-                  : 'Su registro se ha completado correctamente.'
+                  ? "Su Actualizacion se ha completado correctamente."
+                  : "Su registro se ha completado correctamente."
                 : `${
-                    edit ? 'La  actualizacion' : 'El registro'
+                    edit ? "La  actualizacion" : "El registro"
                   } no se pudo completar. ${errorServer} `
             }
           />

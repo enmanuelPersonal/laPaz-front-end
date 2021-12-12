@@ -161,7 +161,7 @@ const TableVenta = ({
                       }
                     >
                       <TableCell align="center">{nombre}</TableCell>
-                      <TableCell align="center">{precio}</TableCell>
+                      <TableCell align="center">{Number.parseFloat(precio).toFixed(2)}</TableCell>
                       <TableCell align="center">{cantidad}</TableCell>
                       <TableCell align="center">
                         <DeleteForever

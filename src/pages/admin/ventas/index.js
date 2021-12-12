@@ -573,7 +573,7 @@ const Venta = () => {
                   type="text"
                   size="small"
                   label={precio ? '' : 'Precio'}
-                  value={precio}
+                  value={Number.parseFloat(precio).toFixed(2)}
                   disabled={true}
                 />
               </Grid>
