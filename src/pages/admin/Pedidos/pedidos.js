@@ -12,8 +12,10 @@ import {
   Paper,
   Grid,
   Button,
-  InputBase,
-  IconButton,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
   Table,
   TableHead,
   TableRow,
@@ -90,6 +92,8 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const stados = ["Completado", "Proceso", "Cancelado"];
+
 const ReportPedidos = () => {
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
@@ -100,15 +104,24 @@ const ReportPedidos = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogForm, setOpenDialogForm] = useState(false);
   const [getDetalle, setGetDetalle] = useState([]);
+  const [getStado, setGetStado] = useState("Todos");
 
   useEffect(() => {
-    get("pedido")
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setPedido(data || []);
-      });
+    if (getStado === "Todos") {
+      get("pedido")
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setPedido(data || []);
+        });
+    } else {
+      get(`pedido/${getStado}`)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setPedido(data || []);
+        });
+    }
     // eslint-disable-next-line
-  }, [openDialog, openDialogForm]);
+  }, [openDialog, openDialogForm, getStado]);
 
   const handleUpdate = (usuario) => {
     setBody(usuario);
@@ -147,20 +160,26 @@ const ReportPedidos = () => {
           alignItems="center"
         >
           <Grid item xs={6}>
-            <Paper elevation={2} className={classes.rootSearch}>
-              <InputBase
-                className={classes.input}
-                placeholder="Buscar por Suplidor"
-                inputProps={{ "aria-label": "Buscar por nombre o descripción" }}
-              />
-              <IconButton
-                // onClick={}
-                className={classes.iconButton}
-                aria-label="search"
+            <FormControl variant="outlined">
+              <InputLabel>Filtrar Pedidos por Estados</InputLabel>
+              <Select
+                style={{width: 300}}
+                label=">Filtrar Pedidos por Estados"
+                name="stado"
+                value={getStado}
+                onChange={({ target: { value } }) => setGetStado(value)}
               >
-                <SearchIcon />
-              </IconButton>
-            </Paper>
+                <MenuItem disabled value="">
+                  Seleccione el estado del pedido
+                </MenuItem>
+                <MenuItem value="Todos">Todos</MenuItem>
+                {stados.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6}>
             <Box display="flex" justifyContent="flex-end">
@@ -251,24 +270,24 @@ const ReportPedidos = () => {
                                   ? formatDate(fechaEntrega)
                                   : "No Entregado"}
                               </TableCell>
-                              <TableCell align="center">
-                                {status !== "Completado" ? (
+                              {status !== "Completado" ? (
+                                <TableCell align="center">
                                   <Edit onClick={() => handleUpdate(pedido)} />
-                                ) : (
-                                  " "
-                                )}
-                                <DeleteForever
-                                  onClick={() => {
-                                    setNumPedidoDelete({
-                                      numPedido,
-                                      idSuplidor,
-                                      total,
-                                      fecha: formatDate(createdAt),
-                                    });
-                                    setOpenDialog(true);
-                                  }}
-                                />{" "}
-                              </TableCell>
+                                  <DeleteForever
+                                    onClick={() => {
+                                      setNumPedidoDelete({
+                                        numPedido,
+                                        idSuplidor,
+                                        total,
+                                        fecha: formatDate(createdAt),
+                                      });
+                                      setOpenDialog(true);
+                                    }}
+                                  />{" "}
+                                </TableCell>
+                              ) : (
+                                " "
+                              )}
                             </TableRow>
                           );
                         })
