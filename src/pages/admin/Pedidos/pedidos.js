@@ -195,10 +195,10 @@ const ReportPedidos = () => {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <div>
+            <div >
               <Paper display="flex" justifyContent="center">
-                <TableContainer>
-                  <Table>
+                <TableContainer style={{maxHeight: '500px'}}>
+                  <Table >
                     <TableHead>
                       <TableRow>
                         <TableCell className={classes.head} align="center">
@@ -270,7 +270,7 @@ const ReportPedidos = () => {
                                   ? formatDate(fechaEntrega)
                                   : "No Entregado"}
                               </TableCell>
-                              {status !== "Completado" ? (
+                              {status === "Proceso" ? (
                                 <TableCell align="center">
                                   <Edit onClick={() => handleUpdate(pedido)} />
                                   <DeleteForever
